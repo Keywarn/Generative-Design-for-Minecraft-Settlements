@@ -11,6 +11,14 @@ To enter the environemnt:
 
 `pyenv activate <env_name>`
 
+Install required python packages:
+
+`pip install -r requirements.txt`
+
+Leave the environmnet:
+
+`pyenv deactivate`
+
 ## Useful Links:
 
 [GDMC Competition](http://gendesignmc.engineering.nyu.edu)
