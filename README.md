@@ -3,9 +3,9 @@ Repo for my final year MEng project. Using generative design in Minecraft to cre
 
 ## Environments
 
-I am using [pyenv](https://github.com/pyenv/pyenv) to manage different python installs and project dependencies. This project has its own enivronemnt running Python 2.7.15. To create a new environment:
+I am using [pyenv](https://github.com/pyenv/pyenv) to manage different python installs and project dependencies. This project has its own enivronemnt running Python 3. To create a new environment:
 
-`pyenv virtualenv 2.7.15 <env_name>`
+`pyenv virtualenv <env_name>`
 
 To enter the environemnt:
 
