@@ -1,5 +1,6 @@
 import requests
 import nbt
+import matplotlib.pyplot as plt
 
 from io import BytesIO
 from bitarray import BitArray
@@ -39,8 +40,8 @@ def GetHeightmap(a,b):
     nbtFile = nbt.nbt.NBTFile(buffer=file)
 
     #Create empty map:
-    size = (b[1]-a[1] +1,b[0]-a[0] +1)
-    heightmap = [[-1 for z in range(size[0])] for x in range(size[1])]
+    size = (b[0]-a[0] +1,b[1]-a[1] +1)
+    heightmap = [[-1 for z in range(size[1])] for x in range(size[0])]
 
     #Offset into the chunk
     offsets = (a[0]%16, a[1]%16)
@@ -58,10 +59,14 @@ def GetHeightmap(a,b):
                 for cx in range(16):
                     xMap = x * 16 + cx - offsets[0]
                     zMap = z * 16 + cz - offsets[1]
-                    
+
                     #If inside the area, put it in the heightmap
                     if(xMap >= 0 and zMap >= 0 and xMap < size[0] and zMap < size[1]):
-                        print(xMap,zMap)
                         heightmap[xMap][zMap] = mapBitArray.getAt(cz * 16 + cx)
+    
+    return heightmap
 
-GetHeightmap((0,0), (15,15))
+heightmap = GetHeightmap((-55,90), (55,190))
+
+plt.imshow(heightmap, cmap='hot')
+plt.show()
