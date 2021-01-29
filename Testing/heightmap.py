@@ -39,8 +39,11 @@ def GetHeightmap(a,b):
     nbtFile = nbt.nbt.NBTFile(buffer=file)
 
     #Create empty map:
-    heightmap = [[-1 for z in range(b[1]-a[1])] for x in range(b[0]-a[0])]
+    size = (b[1]-a[1] +1,b[0]-a[0] +1)
+    heightmap = [[-1 for z in range(size[0])] for x in range(size[1])]
 
+    #Offset into the chunk
+    offsets = (a[0]%16, a[1]%16)
     #For each chunk go through co-ords
     for x in range(chunkB[0]-chunkA[0]+1):
         for z in range(chunkB[1]-chunkA[1]+1):
@@ -53,7 +56,12 @@ def GetHeightmap(a,b):
             #Index other way round in NBT
             for cz in range(16):
                 for cx in range(16):
+                    xMap = x * 16 + cx - offsets[0]
+                    zMap = z * 16 + cz - offsets[1]
+                    
+                    #If inside the area, put it in the heightmap
+                    if(xMap >= 0 and zMap >= 0 and xMap < size[0] and zMap < size[1]):
+                        print(xMap,zMap)
+                        heightmap[xMap][zMap] = mapBitArray.getAt(cz * 16 + cx)
 
-                    heightmap[x * 16 + cx][z * 16 + cz] = mapBitArray.getAt(cz * 16 + cx)
-
-GetHeightmap((0,0), (100,100))
+GetHeightmap((0,0), (15,15))
