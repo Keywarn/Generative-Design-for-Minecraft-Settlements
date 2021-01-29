@@ -1,4 +1,7 @@
 import requests
+import nbt
+
+from io import BytesIO
 
 url = "http://localhost:9000"
 
@@ -14,9 +17,17 @@ def GetChunks(a, b, rtype = 'text'):
     r = requests.get(url+f"/chunks?x={chunkA[0]}&z={chunkA[1]}&dx={chunkB[0]-chunkA[0]}&dz={chunkB[1]-chunkA[1]}", headers={"Accept": acceptType})
     
     if rtype == 'text':
-        return response.text
+        return r.text
     elif rtype == 'bytes':
-        return response.content
+        return r.content
 
 #Take in two locations (as tuples) and get the heightmap
 def GetHeightmap(a,b):
+    data = GetChunks(a,b, rtype='bytes')
+    file = BytesIO(data)
+    
+    nbtFile = nbt.nbt.NBTFile(buffer=file)
+
+    print(nbtFile)
+
+GetHeightmap((0,0), (100,100))
