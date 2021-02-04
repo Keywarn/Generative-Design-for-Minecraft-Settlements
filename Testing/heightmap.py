@@ -49,7 +49,8 @@ def GetHeightmap(a,b):
     for x in range(chunkB[0]-chunkA[0]+1):
         for z in range(chunkB[1]-chunkA[1]+1):
 
-            chunkNum = x + z * (chunkB[1]-chunkA[1])
+            # Get the chunk number in the nbt data
+            chunkNum = x + z * (chunkB[1]-chunkA[1]+2)
 
             rawMap = nbtFile["Chunks"][chunkNum]["Level"]["Heightmaps"]["WORLD_SURFACE"]
             mapBitArray = BitArray(9, 16*16, rawMap)
@@ -68,5 +69,5 @@ def GetHeightmap(a,b):
 
 heightmap = GetHeightmap((-55,90), (55,190))
 
-plt.imshow(heightmap, cmap='hot')
+plt.imshow(heightmap, cmap='hot', origin='lower')
 plt.show()
