@@ -19,8 +19,8 @@ def GetChunks(a, b, rtype = "text"):
 
 def CoordToChunks(a,b):
     #Return the chunk locations
-    chunkA = (min(a[0],b[0])//16, min(a[1],b[1])//16)
-    chunkB = (max(a[0],b[0])//16, max(a[1],b[1])//16)
+    chunkA = (a[0]//16, a[1]//16)
+    chunkB = (b[0]//16, b[1]//16)
 
     return chunkA, chunkB
 
