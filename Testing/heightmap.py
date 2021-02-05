@@ -40,7 +40,7 @@ def GetHeightmap(a,b):
 
     #Create empty map:
     size = (b[0]-a[0] +1,b[1]-a[1] +1)
-    heightmap = [[-1 for z in range(size[1])] for x in range(size[0])]
+    heightmap = [[-1 for z in range(size[0])] for x in range(size[1])]
 
     #Offset into the chunk
     offsets = (a[0]%16, a[1]%16)
@@ -62,7 +62,7 @@ def GetHeightmap(a,b):
 
                     #If inside the area, put it in the heightmap
                     if(xMap >= 0 and zMap >= 0 and xMap < size[0] and zMap < size[1]):
-                        heightmap[xMap][zMap] = mapBitArray.getAt(cz * 16 + cx)
+                        heightmap[zMap][xMap] = mapBitArray.getAt(cz * 16 + cx)
     
     return heightmap
 
@@ -72,6 +72,6 @@ heightmap = GetHeightmap(a, b)
 plt.xlabel('X World Co-Ordinate')
 plt.ylabel('Z World Co-Ordinate')
 plt.title('Surface Heightmap')
-plt.imshow([*zip(*heightmap)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
+plt.imshow(heightmap, origin='lower',extent=[a[0],b[0],a[1],b[1]])
 plt.colorbar()
 plt.show()
