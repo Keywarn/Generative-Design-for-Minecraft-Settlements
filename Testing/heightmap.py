@@ -32,7 +32,6 @@ def OrderCoords(a,b):
 
 #Take in two locations (as tuples) and get the heightmap
 def GetHeightmap(a,b):
-    a,b = OrderCoords(a,b)
     chunkA, chunkB = CoordToChunks(a,b)
     data = GetChunks(chunkA,chunkB, rtype="bytes")
     file = BytesIO(data)
@@ -67,9 +66,12 @@ def GetHeightmap(a,b):
     
     return heightmap
 
-a = (-55,90)
-b = (45, 190)
+a,b = OrderCoords((-55,90),(45, 190))
 heightmap = GetHeightmap(a, b)
 
-plt.imshow([*zip(*heightmap)], origin='lower',extent=[a[0],a[1],b[0],b[1]])
+plt.xlabel('X World Co-Ordinate')
+plt.ylabel('Z World Co-Ordinate')
+plt.title('Surface Heightmap')
+plt.imshow([*zip(*heightmap)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
+plt.colorbar()
 plt.show()
