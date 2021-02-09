@@ -8,4 +8,5 @@ def SetBlock(x,y,z, block):
 
 def GetBlock(x,y,z):
     r = requests.get(url+f"/blocks?x={x}&y={y}&z={z}")
-    print(f"Block X: {x}, Y: {y}, Z: {z} - {r.content}")
+    #print(f"Block X: {x}, Y: {y}, Z: {z} - {r.content}")
+    return(r.content)

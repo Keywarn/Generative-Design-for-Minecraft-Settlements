@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 from bitarray import BitArray
 
+import blocks
+
 url = "http://localhost:9000"
 
 #Take in two chunk locations and get the chunks containing the area
@@ -52,7 +54,7 @@ def GetHeightmap(a,b):
             # Get the chunk number in the nbt data
             chunkNum = x + z * (chunkB[0]-chunkA[0]+1)
 
-            rawMap = nbtFile["Chunks"][chunkNum]["Level"]["Heightmaps"]["WORLD_SURFACE"]
+            rawMap = nbtFile["Chunks"][chunkNum]["Level"]["Heightmaps"]["MOTION_BLOCKING_NO_LEAVES"]
             mapBitArray = BitArray(9, 16*16, rawMap)
 
             #Index other way round in NBT
@@ -67,12 +69,42 @@ def GetHeightmap(a,b):
     
     return heightmap
 
+#Given a heightmap and start location, get the blocks
+def GetHeightmapBlocks(heightmap, start):
+    #Create empty block map
+    heightmapBlocks = [[b"minecraft:air" for z in range(len(heightmap[0]))] for x in range(len(heightmap))]
+
+    #Fill the block map
+    for x in range(len(heightmap)):
+        for z in range(len(heightmap[0])):
+            heightmapBlocks[x][z] = blocks.GetBlock(a[0] + x, heightmap[x][z]-1, a[1] + z)
+
+    
+    return heightmapBlocks
+            
+
 a,b = OrderCoords((-55,90),(45, 190))
 heightmap = GetHeightmap(a, b)
 
+heightmapBlocks = GetHeightmapBlocks(heightmap, a)
+
+blockColours = {b"minecraft:grass_block": [94,157,52,255],b"minecraft:stone": [161,162,161,255]}
+
+for x in range(len(heightmapBlocks)):
+        for z in range(len(heightmapBlocks[0])):
+            if(heightmapBlocks[x][z] not in blockColours):
+                print(f"FOUND BLOCK NOT IN COLOUR DICT: {heightmapBlocks[x][z]}")
+            heightmapBlocks[x][z] = blockColours.get(heightmapBlocks[x][z], [0,0,0,255])
+
+hImg = plt.figure(1)
 plt.xlabel('X World Co-Ordinate')
 plt.ylabel('Z World Co-Ordinate')
 plt.title('Surface Heightmap')
 plt.imshow([*zip(*heightmap)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
 plt.colorbar()
+
+
+bImg = plt.figure(2)
+plt.imshow([*zip(*heightmapBlocks)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
+
 plt.show()
