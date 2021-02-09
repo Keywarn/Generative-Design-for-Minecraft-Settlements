@@ -96,7 +96,7 @@ for x in range(len(heightmapBlocks)):
                 print(f"FOUND BLOCK NOT IN COLOUR DICT: {heightmapBlocks[x][z]}")
             heightmapBlocks[x][z] = blockColours.get(heightmapBlocks[x][z], [0,0,0,255])
 
-fig, axs = plt.subplots(1,2)
+fig, axs = plt.subplots(1,2, constrained_layout=True)
 axs[0].set_xlabel('X World Co-Ordinate')
 axs[0].set_ylabel('Z World Co-Ordinate')
 axs[0].set_title('Surface Heightmap')
