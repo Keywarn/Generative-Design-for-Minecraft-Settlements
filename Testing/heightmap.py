@@ -32,6 +32,7 @@ def OrderCoords(a,b):
 
 #Take in two locations (as tuples) and get the heightmap
 def GetHeightmap(a,b):
+    a,b = OrderCoords(a,b)
     chunkA, chunkB = CoordToChunks(a,b)
     data = GetChunks(chunkA,chunkB, rtype="bytes")
     file = BytesIO(data)
