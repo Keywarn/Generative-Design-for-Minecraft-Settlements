@@ -96,15 +96,16 @@ for x in range(len(heightmapBlocks)):
                 print(f"FOUND BLOCK NOT IN COLOUR DICT: {heightmapBlocks[x][z]}")
             heightmapBlocks[x][z] = blockColours.get(heightmapBlocks[x][z], [0,0,0,255])
 
-hImg = plt.figure(1)
-plt.xlabel('X World Co-Ordinate')
-plt.ylabel('Z World Co-Ordinate')
-plt.title('Surface Heightmap')
-plt.imshow([*zip(*heightmap)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
-plt.colorbar()
+fig, axs = plt.subplots(1,2)
+axs[0].set_xlabel('X World Co-Ordinate')
+axs[0].set_ylabel('Z World Co-Ordinate')
+axs[0].set_title('Surface Heightmap')
+img = axs[0].imshow([*zip(*heightmap)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
+fig.colorbar(img, ax=axs[0], shrink=0.4)
 
-
-bImg = plt.figure(2)
-plt.imshow([*zip(*heightmapBlocks)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
+axs[1].imshow([*zip(*heightmapBlocks)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
+axs[1].set_xlabel('X World Co-Ordinate')
+axs[1].set_ylabel('Z World Co-Ordinate')
+axs[1].set_title('Surface Block Map')
 
 plt.show()
