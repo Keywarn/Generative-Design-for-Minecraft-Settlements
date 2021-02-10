@@ -88,7 +88,11 @@ heightmap = GetHeightmap(a, b)
 
 heightmapBlocks = GetHeightmapBlocks(heightmap, a)
 
-blockColours = {b"minecraft:grass_block": [94,157,52,255],b"minecraft:stone": [161,162,161,255]}
+blockColours = {b"minecraft:grass_block": [94,157,52,255],b"minecraft:stone": [161,162,161,255],
+                b"minecraft:sand": [194,178,128,255],b"minecraft:water": [116,204,244,255],
+                b"minecraft:acacia_log": [110,71,11,255], b"minecraft:birch_log": [110,71,11,255],
+                b"minecraft:dark_oak_log": [110,71,11,255],b"minecraft:jungle_log": [110,71,11,255],
+                b"minecraft:oak_log": [110,71,11,255],b"minecraft:spruce_log": [110,71,11,255]}
 
 for x in range(len(heightmapBlocks)):
         for z in range(len(heightmapBlocks[0])):
