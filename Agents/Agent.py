@@ -43,7 +43,13 @@ class PathFinder:
     def distance(self,a,b):
         return max(abs(a[0] - b[0]),abs(a[1] - b[1]))
 
-    def extractPath(self, maze):
+    def extractPath(self, maze, a, b):
+        cur = maze[b[0]][b[1]]
+
+        while (cur.x != a[0] and cur.z != a[0]):
+            print(f"Cur X: {cur.x} Y: {cur.z}")
+            cur = cur.parent
+
         return "PATH OUTPUT"
     
     def findPath(self, a,b,swim=False, fall=False):
@@ -93,14 +99,14 @@ class PathFinder:
                                 maze[x][z].fCost = fNew
                                 maze[x][z].gCost = gNew
                                 maze[x][z].hCost = hNew
-                                maze[x][z].parent = [cur.x, cur.z]
+                                maze[x][z].parent = cur
                                 #add to open list if needed
                                 if(not maze[x][z].open):
                                     maze[x][z].open = True
                                     openList.append(maze[x][z])
         
         if(foundPath):
-            return(self.extractPath(maze))
+            return(self.extractPath(maze, a, b))
         else:
             return None
 class Cell:
