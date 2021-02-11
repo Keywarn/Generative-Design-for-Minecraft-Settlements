@@ -42,6 +42,9 @@ class PathFinder:
     
     def distance(self,a,b):
         return max(abs(a[0] - b[0]),abs(a[1] - b[1]))
+
+    def extractPath(self, maze):
+        return "PATH OUTPUT"
     
     def findPath(self, a,b,swim=False, fall=False):
         neighbours = [[0,1],[1,1],[1, 0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
@@ -49,6 +52,8 @@ class PathFinder:
         maze = [[Cell(x, z) for z in range(len(self.heightmap[0]))] for x in range(len(self.heightmap))]
         maze[a[0]][a[1]].open = True
         openList =[maze[a[0]][a[1]]]
+
+        foundPath = False
 
         while len(openList) != 0:
             cur = openList[0]
@@ -65,7 +70,7 @@ class PathFinder:
 
             #Check current isn't the final cell
             if(cur.x == b[0] and cur.z == b[1]):
-                #TODO RETURN THE PATH
+                foundPath = True
                 break
             else:
                 #For each neighbour
@@ -94,7 +99,10 @@ class PathFinder:
                                     maze[x][z].open = True
                                     openList.append(maze[x][z])
         
-        print("FINISHED PATH")
+        if(foundPath):
+            return(self.extractPath(maze))
+        else:
+            return None
 class Cell:
     def __init__(self, x, z):
         #Distance from a
