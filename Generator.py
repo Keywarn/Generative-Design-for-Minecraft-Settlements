@@ -7,7 +7,7 @@ heightmap = mapTools.GetHeightmap(a, b)
 ag = agent.Agent([6,71,146], b'minecraft:obsidian')
 pf = agent.PathFinder(heightmap)
 
-path = pf.findPath([0,0],[10,10])
+path = pf.findPath([0,0],[3,2])
 
 print(path)
 
