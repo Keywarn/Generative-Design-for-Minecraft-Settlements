@@ -1,3 +1,4 @@
+from MCUtils import blocks
 
 class Agent:
     def __init__(self, pos, block):
@@ -5,17 +6,20 @@ class Agent:
         self.pos = pos
         self.block = block
 
-        #self.prevBlock = GetBlock(pos[0], pos[1])
+        self.prevBlock = blocks.GetBlock(self.pos)
 
         self.move(pos)
 
-    def move(self, pos):
-        #Should check if it is a valid move first
+    def move(self, newPos):
 
-        #Set the block of current position back
-        #SetBlock(self.pos, prevBlock)
-        #Move to new position
-        self.pos = pos
-        #Set the block
-        #SetBlock(pos, block)
+        blocks.SetBlock(self.pos, self.prevBlock)
+
+        self.pos = newPos
+
+        self.prevBlock = blocks.GetBlock(self.pos)
+
+        blocks.SetBlock(self.pos, self.block)
+
+    def kill(self):
+        blocks.SetBlock(self.pos, self.prevBlock)
 

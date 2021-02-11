@@ -2,11 +2,11 @@ import requests
 
 url = "http://localhost:9000"
 
-def SetBlock(x,y,z, block):
-    #print(f"Setting X: {x}, Y: {y}, Z: {z} - {block}")
-    r = requests.put(url+f"/blocks?x={x}&y={y}&z={z}", data = block)
+def SetBlock(pos, block):
+    print(f"Setting X: {pos[0]}, Y: {pos[1]}, Z: {pos[2]} - {block}")
+    r = requests.put(url+f"/blocks?x={pos[0]}&y={pos[1]}&z={pos[2]}", data = block)
 
-def GetBlock(x,y,z):
-    r = requests.get(url+f"/blocks?x={x}&y={y}&z={z}")
-    #print(f"Block X: {x}, Y: {y}, Z: {z} - {r.content}")
+def GetBlock(pos):
+    r = requests.get(url+f"/blocks?x={pos[0]}&y={pos[1]}&z={pos[2]}")
+    print(f"Block X: {pos[0]}, Y: {pos[1]}, Z: {pos[2]} - {r.content}")
     return(r.content)
