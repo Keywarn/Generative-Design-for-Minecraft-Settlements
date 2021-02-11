@@ -1,4 +1,4 @@
-from MCUtils import blocks
+from mcutils import blocks
 
 class Agent:
     def __init__(self, pos, block):

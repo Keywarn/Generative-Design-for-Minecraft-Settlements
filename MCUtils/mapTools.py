@@ -3,9 +3,9 @@ import nbt
 import matplotlib.pyplot as plt
 
 from io import BytesIO
-from bitarray import BitArray
+from mcutils.bitarray import BitArray
 
-import blocks
+import mcutils.blocks as blocks
 
 url = "http://localhost:9000"
 
@@ -77,39 +77,40 @@ def GetHeightmapBlocks(heightmap, start):
     #Fill the block map
     for x in range(len(heightmap)):
         for z in range(len(heightmap[0])):
-            heightmapBlocks[x][z] = blocks.GetBlock(a[0] + x, heightmap[x][z]-1, a[1] + z)
+            heightmapBlocks[x][z] = blocks.GetBlock([a[0] + x, heightmap[x][z]-1, a[1] + z])
 
     
     return heightmapBlocks
             
 
-a,b = OrderCoords((-55,90),(45, 190))
-heightmap = GetHeightmap(a, b)
+def main():
+    a,b = OrderCoords((-55,90),(45, 190))
+    heightmap = GetHeightmap(a, b)
 
-heightmapBlocks = GetHeightmapBlocks(heightmap, a)
+    heightmapBlocks = GetHeightmapBlocks(heightmap, a)
 
-blockColours = {b"minecraft:grass_block": [94,157,52,255],b"minecraft:stone": [161,162,161,255],
-                b"minecraft:sand": [194,178,128,255],b"minecraft:water": [116,204,244,255],
-                b"minecraft:acacia_log": [110,71,11,255], b"minecraft:birch_log": [110,71,11,255],
-                b"minecraft:dark_oak_log": [110,71,11,255],b"minecraft:jungle_log": [110,71,11,255],
-                b"minecraft:oak_log": [110,71,11,255],b"minecraft:spruce_log": [110,71,11,255]}
+    blockColours = {b"minecraft:grass_block": [94,157,52,255],b"minecraft:stone": [161,162,161,255],
+                    b"minecraft:sand": [194,178,128,255],b"minecraft:water": [116,204,244,255],
+                    b"minecraft:acacia_log": [110,71,11,255], b"minecraft:birch_log": [110,71,11,255],
+                    b"minecraft:dark_oak_log": [110,71,11,255],b"minecraft:jungle_log": [110,71,11,255],
+                    b"minecraft:oak_log": [110,71,11,255],b"minecraft:spruce_log": [110,71,11,255]}
 
-for x in range(len(heightmapBlocks)):
-        for z in range(len(heightmapBlocks[0])):
-            if(heightmapBlocks[x][z] not in blockColours):
-                print(f"FOUND BLOCK NOT IN COLOUR DICT: {heightmapBlocks[x][z]}")
-            heightmapBlocks[x][z] = blockColours.get(heightmapBlocks[x][z], [0,0,0,255])
+    for x in range(len(heightmapBlocks)):
+            for z in range(len(heightmapBlocks[0])):
+                if(heightmapBlocks[x][z] not in blockColours):
+                    print(f"FOUND BLOCK NOT IN COLOUR DICT: {heightmapBlocks[x][z]}")
+                heightmapBlocks[x][z] = blockColours.get(heightmapBlocks[x][z], [0,0,0,255])
 
-fig, axs = plt.subplots(1,2, constrained_layout=True)
-axs[0].set_xlabel('X World Co-Ordinate')
-axs[0].set_ylabel('Z World Co-Ordinate')
-axs[0].set_title('Surface Heightmap')
-img = axs[0].imshow([*zip(*heightmap)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
-fig.colorbar(img, ax=axs[0], shrink=0.4)
+    fig, axs = plt.subplots(1,2, constrained_layout=True)
+    axs[0].set_xlabel('X World Co-Ordinate')
+    axs[0].set_ylabel('Z World Co-Ordinate')
+    axs[0].set_title('Surface Heightmap')
+    img = axs[0].imshow([*zip(*heightmap)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
+    fig.colorbar(img, ax=axs[0], shrink=0.4)
 
-axs[1].imshow([*zip(*heightmapBlocks)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
-axs[1].set_xlabel('X World Co-Ordinate')
-axs[1].set_ylabel('Z World Co-Ordinate')
-axs[1].set_title('Surface Block Map')
+    axs[1].imshow([*zip(*heightmapBlocks)], origin='lower',extent=[a[0],b[0],a[1],b[1]])
+    axs[1].set_xlabel('X World Co-Ordinate')
+    axs[1].set_ylabel('Z World Co-Ordinate')
+    axs[1].set_title('Surface Block Map')
 
-plt.show()
+    plt.show()
