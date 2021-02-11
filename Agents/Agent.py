@@ -9,7 +9,7 @@ class Agent:
 
         self.move(pos)
 
-    def move(pos):
+    def move(self, pos):
         #Should check if it is a valid move first
 
         #Set the block of current position back
