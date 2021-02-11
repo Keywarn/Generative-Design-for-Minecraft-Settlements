@@ -5,10 +5,11 @@ class Agent:
 
         self.pos = pos
         self.block = block
-
         self.prevBlock = blocks.GetBlock(self.pos)
-
         self.move(pos)
+
+        self.target = None
+        self.path = None
 
     def move(self, newPos):
 
@@ -22,4 +23,17 @@ class Agent:
 
     def kill(self):
         blocks.SetBlock(self.pos, self.prevBlock)
+
+    def setTarget(self, targetPos):
+        self.target = targetPos
+
+    def tick(self):
+        if(path):
+            #do the next sequence on the path
+            print("moving")
+        else:
+            #Get a path
+            print("PathFinding")
+
+
 
