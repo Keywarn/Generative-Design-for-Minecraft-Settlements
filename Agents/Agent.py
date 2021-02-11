@@ -5,6 +5,7 @@ class Agent:
 
         self.pos = pos
         self.block = block
+
         self.prevBlock = blocks.GetBlock(self.pos)
         self.move(pos)
 
@@ -34,6 +35,14 @@ class Agent:
         else:
             #Get a path
             print("PathFinding")
+
+class PathFinder:
+    def __init__(self, hm):
+        self.heightmap = hm
+    
+    def findPath(a,b,swim=False, fall=False):
+        print("Finding path")
+
 
 
 
