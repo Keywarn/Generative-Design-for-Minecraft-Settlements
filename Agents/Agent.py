@@ -42,7 +42,7 @@ class PathFinder:
     
     def distance(self,a,b):
         #return max(abs(a[0] - b[0]),abs(a[1] - b[1]))
-        return round(((a[0] - b[0])**2 + (a[1] - b[1])**2)**0.5)*10
+        return((a[0] - b[0])**2 + (a[1] - b[1])**2)
 
     def extractPath(self, maze, a, b):
         cur = maze[b[0]][b[1]]
@@ -52,8 +52,8 @@ class PathFinder:
         while (cur.x != a[0] or cur.z != a[1]):
             moves.append([cur.x - cur.parent.x, cur.z - cur.parent.z])
             cur = cur.parent
-        moves.reverse()
-        return moves
+        
+        return moves[::-1]
     
     def findPath(self, a,b, corner,swim=False, fall=False):
         a = [ai - ci for ai, ci in zip(a, corner)]
@@ -66,7 +66,7 @@ class PathFinder:
 
         foundPath = False
 
-        while len(openList) != 0:
+        while len(openList) > 0:
             cur = openList[0]
             #Get cell with lowest f cost
             index = 0;
@@ -93,16 +93,13 @@ class PathFinder:
                     if((x >= 0 and x < len(maze)) and (z >= 0 and z < len(maze[0]))):
                         #Check if can travel to the block
                         #TODO Checks for water and falling
-                        if(abs(self.heightmap[cur.x][cur.z]-self.heightmap[x][z]) < 2):
-
+                        if(abs(self.heightmap[cur.x][cur.z]-self.heightmap[x][z]) < 2 and not maze[x][z].closed):
+                            print(neighbours[i])
                             #Calculate new fCost
-                            if(i % 2 ==0 ):
-                                #Straight move
-                                gNew = cur.gCost + 10
-                            else:
-                                gNew = cur.gCost + 14
+                            gNew = cur.gCost + 1
                             hNew = self.distance([x,z],b)
                             fNew = gNew + hNew
+                            print(fNew)
                             if(not maze[x][z].open or fNew < maze[x][z].fCost):
                                 #update
                                 maze[x][z].fCost = fNew
