@@ -45,12 +45,14 @@ class PathFinder:
 
     def extractPath(self, maze, a, b):
         cur = maze[b[0]][b[1]]
-
-        while (cur.x != a[0] and cur.z != a[0]):
-            print(f"Cur X: {cur.x} Y: {cur.z}")
+        print(a)
+        print(b)
+        moves = []
+        while (cur.x != a[0] or cur.z != a[1]):
+            moves.append([cur.x - cur.parent.x, cur.z - cur.parent.z])
             cur = cur.parent
-
-        return "PATH OUTPUT"
+        moves.reverse()
+        return moves
     
     def findPath(self, a,b, corner,swim=False, fall=False):
         a = [ai - ci for ai, ci in zip(a, corner)]
@@ -93,7 +95,11 @@ class PathFinder:
                         if(abs(self.heightmap[cur.x][cur.z]-self.heightmap[x][z]) < 2):
 
                             #Calculate new fCost
-                            gNew = cur.gCost + 1
+                            if(i % 2 ==0 ):
+                                #Straight move
+                                gNew = cur.gCost + 10
+                            else:
+                                gNew = cur.gCost + 14
                             hNew = self.distance([x,z],b)
                             fNew = gNew + hNew
                             if(not maze[x][z].open or fNew < maze[x][z].fCost):
