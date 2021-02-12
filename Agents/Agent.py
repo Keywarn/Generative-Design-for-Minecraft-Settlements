@@ -41,7 +41,8 @@ class PathFinder:
         self.heightmap = hm
     
     def distance(self,a,b):
-        return max(abs(a[0] - b[0]),abs(a[1] - b[1]))
+        #return max(abs(a[0] - b[0]),abs(a[1] - b[1]))
+        return round(((a[0] - b[0])**2 + (a[1] - b[1])**2)**0.5)*10
 
     def extractPath(self, maze, a, b):
         cur = maze[b[0]][b[1]]
@@ -124,7 +125,7 @@ class Cell:
         #Distance to b
         self.hCost = 0
         #Combined
-        self.fCost = 999999
+        self.fCost = 99999999
 
         self.open = False
         self.closed = False
