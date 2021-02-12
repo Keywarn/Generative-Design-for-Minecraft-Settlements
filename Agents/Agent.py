@@ -30,13 +30,8 @@ class Agent:
 
     def tick(self):
         if(self.path):
-            #nextPos = [self.pos[0]]
             #do the next sequence on the path
-            #self.move(self, [self.pos[0]])
-            print("tick")
-        else:
-            #Get a path
-            print("PathFinding")
+            self.move(self.path.pop(0))
 
 class PathFinder:
     def __init__(self, hm):
@@ -50,7 +45,7 @@ class PathFinder:
         cur = maze[b[0]][b[1]]
         moves = []
         while (cur.x != a[0] or cur.z != a[1]):
-            moves.append([cur.x - cur.parent.x + corner[0], self.heightmap[cur.x][cur.z], cur.z - cur.parent.z + corner[1]])
+            moves.append([cur.x + corner[0], self.heightmap[cur.x][cur.z], cur.z + corner[1]])
             cur = cur.parent
         
         return moves[::-1]
@@ -98,7 +93,6 @@ class PathFinder:
                             gNew = cur.gCost + 1
                             hNew = self.distance([x,z],b)
                             fNew = gNew + hNew
-                            print(fNew)
                             if(not maze[x][z].open or fNew < maze[x][z].fCost):
                                 #update
                                 maze[x][z].fCost = fNew
