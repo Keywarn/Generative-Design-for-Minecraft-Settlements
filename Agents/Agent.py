@@ -52,7 +52,9 @@ class PathFinder:
 
         return "PATH OUTPUT"
     
-    def findPath(self, a,b,swim=False, fall=False):
+    def findPath(self, a,b, corner,swim=False, fall=False):
+        a = [ai - ci for ai, ci in zip(a, corner)]
+        b = [bi - ci for bi, ci in zip(b, corner)]
         neighbours = [[0,1],[1,1],[1, 0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
 
         maze = [[Cell(x, z) for z in range(len(self.heightmap[0]))] for x in range(len(self.heightmap))]

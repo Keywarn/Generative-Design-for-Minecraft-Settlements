@@ -27,8 +27,8 @@ def CoordToChunks(a,b):
     return chunkA, chunkB
 
 def OrderCoords(a,b):
-    aa = (min(a[0],b[0]), min(a[1],b[1]))
-    bb = (max(a[0],b[0]), max(a[1],b[1]))
+    aa = [min(a[0],b[0]), min(a[1],b[1])]
+    bb = [max(a[0],b[0]), max(a[1],b[1])]
 
     return aa,bb
 
