@@ -29,9 +29,11 @@ class Agent:
         self.target = targetPos
 
     def tick(self):
-        if(path):
+        if(self.path):
+            #nextPos = [self.pos[0]]
             #do the next sequence on the path
-            print("moving")
+            #self.move(self, [self.pos[0]])
+            print("tick")
         else:
             #Get a path
             print("PathFinding")
@@ -44,13 +46,11 @@ class PathFinder:
         #return max(abs(a[0] - b[0]),abs(a[1] - b[1]))
         return((a[0] - b[0])**2 + (a[1] - b[1])**2)
 
-    def extractPath(self, maze, a, b):
+    def extractPath(self, maze, a, b, corner):
         cur = maze[b[0]][b[1]]
-        print(a)
-        print(b)
         moves = []
         while (cur.x != a[0] or cur.z != a[1]):
-            moves.append([cur.x - cur.parent.x, cur.z - cur.parent.z])
+            moves.append([cur.x - cur.parent.x + corner[0], self.heightmap[cur.x][cur.z], cur.z - cur.parent.z + corner[1]])
             cur = cur.parent
         
         return moves[::-1]
@@ -94,7 +94,6 @@ class PathFinder:
                         #Check if can travel to the block
                         #TODO Checks for water and falling
                         if(abs(self.heightmap[cur.x][cur.z]-self.heightmap[x][z]) < 2 and not maze[x][z].closed):
-                            print(neighbours[i])
                             #Calculate new fCost
                             gNew = cur.gCost + 1
                             hNew = self.distance([x,z],b)
@@ -112,7 +111,7 @@ class PathFinder:
                                     openList.append(maze[x][z])
         
         if(foundPath):
-            return(self.extractPath(maze, a, b))
+            return(self.extractPath(maze, a, b, corner))
         else:
             return None
 class Cell:
