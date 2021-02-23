@@ -146,12 +146,10 @@ class Controller:
 
         #Create a maze to hold the data
 
-        #Set first cell to open
-        self.maze[self.pos[0]][self.pos[1]].open = True
-
         #Keep track of frontier cells
         openList =[]
 
+        #Add starting neighbours to be explored
         for i in range(8):
             x = self.pos[0] + neighbours[i][0]
             z = self.pos[1] + neighbours[i][1]
@@ -159,14 +157,48 @@ class Controller:
                 self.maze[x][z].open = True
                 self.maze[x][z].fCost = finder.distance([x,z], self.pos)
                 openList.append(self.maze[x][z])
-        print(self.pos)
+
         while len(openList) > 0:
             time.sleep(1)
             print(f"Open List Size: {len(openList)}")
-            #Simulate agents
+            
+            #FINDING WHERE TO GO NEXT
+            cur = openList[0]
+            #Get cell with lowest f cost
+            for i in range(len(openList)):
+                if(openList[i].fCost < cur.fCost):
+                    cur = openList[i]
+
+            agent = self.agents[0]
+            dist = 999999999999
+            path = []
             for ag in self.agents:
-                #Agent not currently on a path, observe surroundings
+                #Find the closest available agent
                 if(not ag.path):
+                    p = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
+                    if(len(path) < dist and p):
+                        agent = ag
+                        dist = len(path)
+                        path = p
+                else:
+                    print("agent on path")
+            if(path):
+                #Found a path so remove from open and assign agent
+                openList.remove(cur)
+                cur.open = False
+                cur.closed = True
+                
+                agent.path = path
+                print(f"sending agent to: {cur.x, cur.z}")
+            else:
+                print("No path")
+            
+            #SIMULATING THE AGENTS
+            for ag in self.agents:
+                ag.tick()
+                #Agent arrived, observe surroundings and open frontiers
+                if(not ag.path):
+                    print("AGENT ARRIVED")
                     for i in range(8):
                         x = ag.pos[0] - self.corner[0] + neighbours[i][0]
                         z = ag.pos[2] - self.corner[1] + neighbours[i][1]
@@ -174,7 +206,7 @@ class Controller:
                         #Check surrounding is on board
                         if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
                             #TODO GET BLOCK DATA OF SURROUNDINGS
-
+                            print(f"OBSERVING AT: {x,z}")
                             #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
                             if(abs(self.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.heightmap[x][z]) < 2 and not self.maze[x][z].closed):
                                 #Check neighbouring cells for unexplored areas
@@ -191,36 +223,7 @@ class Controller:
                                     self.maze[x][z].open = True
                                     self.maze[x][z].fCost = finder.distance([x,z], self.pos)
                                     openList.append(self.maze[x][z])
-                else:
-                    ag.tick()
 
-            cur = openList[0]
-            #Get cell with lowest f cost
-            for i in range(len(openList)):
-                if(openList[i].fCost < cur.fCost):
-                    cur = openList[i]
-
-            agent = self.agents[0]
-            dist = 999999999999
-            path = []
-            for ag in self.agents:
-                #Find the closest available agent
-                if(not ag.path):
-                    p = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
-                    if(len(path) < dist):
-                        agent = ag
-                        dist = len(path)
-                        path = p
-            if(path):
-                #Found a path so remove from open and assign agent
-                openList.remove(cur)
-                cur.open = False
-                cur.closed = True
-                
-                agent.path = path
-                print(f"sending agent to: {cur.x, cur.z}")
-            else:
-                print("No path")
 
 
             
