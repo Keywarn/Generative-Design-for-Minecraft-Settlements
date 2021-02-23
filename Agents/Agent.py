@@ -140,7 +140,7 @@ class Controller:
 
 
     def explore(self):
-
+        
         neighbours = [[0,1],[1,1],[1, 0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
         finder = PathFinder(self.heightmap)
 
@@ -161,6 +161,8 @@ class Controller:
                 openList.append(self.maze[x][z])
         print(self.pos)
         while len(openList) > 0:
+            time.sleep(1)
+            print(f"Open List Size: {len(openList)}")
             #Simulate agents
             for ag in self.agents:
                 #Agent not currently on a path, observe surroundings
@@ -173,7 +175,7 @@ class Controller:
                         if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
                             #TODO GET BLOCK DATA OF SURROUNDINGS
 
-                            #Now make the surroundings forntier cells if they are accessible and have unobserved neighbours
+                            #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
                             if(abs(self.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.heightmap[x][z]) < 2 and not self.maze[x][z].closed):
                                 #Check neighbouring cells for unexplored areas
                                 add = False
@@ -185,6 +187,7 @@ class Controller:
                                             add = True;
                                 #Area unexplored, add to list
                                 if(add):
+                                    print("Adding to list")
                                     self.maze[x][z].open = True
                                     self.maze[x][z].fCost = finder.distance([x,z], self.pos)
                                     openList.append(self.maze[x][z])
@@ -193,15 +196,9 @@ class Controller:
 
             cur = openList[0]
             #Get cell with lowest f cost
-            index = 0;
             for i in range(len(openList)):
                 if(openList[i].fCost < cur.fCost):
                     cur = openList[i]
-                    index = i
-
-            openList.remove(cur)
-            cur.open = False
-            cur.closed = True
 
             agent = self.agents[0]
             dist = 999999999999
@@ -214,8 +211,16 @@ class Controller:
                         agent = ag
                         dist = len(path)
                         path = p
-            agent.path = path
-            print(f"sending agent to: {cur.x, cur.z}")
+            if(path):
+                #Found a path so remove from open and assign agent
+                openList.remove(cur)
+                cur.open = False
+                cur.closed = True
+                
+                agent.path = path
+                print(f"sending agent to: {cur.x, cur.z}")
+            else:
+                print("No path")
 
 
             
