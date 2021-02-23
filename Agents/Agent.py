@@ -142,6 +142,7 @@ class Controller:
     def explore(self):
 
         neighbours = [[0,1],[1,1],[1, 0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
+        finder = PathFinder(self.heightmap)
 
         #Create a maze to hold the data
 
@@ -149,24 +150,17 @@ class Controller:
         self.maze[self.pos[0]][self.pos[1]].open = True
 
         #Keep track of frontier cells
-        openList =[self.maze[self.pos[0]][self.pos[1]]]
+        openList =[]
 
         for i in range(8):
             x = self.pos[0] + neighbours[i][0]
             z = self.pos[1] + neighbours[i][1]
             if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
                 self.maze[x][z].open = True
-                self.maze[x][z].gCost = 1
-                self.maze[x][z].hCost = 2
-                self.maze[x][z].fCost = -1
+                self.maze[x][z].fCost = finder.distance([x,z], self.pos)
                 openList.append(self.maze[x][z])
-
-        finder = PathFinder(self.heightmap)
-        count = 0
+        print(self.pos)
         while len(openList) > 0:
-            count += 1
-            time.sleep(0.5)
-            print(count)
             #Simulate agents
             for ag in self.agents:
                 #Agent not currently on a path, observe surroundings
@@ -183,20 +177,16 @@ class Controller:
                             if(abs(self.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.heightmap[x][z]) < 2 and not self.maze[x][z].closed):
                                 #Check neighbouring cells for unexplored areas
                                 add = False
-                                hCost = 0; #Amount of information gained
-                                for i in range(8):
-                                    xn = x + neighbours[i][0]
-                                    zn = z + neighbours[i][1]
+                                for j in range(8):
+                                    xn = x + neighbours[j][0]
+                                    zn = z + neighbours[j][1]
                                     if((xn >= 0 and xn < len(self.maze)) and (zn >= 0 and zn < len(self.maze[0]))):
                                         if(not self.maze[xn][zn].closed and not self.maze[xn][zn].open):
                                             add = True;
-                                            hCost += 1;
                                 #Area unexplored, add to list
                                 if(add):
                                     self.maze[x][z].open = True
-                                    self.maze[x][z].gCost = self.maze[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]].gCost + 1
-                                    self.maze[x][z].hCost = hCost
-                                    self.maze[x][z].fCost = self.maze[x][z].gCost - hCost
+                                    self.maze[x][z].fCost = finder.distance([x,z], self.pos)
                                     openList.append(self.maze[x][z])
                 else:
                     ag.tick()
@@ -225,6 +215,7 @@ class Controller:
                         dist = len(path)
                         path = p
             agent.path = path
+            print(f"sending agent to: {cur.x, cur.z}")
 
 
             
