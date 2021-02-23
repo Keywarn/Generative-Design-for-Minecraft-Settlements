@@ -1,4 +1,5 @@
 from mcutils import blocks
+import time
 
 class Agent:
     def __init__(self, pos, block):
@@ -134,21 +135,102 @@ class Controller:
         self.maze = [[Cell(x, z) for z in range(len(self.heightmap[0]))] for x in range(len(self.heightmap))]
         
         self.pos = [ai - ci for ai, ci in zip(pos, corner)]
+
         self.agents = [Agent([pos[0],self.heightmap[self.pos[0]][self.pos[1]], pos[1]], b'minecraft:obsidian') for i in range(numAgents)]
 
-        print("Created Simulation")
 
-    def explore():
+    def explore(self):
 
         neighbours = [[0,1],[1,1],[1, 0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
 
         #Create a maze to hold the data
 
         #Set first cell to open
-        self.maze[pos[0]][pos[1]].open = True
+        self.maze[self.pos[0]][self.pos[1]].open = True
 
         #Keep track of frontier cells
-        openList =[maze[pos[0]][pos[1]]]
+        openList =[self.maze[self.pos[0]][self.pos[1]]]
+
+        for i in range(8):
+            x = self.pos[0] + neighbours[i][0]
+            z = self.pos[1] + neighbours[i][1]
+            if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
+                self.maze[x][z].open = True
+                self.maze[x][z].gCost = 1
+                self.maze[x][z].hCost = 2
+                self.maze[x][z].fCost = -1
+                openList.append(self.maze[x][z])
+
+        finder = PathFinder(self.heightmap)
+        count = 0
+        while len(openList) > 0:
+            count += 1
+            time.sleep(0.5)
+            print(count)
+            #Simulate agents
+            for ag in self.agents:
+                #Agent not currently on a path, observe surroundings
+                if(not ag.path):
+                    for i in range(8):
+                        x = ag.pos[0] - self.corner[0] + neighbours[i][0]
+                        z = ag.pos[2] - self.corner[1] + neighbours[i][1]
+
+                        #Check surrounding is on board
+                        if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
+                            #TODO GET BLOCK DATA OF SURROUNDINGS
+
+                            #Now make the surroundings forntier cells if they are accessible and have unobserved neighbours
+                            if(abs(self.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.heightmap[x][z]) < 2 and not self.maze[x][z].closed):
+                                #Check neighbouring cells for unexplored areas
+                                add = False
+                                hCost = 0; #Amount of information gained
+                                for i in range(8):
+                                    xn = x + neighbours[i][0]
+                                    zn = z + neighbours[i][1]
+                                    if((xn >= 0 and xn < len(self.maze)) and (zn >= 0 and zn < len(self.maze[0]))):
+                                        if(not self.maze[xn][zn].closed and not self.maze[xn][zn].open):
+                                            add = True;
+                                            hCost += 1;
+                                #Area unexplored, add to list
+                                if(add):
+                                    self.maze[x][z].open = True
+                                    self.maze[x][z].gCost = self.maze[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]].gCost + 1
+                                    self.maze[x][z].hCost = hCost
+                                    self.maze[x][z].fCost = self.maze[x][z].gCost - hCost
+                                    openList.append(self.maze[x][z])
+                else:
+                    ag.tick()
+
+            cur = openList[0]
+            #Get cell with lowest f cost
+            index = 0;
+            for i in range(len(openList)):
+                if(openList[i].fCost < cur.fCost):
+                    cur = openList[i]
+                    index = i
+
+            openList.remove(cur)
+            cur.open = False
+            cur.closed = True
+
+            agent = self.agents[0]
+            dist = 999999999999
+            path = []
+            for ag in self.agents:
+                #Find the closest available agent
+                if(not ag.path):
+                    p = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
+                    if(len(path) < dist):
+                        agent = ag
+                        dist = len(path)
+                        path = p
+            agent.path = path
+
+
+            
+                
+
+
 
 
 

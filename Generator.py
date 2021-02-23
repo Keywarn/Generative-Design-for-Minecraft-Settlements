@@ -8,6 +8,8 @@ heightmap = mapTools.GetHeightmap(a, b)
 
 con = agent.Controller(heightmap, a, [6,146], 1)
 
+con.explore()
+
 mapTools.showHeightmap(heightmap, a, b)
 
 
