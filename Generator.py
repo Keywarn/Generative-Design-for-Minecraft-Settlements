@@ -8,6 +8,8 @@ heightmap = mapTools.GetHeightmap(a, b)
 
 con = agent.Controller(heightmap, a, [6,146], 1)
 
+mapTools.showHeightmap(heightmap, a, b)
+
 
 # Agent pathfinding example
 # ag = agent.Agent([6,71,146], b'minecraft:obsidian')
