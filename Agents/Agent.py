@@ -159,7 +159,7 @@ class Controller:
                 openList.append(self.maze[x][z])
 
         while len(openList) > 0:
-            time.sleep(1)
+            time.sleep(0.1)
             print(f"Open List Size: {len(openList)}")
             
             #FINDING WHERE TO GO NEXT
@@ -215,11 +215,11 @@ class Controller:
                                     xn = x + neighbours[j][0]
                                     zn = z + neighbours[j][1]
                                     if((xn >= 0 and xn < len(self.maze)) and (zn >= 0 and zn < len(self.maze[0]))):
-                                        if(not self.maze[xn][zn].closed and not self.maze[xn][zn].open):
+                                        if(not self.maze[xn][zn].open and not self.maze[xn][zn].closed):
                                             add = True;
                                 #Area unexplored, add to list
-                                if(add):
-                                    print("Adding to list")
+                                if(add and not self.maze[x][z].open and not self.maze[x][z].closed):
+                                    print(f"Adding to list {x,z}")
                                     self.maze[x][z].open = True
                                     self.maze[x][z].fCost = finder.distance([x,z], self.pos)
                                     openList.append(self.maze[x][z])
