@@ -22,7 +22,7 @@ class Agent:
 
         blocks.SetBlock(self.pos, self.block)
 
-    def kill(self):
+    def __del__(self):
         blocks.SetBlock(self.pos, self.prevBlock)
 
     def setTarget(self, targetPos):
@@ -124,6 +124,31 @@ class Cell:
         self.z = z
 
         self.parent = []
+
+class Controller:
+    def __init__(self, hm, corner, pos, numAgents):
+
+        self.heightmap = hm
+        self.corner = corner
+
+        self.maze = [[Cell(x, z) for z in range(len(self.heightmap[0]))] for x in range(len(self.heightmap))]
+        
+        self.pos = [ai - ci for ai, ci in zip(pos, corner)]
+        self.agents = [Agent([pos[0],self.heightmap[self.pos[0]][self.pos[1]], pos[1]], b'minecraft:obsidian') for i in range(numAgents)]
+
+        print("Created Simulation")
+
+    def explore():
+
+        neighbours = [[0,1],[1,1],[1, 0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
+
+        #Create a maze to hold the data
+
+        #Set first cell to open
+        self.maze[pos[0]][pos[1]].open = True
+
+        #Keep track of frontier cells
+        openList =[maze[pos[0]][pos[1]]]
 
 
 
