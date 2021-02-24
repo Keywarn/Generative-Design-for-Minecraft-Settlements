@@ -14,14 +14,15 @@ class Agent:
         self.path = None
 
     def move(self, newPos):
+        #Prevent collisions of agents
+        if(blocks.GetBlock(newPos) != self.block):
+            blocks.SetBlock(self.pos, self.prevBlock)
 
-        blocks.SetBlock(self.pos, self.prevBlock)
+            self.pos = newPos
 
-        self.pos = newPos
+            self.prevBlock = blocks.GetBlock(self.pos)
 
-        self.prevBlock = blocks.GetBlock(self.pos)
-
-        blocks.SetBlock(self.pos, self.block)
+            blocks.SetBlock(self.pos, self.block)
 
     def __del__(self):
         blocks.SetBlock(self.pos, self.prevBlock)
@@ -136,7 +137,7 @@ class Controller:
         
         self.pos = [ai - ci for ai, ci in zip(pos, corner)]
 
-        self.agents = [Agent([pos[0],self.heightmap[self.pos[0]][self.pos[1]], pos[1]], b'minecraft:obsidian') for i in range(numAgents)]
+        self.agents = [Agent([pos[0],self.heightmap[self.pos[0]][self.pos[1]] + i, pos[1] + i], b'minecraft:obsidian') for i in range(numAgents)]
 
 
     def explore(self):
@@ -159,7 +160,7 @@ class Controller:
                 openList.append(self.maze[x][z])
 
         while len(openList) > 0:
-            time.sleep(0.1)
+            time.sleep(1)
             print(f"Open List Size: {len(openList)}")
             
             #FINDING WHERE TO GO NEXT

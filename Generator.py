@@ -6,7 +6,7 @@ a,b = mapTools.OrderCoords([-55,90],[45, 190])
 heightmap = mapTools.GetHeightmap(a, b)
 
 
-con = agent.Controller(heightmap, a, [6,146], 1)
+con = agent.Controller(heightmap, a, [6,146], 2)
 
 con.explore()
 
