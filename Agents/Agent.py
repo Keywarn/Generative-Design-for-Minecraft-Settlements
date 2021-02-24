@@ -161,7 +161,6 @@ class Controller:
 
         while len(openList) > 0:
             time.sleep(0)
-            print(f"Open List Size: {len(openList)}")
             
             #Find the n closest and assign them
             for n in range(len(self.agents)):
@@ -186,8 +185,6 @@ class Controller:
                                 agent = ag
                                 dist = len(path)
                                 path = p
-                        else:
-                            print("agent on path")
                     if(path):
                         #Found a path so remove from open and assign agent
                         openList.remove(cur)
@@ -195,16 +192,12 @@ class Controller:
                         cur.closed = True
                         
                         agent.path = path
-                        print(f"sending agent to: {cur.x, cur.z}")
-                    else:
-                        print("No path")
             
             #SIMULATING THE AGENTS
             for ag in self.agents:
                 ag.tick()
                 #Agent arrived, observe surroundings and open frontiers
                 if(not ag.path):
-                    print("AGENT ARRIVED")
                     for i in range(8):
                         x = ag.pos[0] - self.corner[0] + neighbours[i][0]
                         z = ag.pos[2] - self.corner[1] + neighbours[i][1]
@@ -212,7 +205,7 @@ class Controller:
                         #Check surrounding is on board
                         if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
                             #TODO GET BLOCK DATA OF SURROUNDINGS
-                            print(f"OBSERVING AT: {x,z}")
+
                             #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
                             if(abs(self.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.heightmap[x][z]) < 2 and not self.maze[x][z].closed):
                                 #Check neighbouring cells for unexplored areas
@@ -225,7 +218,6 @@ class Controller:
                                             add = True;
                                 #Area unexplored, add to list
                                 if(add and not self.maze[x][z].open and not self.maze[x][z].closed):
-                                    print(f"Adding to list {x,z}")
                                     self.maze[x][z].open = True
                                     self.maze[x][z].fCost = finder.distance([x,z], self.pos)
                                     openList.append(self.maze[x][z])
