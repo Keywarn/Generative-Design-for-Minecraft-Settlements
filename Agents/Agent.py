@@ -137,7 +137,7 @@ class Controller:
         
         self.pos = [ai - ci for ai, ci in zip(pos, corner)]
 
-        self.agents = [Agent([pos[0],self.heightmap[self.pos[0]][self.pos[1]] + i, pos[1] + i], b'minecraft:obsidian') for i in range(numAgents)]
+        self.agents = [Agent([pos[0],self.heightmap[self.pos[0]][self.pos[1]+i], pos[1] + i], b'minecraft:obsidian') for i in range(numAgents)]
 
 
     def explore(self):
@@ -160,39 +160,44 @@ class Controller:
                 openList.append(self.maze[x][z])
 
         while len(openList) > 0:
-            time.sleep(1)
+            time.sleep(0)
             print(f"Open List Size: {len(openList)}")
             
-            #FINDING WHERE TO GO NEXT
-            cur = openList[0]
-            #Get cell with lowest f cost
-            for i in range(len(openList)):
-                if(openList[i].fCost < cur.fCost):
-                    cur = openList[i]
+            #Find the n closest and assign them
+            for n in range(len(self.agents)):
+                #If there are open cells left and for each open agent
+                if(openList and not self.agents[n].path):
+                    #FINDING WHERE TO GO NEXT
+                    cur = openList[0]
 
-            agent = self.agents[0]
-            dist = 999999999999
-            path = []
-            for ag in self.agents:
-                #Find the closest available agent
-                if(not ag.path):
-                    p = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
-                    if(len(path) < dist and p):
-                        agent = ag
-                        dist = len(path)
-                        path = p
-                else:
-                    print("agent on path")
-            if(path):
-                #Found a path so remove from open and assign agent
-                openList.remove(cur)
-                cur.open = False
-                cur.closed = True
-                
-                agent.path = path
-                print(f"sending agent to: {cur.x, cur.z}")
-            else:
-                print("No path")
+                    #Get cell with lowest f cost
+                    for i in range(len(openList)):
+                        if(openList[i].fCost < cur.fCost):
+                            cur = openList[i]
+
+                    agent = self.agents[0]
+                    dist = 999999999999
+                    path = []
+                    for ag in self.agents:
+                        #Find the closest available agent
+                        if(not ag.path):
+                            p = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
+                            if(len(path) < dist and p):
+                                agent = ag
+                                dist = len(path)
+                                path = p
+                        else:
+                            print("agent on path")
+                    if(path):
+                        #Found a path so remove from open and assign agent
+                        openList.remove(cur)
+                        cur.open = False
+                        cur.closed = True
+                        
+                        agent.path = path
+                        print(f"sending agent to: {cur.x, cur.z}")
+                    else:
+                        print("No path")
             
             #SIMULATING THE AGENTS
             for ag in self.agents:
