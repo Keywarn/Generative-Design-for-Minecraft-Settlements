@@ -161,6 +161,7 @@ class Controller:
 
         explored = 0
 
+        #for step in range(500):
         while len(openList) > 0:
             time.sleep(0)
             
@@ -229,8 +230,7 @@ class Controller:
                                                 openList.append(self.maze[x][z])
                                                 self.maze[x][z].open = True
 
-
-
+        print(f"Explored Cells: {explored}")
             
                 
 
