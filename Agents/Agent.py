@@ -159,6 +159,8 @@ class Controller:
                 self.maze[x][z].fCost = finder.distance([x,z], self.pos)
                 openList.append(self.maze[x][z])
 
+        explored = 0
+
         while len(openList) > 0:
             time.sleep(0)
             
@@ -198,6 +200,7 @@ class Controller:
                     ag.tick()
                     #Agent arrived, observe surroundings and open frontiers
                     if(not ag.path):
+                        explored += 1
                         for i in range(8):
                             x = ag.pos[0] - self.corner[0] + neighbours[i][0]
                             z = ag.pos[2] - self.corner[1] + neighbours[i][1]
