@@ -177,24 +177,16 @@ class Controller:
                         if(openList[i].fCost < cur.fCost):
                             cur = openList[i]
 
-                    agent = self.agents[0]
-                    dist = 999999999999
-                    path = []
-                    for ag1 in self.agents:
-                        #Find the closest available agent
-                        if(not ag1.path):
-                            p = finder.findPath([ag1.pos[0],ag1.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
-                            if(len(path) < dist and p):
-                                agent = ag1
-                                dist = len(path)
-                                path = p
+                    
+                    path = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
+
                     if(path):
                         #Found a path so remove from open and assign agent
                         openList.remove(cur)
                         cur.open = False
                         cur.closed = True
                         
-                        agent.path = path
+                        ag.path = path
             
             #SIMULATING THE AGENTS
                 else:

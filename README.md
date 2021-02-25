@@ -24,3 +24,16 @@ Leave the environmnet:
 [GDMC Competition](http://gendesignmc.engineering.nyu.edu)
 
 [Generative Deisgn in Minecraft Paper](https://www.researchgate.net/publication/327638962_Generative_design_in_minecraft_GDMC_settlement_generation_competition)
+
+## Early Findings and Notes
+
+Just the results of some early testing so I can keep track
+
+#### Changing Aproach to selecting agents to travel to frontier cell (500 iters of simulation)
+
+| Method                                     | Time  | Number of cells explored | Cells per second |
+| ------------------------------------------ | ----- | ------------------------ | ---------------- |
+| Find closest agent to the frontier cell    | 34.09 | 323                      | 9.47             |
+| Just send the first free agent in the list | 28.13 | 300                      | 10.66            |
+|                                            |       |                          |                  |
+
