@@ -8,7 +8,10 @@ heightmap = mapTools.GetHeightmap(a, b)
 
 con = agent.Controller(heightmap, a, [6,146], 4)
 
+tic = time.perf_counter()
 con.explore()
+toc = time.perf_counter()
+print(f"Time taken: {toc-tic}")
 
 mapTools.showHeightmap(heightmap, a, b)
 
