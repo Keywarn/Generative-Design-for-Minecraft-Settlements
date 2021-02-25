@@ -207,6 +207,7 @@ class Controller:
                                 #TODO GET BLOCK DATA OF SURROUNDINGS
 
                                 #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
+                                #TODO Water check here
                                 if(abs(self.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.heightmap[x][z]) < 2 and not self.maze[x][z].closed):
                                     #Check neighbouring cells for unexplored areas
                                     add = False
@@ -217,10 +218,13 @@ class Controller:
                                             if(not self.maze[xn][zn].open and not self.maze[xn][zn].closed):
                                                 add = True;
                                     #Area unexplored, add to list
-                                    if(add and not self.maze[x][z].open and not self.maze[x][z].closed):
-                                        self.maze[x][z].open = True
-                                        self.maze[x][z].fCost = finder.distance([x,z], self.pos)
-                                        openList.append(self.maze[x][z])
+                                    if(add):
+                                        fNew = self.maze[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]].fCost + 1
+                                        if(not self.maze[x][z].open or fNew < self.maze[x][z].fCost):
+                                            self.maze[x][z].fCost = fNew
+                                            if(not self.maze[x][z].open):
+                                                openList.append(self.maze[x][z])
+                                                self.maze[x][z].open = True
 
 
 
