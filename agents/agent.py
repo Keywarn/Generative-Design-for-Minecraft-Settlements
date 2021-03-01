@@ -206,6 +206,7 @@ class Controller:
 
                             #Check surrounding is on board
                             if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
+                                #TODO OBSERVE
                                 blockMap[x][z] = [94,157,52,255]
                                 #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
                                 #TODO Water check here
