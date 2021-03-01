@@ -29,7 +29,7 @@ Leave the environmnet:
 
 Just the results of some early testing so I can keep track
 
-#### Changing Aproach to selecting agents to travel to frontier cell (500 iters of simulation)
+#### Changing Aproach to selecting agents to travel to frontier cell (500 iters of simulation, 4 agents)
 
 | Method                                     | Time  | Number of cells explored | Cells per second |
 | ------------------------------------------ | ----- | ------------------------ | ---------------- |
