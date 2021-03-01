@@ -121,6 +121,7 @@ class Cell:
 
         self.open = False
         self.closed = False
+        self.toBeObserved = False
 
         self.x = x
         self.z = z
@@ -142,8 +143,10 @@ class Controller:
 
     def explore(self):
         
-        neighbours = [[0,1],[1,1],[1, 0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
+        neighbours = [[1,1],[1,-1],[-1,-1],[-1,1],[0,1],[1, 0],[0,-1],[-1,0]]
         finder = PathFinder(self.heightmap)
+
+        blockMap = [[[0,0,0,255] for z in range(len(self.heightmap[0]))] for x in range(len(self.heightmap))]
 
         #Create a maze to hold the data
 
@@ -159,10 +162,8 @@ class Controller:
                 self.maze[x][z].fCost = finder.distance([x,z], self.pos)
                 openList.append(self.maze[x][z])
 
-        explored = 0
-
-        #for step in range(500):
-        while len(openList) > 0:
+        for step in range(500):
+        #while len(openList) > 0:
             time.sleep(0)
             
             #Find the n closest and assign them
@@ -193,17 +194,16 @@ class Controller:
                     ag.tick()
                     #Agent arrived, observe surroundings and open frontiers
                     if(not ag.path):
-                        explored += 1
                         for i in range(8):
                             x = ag.pos[0] - self.corner[0] + neighbours[i][0]
                             z = ag.pos[2] - self.corner[1] + neighbours[i][1]
 
                             #Check surrounding is on board
                             if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
-                                #TODO GET BLOCK DATA OF SURROUNDINGS
-
+                                blockMap[x][z] = [94,157,52,255]
                                 #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
                                 #TODO Water check here
+                                #Check if it can even travel to newly explored cell before considering it
                                 if(abs(self.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.heightmap[x][z]) < 2 and not self.maze[x][z].closed):
                                     #Check neighbouring cells for unexplored areas
                                     add = False
@@ -211,8 +211,9 @@ class Controller:
                                         xn = x + neighbours[j][0]
                                         zn = z + neighbours[j][1]
                                         if((xn >= 0 and xn < len(self.maze)) and (zn >= 0 and zn < len(self.maze[0]))):
-                                            if(not self.maze[xn][zn].open and not self.maze[xn][zn].closed):
+                                            if(not self.maze[xn][zn].open and not self.maze[xn][zn].closed and not self.maze[xn][zn].toBeObserved):
                                                 add = True;
+                                                self.maze[xn][zn].toBeObserved = True
                                     #Area unexplored, add to list
                                     if(add):
                                         fNew = self.maze[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]].fCost + 1
@@ -222,7 +223,7 @@ class Controller:
                                                 openList.append(self.maze[x][z])
                                                 self.maze[x][z].open = True
 
-        print(f"Explored Cells: {explored}")
+        return(blockMap)
             
                 
 

@@ -9,11 +9,12 @@ heightmap = mapTools.GetHeightmap(a, b)
 con = agent.Controller(heightmap, a, [6,146], 4)
 
 tic = time.perf_counter()
-con.explore()
+blockMap = con.explore()
 toc = time.perf_counter()
 print(f"Time taken: {toc-tic}")
 
-mapTools.showHeightmap(heightmap, a, b)
+mapTools.showMap(heightmap, a, b,'Surface Heightmap')
+mapTools.showMap(blockMap, a, b,'Surface Blocks')
 
 
 # Agent pathfinding example

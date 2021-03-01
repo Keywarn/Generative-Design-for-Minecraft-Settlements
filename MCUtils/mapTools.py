@@ -89,16 +89,15 @@ def GetHeightmapBlocks(heightmap, start):
     return heightmapBlocks
 
 
-def showHeightmap(hm, a, b):
+def showMap(hm, a, b, title=""):
     plt.xlabel('X World Co-Ordinate')
     plt.ylabel('Z World Co-Ordinate')
-    plt.title('Surface Heightmap')
+    plt.title(title)
 
     hmFlip = [*zip(*hm[::-1])]
     
     plt.imshow(hmFlip, origin='lower',extent=[b[0],a[0],a[1],b[1]])
     plt.show()
-
 
 def main():
     a,b = OrderCoords((-55,90),(45, 190))

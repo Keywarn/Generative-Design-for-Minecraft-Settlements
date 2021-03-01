@@ -28,12 +28,3 @@ Leave the environmnet:
 ## Early Findings and Notes
 
 Just the results of some early testing so I can keep track
-
-#### Changing Aproach to selecting agents to travel to frontier cell (500 iters of simulation, 4 agents)
-
-| Method                                     | Time  | Number of cells explored | Cells per second |
-| ------------------------------------------ | ----- | ------------------------ | ---------------- |
-| Find closest agent to the frontier cell    | 34.09 | 323                      | 9.47             |
-| Just send the first free agent in the list | 28.13 | 300                      | 10.66            |
-|                                            |       |                          |                  |
-
