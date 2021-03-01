@@ -162,8 +162,8 @@ class Controller:
                 self.maze[x][z].fCost = finder.distance([x,z], self.pos)
                 openList.append(self.maze[x][z])
 
-        for step in range(500):
-        #while len(openList) > 0:
+        #for step in range(500):
+        while len(openList) > 0:
             time.sleep(0)
             
             #Find the n closest and assign them
