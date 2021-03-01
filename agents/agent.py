@@ -138,6 +138,8 @@ class Controller:
         
         self.pos = [ai - ci for ai, ci in zip(pos, corner)]
 
+        self.numAgents = numAgents
+
         self.agents = [Agent([pos[0],self.heightmap[self.pos[0]][self.pos[1]+i], pos[1] + i], b'minecraft:obsidian') for i in range(numAgents)]
 
 
@@ -154,7 +156,7 @@ class Controller:
         openList =[]
 
         #Add starting neighbours to be explored
-        for i in range(8):
+        for i in range(4):
             x = self.pos[0] + neighbours[i][0]
             z = self.pos[1] + neighbours[i][1]
             if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
@@ -162,8 +164,9 @@ class Controller:
                 self.maze[x][z].fCost = finder.distance([x,z], self.pos)
                 openList.append(self.maze[x][z])
 
+        freeAgents = self.numAgents
         #for step in range(500):
-        while len(openList) > 0:
+        while len(openList) > 0 or freeAgents != self.numAgents:
             time.sleep(0)
             
             #Find the n closest and assign them
@@ -188,12 +191,15 @@ class Controller:
                         cur.closed = True
                         
                         ag.path = path
+                        freeAgents -= 1
             
             #SIMULATING THE AGENTS
                 else:
                     ag.tick()
                     #Agent arrived, observe surroundings and open frontiers
                     if(not ag.path):
+                        freeAgents += 1
+
                         for i in range(8):
                             x = ag.pos[0] - self.corner[0] + neighbours[i][0]
                             z = ag.pos[2] - self.corner[1] + neighbours[i][1]
