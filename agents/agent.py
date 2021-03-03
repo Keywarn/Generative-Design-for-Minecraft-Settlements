@@ -165,8 +165,8 @@ class Controller:
                 openList.append(self.maze[x][z])
 
         freeAgents = self.numAgents
-        #for step in range(500):
-        while len(openList) > 0 or freeAgents != self.numAgents:
+        for step in range(500):
+        #while len(openList) > 0 or freeAgents != self.numAgents:
             time.sleep(0)
             
             #Find the n closest and assign them

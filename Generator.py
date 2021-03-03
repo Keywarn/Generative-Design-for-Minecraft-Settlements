@@ -10,8 +10,16 @@ con = agent.Controller(heightmap, a, [6,146], 4)
 
 tic = time.perf_counter()
 blockMap = con.explore()
-toc = time.perf_counter()
-print(f"Time taken: {toc-tic}")
+timeObs = time.perf_counter() - tic
+
+print(f"Time taken: {timeObs}")
+
+count = 0
+for cell in blockMap:
+    if (cell != [0,0,0,255]): count +=1
+
+print(f"Cells observed: {count}")
+print(f"Cells per second: {count/timeObs}")
 
 mapTools.showMap(heightmap, a, b,'Surface Heightmap')
 mapTools.showMap(blockMap, a, b,'Surface Blocks')

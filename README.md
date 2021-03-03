@@ -28,3 +28,12 @@ Leave the environmnet:
 ## Early Findings and Notes
 
 Just the results of some early testing so I can keep track
+
+#### Number of cells observed by 4 agents in 500 iters
+
+| Method                        | Time  | Cells | Cells per Second |
+| ----------------------------- | ----- | ----- | ---------------- |
+| Just taking the closest agent | 30.85 | 101   | 3.27             |
+|                               |       |       |                  |
+|                               |       |       |                  |
+
