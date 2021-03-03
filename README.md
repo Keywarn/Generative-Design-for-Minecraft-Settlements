@@ -31,9 +31,9 @@ Just the results of some early testing so I can keep track
 
 #### Number of cells observed by 4 agents in 500 iters
 
-| Method                        | Time  | Cells | Cells per Second |
-| ----------------------------- | ----- | ----- | ---------------- |
-| Just taking the closest agent | 30.85 | 101   | 3.27             |
-|                               |       |       |                  |
-|                               |       |       |                  |
+| Method                      | Time  | Cells | Cells per Second |
+| --------------------------- | ----- | ----- | ---------------- |
+| Just taking the first agent | 30.85 | 101   | 3.27             |
+| Taking the closest agent    | 31.31 | 531   | 16.95            |
+|                             |       |       |                  |
 

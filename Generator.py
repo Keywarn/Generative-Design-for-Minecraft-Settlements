@@ -14,12 +14,13 @@ timeObs = time.perf_counter() - tic
 
 print(f"Time taken: {timeObs}")
 
-count = 0
-for cell in blockMap:
-    if (cell != [0,0,0,255]): count +=1
-
-print(f"Cells observed: {count}")
-print(f"Cells per second: {count/timeObs}")
+observed = 0
+for row in blockMap:
+    for cell in row:
+        if (cell != [0,0,0,255]):
+            observed += 1
+print(f"Cells observed: {observed}")
+print(f"Cells per second: {observed/timeObs}")
 
 mapTools.showMap(heightmap, a, b,'Surface Heightmap')
 mapTools.showMap(blockMap, a, b,'Surface Blocks')

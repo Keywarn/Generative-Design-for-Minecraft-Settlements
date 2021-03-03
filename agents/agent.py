@@ -177,9 +177,20 @@ class Controller:
                 for i in range(len(openList)):
                     if(openList[i].fCost < cur.fCost):
                         cur = openList[i]
+
+                #Get the closest agent to the cell
                 ag = freeAgents[0]
+                dist = 999999999999
+                path = []
+                for agent in freeAgents:
+                    #Find the closest available agent
+                    p = finder.findPath([agent.pos[0],agent.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
+                    if(len(path) < dist and p):
+                        ag = agent
+                        dist = len(path)
+                        path = p
                 
-                path = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
+                #path = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
 
                 if(path):
                     #Found a path so remove from open and assign agent
