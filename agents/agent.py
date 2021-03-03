@@ -1,5 +1,6 @@
 from mcutils import blocks
 import time
+from utils.console_args import CONSOLE_ARGS 
 
 class Agent:
     def __init__(self, pos, block):
@@ -16,16 +17,18 @@ class Agent:
     def move(self, newPos):
         #Prevent collisions of agents
         if(blocks.GetBlock(newPos) != self.block):
-            blocks.SetBlock(self.pos, self.prevBlock)
+            if(CONSOLE_ARGS.agentVis):
+                blocks.SetBlock(self.pos, self.prevBlock)
 
             self.pos = newPos
-
-            self.prevBlock = blocks.GetBlock(self.pos)
-
-            blocks.SetBlock(self.pos, self.block)
+            if(CONSOLE_ARGS.agentVis):
+                self.prevBlock = blocks.GetBlock(self.pos)
+            if(CONSOLE_ARGS.agentVis):
+                blocks.SetBlock(self.pos, self.block)
 
     def __del__(self):
-        blocks.SetBlock(self.pos, self.prevBlock)
+        if(CONSOLE_ARGS.agentVis):
+            blocks.SetBlock(self.pos, self.prevBlock)
 
     def setTarget(self, targetPos):
         self.target = targetPos

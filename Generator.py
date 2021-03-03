@@ -1,6 +1,7 @@
 from agents import agent
 from mcutils import mapTools
 import time
+from utils.console_args import CONSOLE_ARGS 
 
 a,b = mapTools.OrderCoords([-55,90],[45, 190])
 heightmap = mapTools.GetHeightmap(a, b)
