@@ -33,7 +33,7 @@ Just the results of some early testing so I can keep track
 
 | Method                      | Time  | Cells | Cells per Second |
 | --------------------------- | ----- | ----- | ---------------- |
-| Just taking the first agent | 30.85 | 101   | 3.27             |
+| Just taking the first agent | 30.31 | 533   | 17.58            |
 | Taking the closest agent    | 31.31 | 531   | 16.95            |
 |                             |       |       |                  |
 
