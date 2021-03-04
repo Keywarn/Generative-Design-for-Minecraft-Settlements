@@ -35,5 +35,5 @@ Just the results of some early testing so I can keep track
 | --------------------------- | ----- | ----- | ---------------- |
 | Just taking the first agent | 30.31 | 533   | 17.58            |
 | Taking the closest agent    | 31.31 | 531   | 16.95            |
-|                             |       |       |                  |
+| Without visual              | 10.66 | 527   | 49.39            |
 
