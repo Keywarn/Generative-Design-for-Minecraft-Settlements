@@ -16,8 +16,8 @@ class Agent:
         self.path = None
 
     def move(self, newPos):
-        #Prevent collisions of agents
-        if(blocks.GetBlock(newPos) != self.block):
+        #Prevent collisions of agents (only if running in visual mode)
+        if(not CONSOLE_ARGS.agentVis or blocks.GetBlock(newPos) != self.block):
             if(CONSOLE_ARGS.agentVis):
                 blocks.SetBlock(self.pos, self.prevBlock)
 
