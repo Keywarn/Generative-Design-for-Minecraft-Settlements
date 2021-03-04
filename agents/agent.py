@@ -173,32 +173,15 @@ class Controller:
         workingAgents = []
 
         pathingTime = 0
-        observationTime = 0
         for step in range(500):
         #while len(openList) > 0 or workingAgents:
             while (len(freeAgents) > 0 and len(openList) > 0):
                 cur = openList[0]
-
-                #Get cell with lowest f cost
-                for i in range(len(openList)):
-                    if(openList[i].fCost < cur.fCost):
-                        cur = openList[i]
-
-                #Get the closest agent to the cell
                 ag = freeAgents[0]
-                dist = 999999999999
-                path = []
-                for agent in freeAgents:
-                    #Find the closest available agent
-                    ticPathing = time.perf_counter()
-                    p = finder.findPath([agent.pos[0],agent.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
-                    pathingTime += time.perf_counter() - ticPathing
-                    if(len(path) < dist and p):
-                        ag = agent
-                        dist = len(path)
-                        path = p
-                
-                #path = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
+
+                ticPathing = time.perf_counter()
+                path = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
+                pathingTime += time.perf_counter() - ticPathing
 
                 if(path):
                     #Found a path so remove from open and assign agent
