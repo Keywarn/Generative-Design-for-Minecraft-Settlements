@@ -1,6 +1,7 @@
 from mcutils import blocks
 import time
 from utils.console_args import CONSOLE_ARGS 
+import time
 
 class Agent:
     def __init__(self, pos, block):
@@ -171,6 +172,8 @@ class Controller:
             freeAgents.append(agent)
         workingAgents = []
 
+        pathingTime = 0
+        observationTime = 0
         for step in range(500):
         #while len(openList) > 0 or workingAgents:
             while (len(freeAgents) > 0 and len(openList) > 0):
@@ -187,7 +190,9 @@ class Controller:
                 path = []
                 for agent in freeAgents:
                     #Find the closest available agent
+                    ticPathing = time.perf_counter()
                     p = finder.findPath([agent.pos[0],agent.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
+                    pathingTime += time.perf_counter() - ticPathing
                     if(len(path) < dist and p):
                         ag = agent
                         dist = len(path)
@@ -205,7 +210,6 @@ class Controller:
                     
                     freeAgents.remove(ag)
                     workingAgents.append(ag)
-            
             #SIMULATING THE AGENTS
             for ag in workingAgents:
                 ag.tick()
@@ -243,7 +247,8 @@ class Controller:
                                         if(not self.maze[x][z].open):
                                             openList.append(self.maze[x][z])
                                             self.maze[x][z].open = True
-
+        if(CONSOLE_ARGS.timing):
+            print(f"Time spent pathfinding: {pathingTime}")
         return(blockMap)
             
                 

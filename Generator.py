@@ -15,7 +15,7 @@ blockMap = con.explore()
 timeObs = time.perf_counter() - tic
 
 if(CONSOLE_ARGS.timing):
-    print(f"Time taken: {timeObs}")
+    print(f"Total time taken: {timeObs}")
 
 observed = 0
 for row in blockMap:
