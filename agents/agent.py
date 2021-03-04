@@ -173,6 +173,8 @@ class Controller:
         workingAgents = []
 
         pathingTime = 0
+        tickTime = 0
+        observeTime = 0
         for step in range(500):
         #while len(openList) > 0 or workingAgents:
             while (len(freeAgents) > 0 and len(openList) > 0):
@@ -195,9 +197,12 @@ class Controller:
                     workingAgents.append(ag)
             #SIMULATING THE AGENTS
             for ag in workingAgents:
+                ticTick = time.perf_counter()
                 ag.tick()
+                tickTime += time.perf_counter() - ticTick
                 #Agent arrived, observe surroundings and open frontiers
                 if(not ag.path):
+                    ticObserve = time.perf_counter()
                     workingAgents.remove(ag)
                     freeAgents.append(ag)
 
@@ -230,8 +235,11 @@ class Controller:
                                         if(not self.maze[x][z].open):
                                             openList.append(self.maze[x][z])
                                             self.maze[x][z].open = True
+                    observeTime += time.perf_counter() - ticObserve
         if(CONSOLE_ARGS.timing):
             print(f"Time spent pathfinding: {pathingTime}")
+            print(f"Time spent on agent ticks: {tickTime}")
+            print(f"Time spent observing: {observeTime}")
         return(blockMap)
             
                 
