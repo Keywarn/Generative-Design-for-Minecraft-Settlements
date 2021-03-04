@@ -12,6 +12,7 @@ The typically usage is:
 def _parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('--agentVis', dest='agentVis', action='store_true',help='Enable to see agents moving around in the world')
+    parser.add_argument('--timing', dest='timing', action='store_true',help='Enable to get timing outputs')
     return parser.parse_args()
 
 CONSOLE_ARGS =  _parse_arguments()

@@ -4,24 +4,27 @@ import time
 from utils.console_args import CONSOLE_ARGS 
 
 a,b = mapTools.OrderCoords([-55,90],[45, 190])
+print("Getting Heightmap".center(30, '-'))
 heightmap = mapTools.GetHeightmap(a, b)
 
-
+print("Getting Block Data".center(30, '-'))
 con = agent.Controller(heightmap, a, [6,146], 4)
 
 tic = time.perf_counter()
 blockMap = con.explore()
 timeObs = time.perf_counter() - tic
 
-print(f"Time taken: {timeObs}")
+if(CONSOLE_ARGS.timing):
+    print(f"Time taken: {timeObs}")
 
 observed = 0
 for row in blockMap:
     for cell in row:
         if (cell != [0,0,0,255]):
             observed += 1
-print(f"Cells observed: {observed}")
-print(f"Cells per second: {observed/timeObs}")
+if(CONSOLE_ARGS.timing):
+    print(f"Cells observed: {observed}")
+    print(f"Cells per second: {observed/timeObs}")
 
 mapTools.showMap(heightmap, a, b,'Surface Heightmap')
 mapTools.showMap(blockMap, a, b,'Surface Blocks')
@@ -40,4 +43,4 @@ mapTools.showMap(blockMap, a, b,'Surface Blocks')
 #     time.sleep(1)
 # time.sleep(3)
 
-print("done")
+print("Finishing".center(30, '-'))
