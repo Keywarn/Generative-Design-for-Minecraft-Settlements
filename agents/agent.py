@@ -150,7 +150,7 @@ class Controller:
         neighbours = [[1,1],[1,-1],[-1,-1],[-1,1],[0,1],[1, 0],[0,-1],[-1,0]]
         finder = PathFinder(self.heightmap)
 
-        blockMap = [[[0,0,0,255] for z in range(len(self.heightmap[0]))] for x in range(len(self.heightmap))]
+        blockMap = [[None for z in range(len(self.heightmap[0]))] for x in range(len(self.heightmap))]
 
         #Create a maze to hold the data
 
@@ -212,8 +212,9 @@ class Controller:
 
                         #Check surrounding is on board
                         if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
-                            #TODO OBSERVE
-                            blockMap[x][z] = [94,157,52,255]
+                            #Block not currently set so observe it
+                            if(not blockMap[x][z]):
+                                blockMap[x][z] = blocks.GetBlock([x + self.corner[0],self.heightmap[x][z] - 1, z + self.corner[1]])
                             #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
                             #TODO Water check here
                             #Check if it can even travel to newly explored cell before considering it

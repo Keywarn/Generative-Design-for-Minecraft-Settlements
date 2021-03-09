@@ -13,6 +13,7 @@ con = agent.Controller(heightmap, a, [6,146], 4)
 tic = time.perf_counter()
 blockMap = con.explore()
 timeObs = time.perf_counter() - tic
+print(blockMap)
 
 if(CONSOLE_ARGS.timing):
     print(f"Total time taken: {timeObs}")
@@ -20,14 +21,14 @@ if(CONSOLE_ARGS.timing):
 observed = 0
 for row in blockMap:
     for cell in row:
-        if (cell != [0,0,0,255]):
+        if (cell != None):
             observed += 1
 if(CONSOLE_ARGS.timing):
     print(f"Cells observed: {observed}")
     print(f"Cells per second: {observed/timeObs}")
 
 mapTools.showMap(heightmap, a, b,'Surface Heightmap')
-mapTools.showMap(blockMap, a, b,'Surface Blocks')
+#mapTools.showMap(blockMap, a, b,'Surface Blocks')
 
 
 # Agent pathfinding example
