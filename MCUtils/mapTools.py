@@ -99,6 +99,15 @@ def showMap(hm, a, b, title=""):
     plt.imshow(hmFlip, origin='lower',extent=[b[0],a[0],a[1],b[1]])
     plt.show()
 
+def convertBlockMap(blockMap):
+
+    for x in range(len(blockMap)):
+        for z in range(len(blockMap[0])):
+            blockMap[x][z] = blockColours.get(blockMap[x][z], [0,0,0,255])
+    
+    #print(blockMap)
+    return blockMap
+
 def main():
     a,b = OrderCoords((-55,90),(45, 190))
     heightmap = GetHeightmap(a, b)
@@ -124,3 +133,4 @@ def main():
     axs[1].set_title('Surface Block Map')
 
     plt.show()
+
