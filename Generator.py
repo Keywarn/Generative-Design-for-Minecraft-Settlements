@@ -14,6 +14,7 @@ else:
 
 
 print("Getting Block Data".center(30, '-'))
+
 con = agent.Controller(heightmap, a, [6,146], 4)
 
 tic = time.perf_counter()

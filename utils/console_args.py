@@ -16,6 +16,7 @@ def _parse_arguments():
 
     parser.add_argument('--output', dest='output', action='store_true',help='Enable to store the output of various operations such as heightmaps to files')
     parser.add_argument('-hmFile', dest='hmFile', help='Name of the file to get heightmap from')
+    parser.add_argument('-bmFile', dest='bmFile', help='Name of the file to get surface block data from')
     return parser.parse_args()
 
 CONSOLE_ARGS =  _parse_arguments()
