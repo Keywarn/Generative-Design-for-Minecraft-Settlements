@@ -4,8 +4,14 @@ import time
 from utils.console_args import CONSOLE_ARGS 
 
 a,b = mapTools.OrderCoords([-55,90],[45, 190])
+
 print("Getting Heightmap".center(30, '-'))
-heightmap = mapTools.GetHeightmap(a, b)
+if(CONSOLE_ARGS.hmFile):
+    print(f"Reading from file{CONSOLE_ARGS.hmFile}")
+    #TODO read in from file
+else:
+    heightmap = mapTools.GetHeightmap(a, b)
+
 
 print("Getting Block Data".center(30, '-'))
 con = agent.Controller(heightmap, a, [6,146], 4)
