@@ -133,7 +133,7 @@ class Cell:
         self.parent = []
 
 class Controller:
-    def __init__(self, hm, corner, pos, numAgents):
+    def __init__(self, hm, corner, pos, numAgents, swim = False):
 
         self.heightmap = hm
         self.corner = corner
@@ -143,6 +143,8 @@ class Controller:
         self.pos = [ai - ci for ai, ci in zip(pos, corner)]
 
         self.agents = [Agent([pos[0],self.heightmap[self.pos[0]][self.pos[1]+i], pos[1] + i], b'minecraft:obsidian') for i in range(numAgents)]
+
+        self.swim = swim
 
 
     def explore(self):
@@ -175,8 +177,8 @@ class Controller:
         pathingTime = 0
         tickTime = 0
         observeTime = 0
-        for step in range(500):
-        #while len(openList) > 0 or workingAgents:
+        #for step in range(500):
+        while len(openList) > 0 or workingAgents:
             while (len(freeAgents) > 0 and len(openList) > 0):
                 cur = openList[0]
                 ag = freeAgents[0]
@@ -216,9 +218,8 @@ class Controller:
                             if(not blockMap[x][z]):
                                 blockMap[x][z] = blocks.GetBlock([x + self.corner[0],self.heightmap[x][z] - 1, z + self.corner[1]])
                             #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
-                            #TODO Water check here
                             #Check if it can even travel to newly explored cell before considering it
-                            if(abs(self.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.heightmap[x][z]) < 2 and not self.maze[x][z].closed):
+                            if(abs(self.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.heightmap[x][z]) < 2 and not self.maze[x][z].closed and (blockMap[x][z] != b'minecraft:water' or self.swim)):
                                 #Check neighbouring cells for unexplored areas
                                 add = False
                                 for j in range(8):
