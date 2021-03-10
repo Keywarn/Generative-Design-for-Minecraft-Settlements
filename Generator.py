@@ -7,7 +7,7 @@ a,b = mapTools.OrderCoords([-55,90],[45, 190])
 
 print("Getting Heightmap".center(30, '-'))
 if(CONSOLE_ARGS.hmFile):
-    print(f"Reading from file{CONSOLE_ARGS.hmFile}")
+    print(f"Reading from file {CONSOLE_ARGS.hmFile}")
     #TODO read in from file
 else:
     heightmap = mapTools.GetHeightmap(a, b)
@@ -15,24 +15,27 @@ else:
 
 print("Getting Block Data".center(30, '-'))
 
-con = agent.Controller(heightmap, a, [6,146], 4)
+if(CONSOLE_ARGS.bmFile):
+    print(f"Reading from file {CONSOLE_ARGS.bmFile}")
+    #TODO read in from file
+else:
+    con = agent.Controller(heightmap, a, [6,146], 4)
+    tic = time.perf_counter()
+    blockMap = con.explore()
+    timeObs = time.perf_counter() - tic
+    colourMap = mapTools.convertBlockMap(blockMap)
 
-tic = time.perf_counter()
-blockMap = con.explore()
-timeObs = time.perf_counter() - tic
-colourMap = mapTools.convertBlockMap(blockMap)
+    if(CONSOLE_ARGS.timing):
+        print(f"Total time taken: {timeObs}")
 
-if(CONSOLE_ARGS.timing):
-    print(f"Total time taken: {timeObs}")
-
-observed = 0
-for row in blockMap:
-    for cell in row:
-        if (cell != None):
-            observed += 1
-if(CONSOLE_ARGS.timing):
-    print(f"Cells observed: {observed}")
-    print(f"Cells per second: {observed/timeObs}")
+    observed = 0
+    for row in blockMap:
+        for cell in row:
+            if (cell != None):
+                observed += 1
+    if(CONSOLE_ARGS.timing):
+        print(f"Cells observed: {observed}")
+        print(f"Cells per second: {observed/timeObs}")
 
 mapTools.showMap(heightmap, a, b,'Surface Heightmap')
 mapTools.showMap(blockMap, a, b,'Surface Blocks')
