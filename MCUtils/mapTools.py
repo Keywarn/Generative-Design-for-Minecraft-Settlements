@@ -13,7 +13,8 @@ blockColours = {b"minecraft:grass_block": [94,157,52,255],b"minecraft:stone": [1
                     b"minecraft:sand": [194,178,128,255],b"minecraft:water": [116,204,244,255],
                     b"minecraft:acacia_log": [110,71,11,255], b"minecraft:birch_log": [110,71,11,255],
                     b"minecraft:dark_oak_log": [110,71,11,255],b"minecraft:jungle_log": [110,71,11,255],
-                    b"minecraft:oak_log": [110,71,11,255],b"minecraft:spruce_log": [110,71,11,255]}
+                    b"minecraft:oak_log": [110,71,11,255],b"minecraft:spruce_log": [110,71,11,255],
+                    b"minecraft:gravel": [136,126,126,255]}
 
 #Take in two chunk locations and get the chunks containing the area
 def GetChunks(a, b, rtype = "text"):
@@ -104,6 +105,8 @@ def convertBlockMap(blockMap):
     for x in range(len(blockMap)):
         for z in range(len(blockMap[0])):
             colourMap[x][z] = blockColours.get(blockMap[x][z], [0,0,0,255])
+            if(colourMap[x][z] == [0,0,0,255] and blockMap[x][z] != None):
+                print(f"Un-Coloured block: {blockMap[x][z]}")
     
     return colourMap
 
