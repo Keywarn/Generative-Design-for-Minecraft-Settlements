@@ -1,7 +1,8 @@
 from agents import agent
 from mcutils import mapTools
-import time
 from utils.console_args import CONSOLE_ARGS 
+import time
+import csv
 
 a,b = mapTools.OrderCoords([-55,90],[45, 190])
 
@@ -36,6 +37,15 @@ else:
     if(CONSOLE_ARGS.timing):
         print(f"Cells observed: {observed}")
         print(f"Cells per second: {observed/timeObs}")
+
+if(CONSOLE_ARGS.output):
+    print("Outputting to files".center(30, '-'))
+    print("Output heightmap")
+    with open("height.map","w+") as hmFile:
+        csvWriter = csv.writer(hmFile,delimiter=',')
+        csvWriter.writerows(heightmap)
+    print("Output blockMap")
+
 
 mapTools.showMap(heightmap, a, b,'Surface Heightmap')
 mapTools.showMap(blockMap, a, b,'Surface Blocks')

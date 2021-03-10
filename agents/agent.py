@@ -177,8 +177,8 @@ class Controller:
         pathingTime = 0
         tickTime = 0
         observeTime = 0
-        #for step in range(500):
-        while len(openList) > 0 or workingAgents:
+        for step in range(500):
+        #while len(openList) > 0 or workingAgents:
             while (len(freeAgents) > 0 and len(openList) > 0):
                 cur = openList[0]
                 ag = freeAgents[0]
