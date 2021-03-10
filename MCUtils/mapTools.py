@@ -100,13 +100,12 @@ def showMap(hm, a, b, title=""):
     plt.show()
 
 def convertBlockMap(blockMap):
-
+    colourMap = [[[0,0,0,255] for z in range(len(blockMap[0]))] for x in range(len(blockMap))]
     for x in range(len(blockMap)):
         for z in range(len(blockMap[0])):
-            blockMap[x][z] = blockColours.get(blockMap[x][z], [0,0,0,255])
+            colourMap[x][z] = blockColours.get(blockMap[x][z], [0,0,0,255])
     
-    #print(blockMap)
-    return blockMap
+    return colourMap
 
 def main():
     a,b = OrderCoords((-55,90),(45, 190))

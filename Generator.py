@@ -45,10 +45,13 @@ if(CONSOLE_ARGS.output):
         csvWriter = csv.writer(hmFile,delimiter=',')
         csvWriter.writerows(heightmap)
     print("Output blockMap")
+    with open("block.map","w+") as bmFile:
+        csvWriter = csv.writer(bmFile,delimiter=',')
+        csvWriter.writerows(blockMap)
 
 
 mapTools.showMap(heightmap, a, b,'Surface Heightmap')
-mapTools.showMap(blockMap, a, b,'Surface Blocks')
+mapTools.showMap(colourMap, a, b,'Surface Blocks')
 
 
 # Agent pathfinding example
