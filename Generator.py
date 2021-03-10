@@ -1,9 +1,7 @@
 from agents import agent
 from mcutils import mapTools
 from utils.console_args import CONSOLE_ARGS 
-import time
-import csv
-import pickle
+import time, pickle
 
 a,b = mapTools.OrderCoords([-55,90],[45, 190])
 
