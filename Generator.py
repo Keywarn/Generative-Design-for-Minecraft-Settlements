@@ -3,13 +3,15 @@ from mcutils import mapTools
 from utils.console_args import CONSOLE_ARGS 
 import time
 import csv
+import pickle
 
 a,b = mapTools.OrderCoords([-55,90],[45, 190])
 
 print("Getting Heightmap".center(30, '-'))
 if(CONSOLE_ARGS.hmFile):
     print(f"Reading from file {CONSOLE_ARGS.hmFile}")
-    #TODO read in from file
+    with open(CONSOLE_ARGS.hmFile, 'rb') as hmFile:
+        heightmap = pickle.load(hmFile)
 else:
     heightmap = mapTools.GetHeightmap(a, b)
 
@@ -18,13 +20,13 @@ print("Getting Block Data".center(30, '-'))
 
 if(CONSOLE_ARGS.bmFile):
     print(f"Reading from file {CONSOLE_ARGS.bmFile}")
-    #TODO read in from file
+    with open(CONSOLE_ARGS.bmFile, 'rb') as bmFile:
+        blockMap = pickle.load(bmFile)
 else:
     con = agent.Controller(heightmap, a, [6,146], 4)
     tic = time.perf_counter()
     blockMap = con.explore()
     timeObs = time.perf_counter() - tic
-    colourMap = mapTools.convertBlockMap(blockMap)
 
     if(CONSOLE_ARGS.timing):
         print(f"Total time taken: {timeObs}")
@@ -38,16 +40,16 @@ else:
         print(f"Cells observed: {observed}")
         print(f"Cells per second: {observed/timeObs}")
 
+colourMap = mapTools.convertBlockMap(blockMap)
+
 if(CONSOLE_ARGS.output):
     print("Outputting to files".center(30, '-'))
     print("Output heightmap")
-    with open("height.map","w+") as hmFile:
-        csvWriter = csv.writer(hmFile,delimiter=',')
-        csvWriter.writerows(heightmap)
+    with open("height.map","wb+") as hmFile:
+        pickle.dump(heightmap, hmFile)
     print("Output blockMap")
-    with open("block.map","w+") as bmFile:
-        csvWriter = csv.writer(bmFile,delimiter=',')
-        csvWriter.writerows(blockMap)
+    with open("block.map",'wb+') as bmFile:
+        pickle.dump(blockMap, bmFile)
 
 
 mapTools.showMap(heightmap, a, b,'Surface Heightmap')
