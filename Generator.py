@@ -34,6 +34,7 @@ else:
         print(f"Cells per second: {observed/timeObs}")
         print(f"Total time taken: {timeObs}")
 
+print("Converting Colour Map".center(30, '-'))
 colourMap = mapTools.convertBlockMap(world.blockMap)
 
 if(CONSOLE_ARGS.output):
@@ -43,19 +44,5 @@ if(CONSOLE_ARGS.output):
 
 mapTools.showMap(world.heightmap, a, b,'Surface Heightmap')
 mapTools.showMap(colourMap, a, b,'Surface Blocks')
-
-
-# Agent pathfinding example
-# ag = agent.Agent([6,71,146], b'minecraft:obsidian')
-# pf = agent.PathFinder(heightmap)
-
-# path = pf.findPath([6,146],[7,153], a)
-
-# ag.path = path
-# time.sleep(3)
-# for i in range(len(path)):
-#     ag.tick()
-#     time.sleep(1)
-# time.sleep(3)
 
 print("Finishing".center(30, '-'))
