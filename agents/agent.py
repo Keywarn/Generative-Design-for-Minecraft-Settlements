@@ -56,6 +56,16 @@ class PathFinder:
         
         return moves[::-1]
     
+    def getLowestFCost(self, openList):
+        cur = openList[0]
+        #Get cell with lowest f cost
+        index = 0;
+        for i in range(len(openList)):
+            if(openList[i].fCost < cur.fCost):
+                cur = openList[i]
+                index = i
+        return cur
+    
     def findPath(self, a,b, corner,swim=False, fall=False):
         a = [ai - ci for ai, ci in zip(a, corner)]
         b = [bi - ci for bi, ci in zip(b, corner)]
@@ -68,13 +78,7 @@ class PathFinder:
         foundPath = False
 
         while len(openList) > 0:
-            cur = openList[0]
-            #Get cell with lowest f cost
-            index = 0;
-            for i in range(len(openList)):
-                if(openList[i].fCost < cur.fCost):
-                    cur = openList[i]
-                    index = i
+            cur = self.getLowestFCost(openList)
             
             openList.remove(cur)
             cur.open = False
@@ -180,7 +184,7 @@ class Controller:
         for step in range(500):
         #while len(openList) > 0 or workingAgents:
             while (len(freeAgents) > 0 and len(openList) > 0):
-                cur = openList[0]
+                cur = finder.getLowestFCost(openList)
                 ag = freeAgents[0]
 
                 ticPathing = time.perf_counter()

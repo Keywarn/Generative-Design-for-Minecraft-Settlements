@@ -3,11 +3,13 @@ While Simulating:
     Agent moves towards the next 'most interesting space':
         Observe surrounding blocks
         Mark cells near trees and water as more interesting
-        Somehow label interesting building plots
+        Somehow label interesting building plots (flat space, nearby resources, near to water)
 
 For each plot
     Determine the building (House, farm, lighthouse, blacksmith.. etc)
-    Generate building
+    Agents build:
+        collect resources (cut down trees, stone etc)
+        place blocks
     
 Build paths connecting buildings
 
