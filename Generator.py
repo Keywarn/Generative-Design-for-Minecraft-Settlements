@@ -1,17 +1,19 @@
-from agents import agent
+from agents import agent,mapArea
 from mcutils import mapTools
 from utils.console_args import CONSOLE_ARGS 
 import time, pickle
 
 a,b = mapTools.OrderCoords([-55,90],[45, 190])
 
+world = mapArea.MapArea(a,b)
+
 print("Getting Heightmap".center(30, '-'))
 if(CONSOLE_ARGS.hmFile):
     print(f"Reading from file {CONSOLE_ARGS.hmFile}")
     with open(CONSOLE_ARGS.hmFile, 'rb') as hmFile:
-        heightmap = pickle.load(hmFile)
+        world.heightmap = pickle.load(hmFile)
 else:
-    heightmap = mapTools.GetHeightmap(a, b)
+    world.heightmap = mapTools.GetHeightmap(a, b)
 
 
 print("Getting Block Data".center(30, '-'))
@@ -19,18 +21,18 @@ print("Getting Block Data".center(30, '-'))
 if(CONSOLE_ARGS.bmFile):
     print(f"Reading from file {CONSOLE_ARGS.bmFile}")
     with open(CONSOLE_ARGS.bmFile, 'rb') as bmFile:
-        blockMap = pickle.load(bmFile)
+        world.blockMap = pickle.load(bmFile)
 else:
-    con = agent.Controller(heightmap, a, [6,146], 4)
+    con = agent.Controller(world.heightmap, a, [6,146], 4)
     tic = time.perf_counter()
-    blockMap = con.explore()
+    world.blockMap = con.explore()
     timeObs = time.perf_counter() - tic
 
     if(CONSOLE_ARGS.timing):
         print(f"Total time taken: {timeObs}")
 
     observed = 0
-    for row in blockMap:
+    for row in world.blockMap:
         for cell in row:
             if (cell != None):
                 observed += 1
@@ -38,19 +40,19 @@ else:
         print(f"Cells observed: {observed}")
         print(f"Cells per second: {observed/timeObs}")
 
-colourMap = mapTools.convertBlockMap(blockMap)
+colourMap = mapTools.convertBlockMap(world.blockMap)
 
 if(CONSOLE_ARGS.output):
     print("Outputting to files".center(30, '-'))
     print("Output heightmap")
     with open("height.map","wb+") as hmFile:
-        pickle.dump(heightmap, hmFile)
+        pickle.dump(world.heightmap, hmFile)
     print("Output blockMap")
     with open("block.map",'wb+') as bmFile:
-        pickle.dump(blockMap, bmFile)
+        pickle.dump(world.blockMap, bmFile)
 
 
-mapTools.showMap(heightmap, a, b,'Surface Heightmap')
+mapTools.showMap(world.heightmap, a, b,'Surface Heightmap')
 mapTools.showMap(colourMap, a, b,'Surface Blocks')
 
 
