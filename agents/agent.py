@@ -181,7 +181,7 @@ class Controller:
         pathingTime = 0
         tickTime = 0
         observeTime = 0
-        for step in range(500):
+        for step in range(2000):
         #while len(openList) > 0 or workingAgents:
             while (len(freeAgents) > 0 and len(openList) > 0):
                 cur = finder.getLowestFCost(openList)
@@ -212,15 +212,19 @@ class Controller:
                     workingAgents.remove(ag)
                     freeAgents.append(ag)
 
+                    fModifier = 0
                     for i in range(8):
                         x = ag.pos[0] - self.corner[0] + neighbours[i][0]
                         z = ag.pos[2] - self.corner[1] + neighbours[i][1]
 
                         #Check surrounding is on board
                         if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
+                            #The fCost modifier for the cells nearby
                             #Block not currently set so observe it
                             if(not blockMap[x][z]):
                                 blockMap[x][z] = blocks.GetBlock([x + self.corner[0],self.heightmap[x][z] - 1, z + self.corner[1]])
+                                if(b'water' in blockMap[x][z]): fModifier -= 1
+                                if(b'log' in blockMap[x][z]): fModifier -= 2
                             #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
                             #Check if it can even travel to newly explored cell before considering it
                             if(abs(self.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.heightmap[x][z]) < 2 and not self.maze[x][z].closed and (blockMap[x][z] != b'minecraft:water' or self.swim)):
@@ -235,7 +239,9 @@ class Controller:
                                             self.maze[xn][zn].toBeObserved = True
                                 #Area unexplored, add to list
                                 if(add):
-                                    fNew = self.maze[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]].fCost + 1
+                                    fNew = self.maze[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]].fCost + 1 + fModifier
+                                    
+
                                     if(not self.maze[x][z].open or fNew < self.maze[x][z].fCost):
                                         self.maze[x][z].fCost = fNew
                                         if(not self.maze[x][z].open):
