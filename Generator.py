@@ -19,9 +19,9 @@ else:
 
     print("Getting Block Data".center(30, '-'))
 
-    con = agent.Controller(world.heightmap, a, [6,146], 4)
+    con = agent.Controller(world, a, [6,146], 4)
     tic = time.perf_counter()
-    world.blockMap = con.explore()
+    con.explore()
     timeObs = time.perf_counter() - tic
 
     if(CONSOLE_ARGS.timing):

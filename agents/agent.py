@@ -137,16 +137,16 @@ class Cell:
         self.parent = []
 
 class Controller:
-    def __init__(self, hm, corner, pos, numAgents, swim = False):
+    def __init__(self, world, corner, pos, numAgents, swim = False):
 
-        self.heightmap = hm
+        self.world = world
         self.corner = corner
 
-        self.maze = [[Cell(x, z) for z in range(len(self.heightmap[0]))] for x in range(len(self.heightmap))]
+        self.maze = [[Cell(x, z) for z in range(len(self.world.heightmap[0]))] for x in range(len(self.world.heightmap))]
         
         self.pos = [ai - ci for ai, ci in zip(pos, corner)]
 
-        self.agents = [Agent([pos[0],self.heightmap[self.pos[0]][self.pos[1]+i], pos[1] + i], b'minecraft:obsidian') for i in range(numAgents)]
+        self.agents = [Agent([pos[0],self.world.heightmap[self.pos[0]][self.pos[1]+i], pos[1] + i], b'minecraft:obsidian') for i in range(numAgents)]
 
         self.swim = swim
 
@@ -154,9 +154,7 @@ class Controller:
     def explore(self):
         
         neighbours = [[1,1],[1,-1],[-1,-1],[-1,1],[0,1],[1, 0],[0,-1],[-1,0]]
-        finder = PathFinder(self.heightmap)
-
-        blockMap = [[None for z in range(len(self.heightmap[0]))] for x in range(len(self.heightmap))]
+        finder = PathFinder(self.world.heightmap)
 
         #Create a maze to hold the data
 
@@ -221,13 +219,15 @@ class Controller:
                         if((x >= 0 and x < len(self.maze)) and (z >= 0 and z < len(self.maze[0]))):
                             #The fCost modifier for the cells nearby
                             #Block not currently set so observe it
-                            if(not blockMap[x][z]):
-                                blockMap[x][z] = blocks.GetBlock([x + self.corner[0],self.heightmap[x][z] - 1, z + self.corner[1]])
-                                if(b'water' in blockMap[x][z]): fModifier -= 1
-                                if(b'log' in blockMap[x][z]): fModifier -= 2
+                            if(not self.world.blockMap[x][z]):
+                                self.world.blockMap[x][z] = blocks.GetBlock([x + self.corner[0],self.world.heightmap[x][z] - 1, z + self.corner[1]])
+                                if(b'water' in self.world.blockMap[x][z]): fModifier -= 1
+                                if(b'log' in self.world.blockMap[x][z]):
+                                    self.world.addTree([x,z], self.world.blockMap[x][z])
+                                    fModifier -= 2
                             #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
                             #Check if it can even travel to newly explored cell before considering it
-                            if(abs(self.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.heightmap[x][z]) < 2 and not self.maze[x][z].closed and (blockMap[x][z] != b'minecraft:water' or self.swim)):
+                            if(abs(self.world.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.world.heightmap[x][z]) < 2 and not self.maze[x][z].closed and (self.world.blockMap[x][z] != b'minecraft:water' or self.swim)):
                                 #Check neighbouring cells for unexplored areas
                                 add = False
                                 for j in range(8):
@@ -252,7 +252,6 @@ class Controller:
             print(f"Time spent pathfinding: {pathingTime}")
             print(f"Time spent on agent ticks: {tickTime}")
             print(f"Time spent observing: {observeTime}")
-        return(blockMap)
             
                 
 
