@@ -203,7 +203,7 @@ class Controller:
             for ag in workingAgents:
                 ticTick = time.perf_counter()
                 ag.tick()
-                self.world.visitMap[ag.pos[0]-self.corner[0]][ag.pos[1]-self.corner[1]] += 1
+                self.world.visitMap[ag.pos[0]-self.corner[0]][ag.pos[2]-self.corner[1]] += 1
                 tickTime += time.perf_counter() - ticTick
                 #Agent arrived, observe surroundings and open frontiers
                 if(not ag.path):
