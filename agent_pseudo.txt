@@ -1,8 +1,17 @@
 Create Agents
 While Simulating:
-    Agent moves towards the next 'most interesting space':
-        Observe surrounding blocks
-        Mark cells near trees and water as more interesting
+    current = closest (also measure of interest) unobserved block in openList
+    Agent moves towards current:
+        For each surrounding block
+            distance = distance to current block + 1
+            if water: distance -= 1
+            if tree: distance -= 2
+            if block is accessible (not too high/low not in water):
+                if block is in openList and distance <= current distance:
+                    update distance
+                if not in openList:
+                    add surrounding block to openList
+            
         Somehow label interesting building plots (flat space, nearby resources, near to water)
 
 For each plot
