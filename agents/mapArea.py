@@ -9,6 +9,15 @@ class MapArea:
 
         self.trees = []
 
+    def addTree(self, pos, type):
+        self.trees.append(Tree(pos,type))
+
+    def outputTrees(self):
+        print("Trees".center(30, '-'))
+        for tree in self.trees:
+            print(f"{tree.type} at {tree.pos}")
+        print("".center(30, '-'))
+
 class Tree:
 
     def __init__(self, pos, type):

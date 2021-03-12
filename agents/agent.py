@@ -222,7 +222,9 @@ class Controller:
                             if(not self.world.blockMap[x][z]):
                                 self.world.blockMap[x][z] = blocks.GetBlock([x + self.corner[0],self.world.heightmap[x][z] - 1, z + self.corner[1]])
                                 if(b'water' in self.world.blockMap[x][z]): fModifier -= 1
-                                if(b'log' in self.world.blockMap[x][z]): fModifier -= 2
+                                if(b'log' in self.world.blockMap[x][z]):
+                                    self.world.addTree([x,z], self.world.blockMap[x][z])
+                                    fModifier -= 2
                             #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
                             #Check if it can even travel to newly explored cell before considering it
                             if(abs(self.world.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.world.heightmap[x][z]) < 2 and not self.maze[x][z].closed and (self.world.blockMap[x][z] != b'minecraft:water' or self.swim)):
