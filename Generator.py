@@ -37,6 +37,7 @@ else:
 print("Converting Colour Map".center(30, '-'))
 colourMap = mapTools.convertBlockMap(world.blockMap)
 
+
 if(CONSOLE_ARGS.output):
     print("Saving World".center(30, '-'))
     with open("world.map","wb+") as worldFile:
@@ -44,5 +45,6 @@ if(CONSOLE_ARGS.output):
 
 mapTools.showMap(world.heightmap, a, b,'Surface Heightmap')
 mapTools.showMap(colourMap, a, b,'Surface Blocks')
+mapTools.showMap(world.visitMap, a, b,'Agent cell visit heatmap')
 
 print("Finishing".center(30, '-'))
