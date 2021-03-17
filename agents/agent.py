@@ -225,9 +225,12 @@ class Controller:
                             if(not self.world.blockMap[x][z]):
                                 self.world.blockMap[x][z] = blocks.GetBlock([x + self.corner[0],self.world.heightmap[x][z] - 1, z + self.corner[1]])
 
-                                #TODO Do some actual plot calculations but for now just add it to the base plot
-                                self.maze[x][z].plot = plot
-                                ag.plot.cells.append([x,z])
+                                #Add the agent to a plot if it was suitable
+                                if(ag.plot):
+                                    hmDiff = abs(self.world.heightmap[x][z] - ag.plot.height)
+                                    if(hmDiff <= 1 or b'log' in self.world.blockMap[x][z]):
+                                        ag.plot.append([x,z])
+                                        self.maze[x][z].plot = ag.plot
 
                                 if(b'water' in self.world.blockMap[x][z]): fModifier -= 1
                                 if(b'log' in self.world.blockMap[x][z]):

@@ -28,6 +28,7 @@ class Tree:
         self.type = type
 
 class Plot:
-    def __init__(self):
+    def __init__(self, height):
+        self.height = height
         self.cells = []
         self.colour = [randint(0,255),randint(0,255),randint(0,255), 255]
