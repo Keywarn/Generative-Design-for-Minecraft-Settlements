@@ -2,6 +2,7 @@ from mcutils import blocks
 import time
 from utils.console_args import CONSOLE_ARGS 
 import time
+from agents.mapArea import Plot
 
 class Agent:
     def __init__(self, pos, block):
@@ -134,6 +135,8 @@ class Cell:
         self.x = x
         self.z = z
 
+        self.plot = None
+
         self.parent = []
 
 class Controller:
@@ -172,6 +175,10 @@ class Controller:
 
         freeAgents = []
 
+        #Create initial plot for testing
+        plot = Plot()
+        self.world.plots.append(plot)
+
         for agent in self.agents:
             freeAgents.append(agent)
         workingAgents = []
@@ -181,6 +188,7 @@ class Controller:
         observeTime = 0
         for step in range(500):
         #while len(openList) > 0 or workingAgents:
+            #FREE AGENTS - ASSIGN THEM
             while (len(freeAgents) > 0 and len(openList) > 0):
                 cur = finder.getLowestFCost(openList)
                 ag = freeAgents[0]
@@ -222,6 +230,11 @@ class Controller:
                             #Block not currently set so observe it
                             if(not self.world.blockMap[x][z]):
                                 self.world.blockMap[x][z] = blocks.GetBlock([x + self.corner[0],self.world.heightmap[x][z] - 1, z + self.corner[1]])
+
+                                #TODO Do some actual plot calculations but for now just add it to the base plot
+                                self.maze[x][z].plot = plot
+                                plot.cells.append([x,z])
+
                                 if(b'water' in self.world.blockMap[x][z]): fModifier -= 1
                                 if(b'log' in self.world.blockMap[x][z]):
                                     self.world.addTree([x,z], self.world.blockMap[x][z])
