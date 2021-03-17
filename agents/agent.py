@@ -173,13 +173,8 @@ class Controller:
 
         freeAgents = []
 
-        #Create initial plot for testing
-        plot = Plot()
-        self.world.plots.append(plot)
-
         for agent in self.agents:
             freeAgents.append(agent)
-            agent.plot = plot
         workingAgents = []
 
         pathingTime = 0
