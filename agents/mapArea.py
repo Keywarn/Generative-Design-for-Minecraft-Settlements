@@ -10,6 +10,7 @@ class MapArea:
         self.visitMap = [[0 for z in range(self.size[1])] for x in range(self.size[0])]
 
         self.trees = []
+        self.plots = []
 
     def addTree(self, pos, type):
         self.trees.append(Tree(pos,type))
