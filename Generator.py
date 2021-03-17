@@ -48,5 +48,6 @@ if(CONSOLE_ARGS.output):
 mapTools.showMap(world.heightmap, a, b,'Surface Heightmap')
 mapTools.showMap(colourMap, a, b,'Surface Blocks')
 mapTools.showMap(world.visitMap, a, b,'Agent cell visit heatmap')
+mapTools.showMap(plotMap, a, b,'Building Plot Map')
 
 print("Finishing".center(30, '-'))
