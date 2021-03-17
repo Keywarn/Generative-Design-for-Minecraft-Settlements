@@ -15,6 +15,8 @@ class Agent:
 
         self.path = None
 
+        self.plot = None
+
     def move(self, newPos):
         #Prevent collisions of agents (only if running in visual mode)
         if(not CONSOLE_ARGS.agentVis or blocks.GetBlock(newPos) != self.block):
@@ -177,6 +179,7 @@ class Controller:
 
         for agent in self.agents:
             freeAgents.append(agent)
+            agent.plot = plot
         workingAgents = []
 
         pathingTime = 0
@@ -229,7 +232,7 @@ class Controller:
 
                                 #TODO Do some actual plot calculations but for now just add it to the base plot
                                 self.maze[x][z].plot = plot
-                                plot.cells.append([x,z])
+                                ag.plot.cells.append([x,z])
 
                                 if(b'water' in self.world.blockMap[x][z]): fModifier -= 1
                                 if(b'log' in self.world.blockMap[x][z]):
