@@ -111,6 +111,16 @@ def convertBlockMap(blockMap):
     
     return colourMap
 
+def convertPlotMap(plots, size):
+    colourMap = [[[0,0,0,255] for z in range(size[1])] for x in range(size[0])]
+
+    for plot in plots:
+        colour = plot.colour
+        for cell in plot.cells:
+            colourMap[cell[0]][cell[1]] = colour
+    
+    return colourMap
+
 def main():
     a,b = OrderCoords((-55,90),(45, 190))
     heightmap = GetHeightmap(a, b)

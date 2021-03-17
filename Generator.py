@@ -36,6 +36,8 @@ else:
 
 print("Converting Colour Map".center(30, '-'))
 colourMap = mapTools.convertBlockMap(world.blockMap)
+print("Converting Plot Map".center(30, '-'))
+plotMap = mapTools.convertPlotMap(world.plots, world.size)
 
 
 if(CONSOLE_ARGS.output):
