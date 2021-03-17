@@ -1,3 +1,4 @@
+from random import randint
 class MapArea:
 
     def __init__(self,a,b):
@@ -24,3 +25,8 @@ class Tree:
     def __init__(self, pos, type):
         self.pos = pos
         self.type = type
+
+class Plot:
+    def __init__(self):
+        self.cells = []
+        self.colour = [randint(0,255),randint(0,255),randint(0,255), 255]
