@@ -229,7 +229,7 @@ class Controller:
                                 if(ag.plot):
                                     hmDiff = abs(self.world.heightmap[x][z] - ag.plot.height)
                                     if(hmDiff <= 1 or b'log' in self.world.blockMap[x][z]):
-                                        ag.plot.append([x,z])
+                                        ag.plot.cells.append([x,z])
                                         self.maze[x][z].plot = ag.plot
 
                                 if(b'water' in self.world.blockMap[x][z]): fModifier -= 1
@@ -245,6 +245,14 @@ class Controller:
                                     xn = x + neighbours[j][0]
                                     zn = z + neighbours[j][1]
                                     if((xn >= 0 and xn < len(self.maze)) and (zn >= 0 and zn < len(self.maze[0]))):
+                                        #Cell couldn't be added to current plot, add it to plot of neighbouring cell if possible
+                                        if(self.maze[xn][zn].plot and not self.maze[x][z].plot):
+                                            hmDiff = abs(self.world.heightmap[xn][zn] - self.maze[xn][zn].plot.height)
+                                            if(hmDiff <= 1):
+                                                ag.plot = self.maze[xn][zn].plot
+                                                ag.plot.cells.append([x,z])
+                                                self.maze[x][z].plot = ag.plot
+
                                         if(not self.maze[xn][zn].open and not self.maze[xn][zn].closed and not self.maze[xn][zn].toBeObserved):
                                             add = True;
                                             self.maze[xn][zn].toBeObserved = True
@@ -258,6 +266,14 @@ class Controller:
                                         if(not self.maze[x][z].open):
                                             openList.append(self.maze[x][z])
                                             self.maze[x][z].open = True
+                            
+                            #Surroundings yielded no suitable plot so need to create a new plot
+                            if(not self.maze[x][z].plot):
+                                ag.plot = Plot(ag.pos[1])
+                                self.world.plots.append(ag.plot)
+                                ag.plot.cells.append([x,z])
+                                self.maze[x][z].plot = ag.plot
+
                     observeTime += time.perf_counter() - ticObserve
         if(CONSOLE_ARGS.timing):
             print(f"Time spent pathfinding: {pathingTime}")
