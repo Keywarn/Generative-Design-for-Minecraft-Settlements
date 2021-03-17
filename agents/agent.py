@@ -13,7 +13,6 @@ class Agent:
         self.prevBlock = blocks.GetBlock(self.pos)
         self.move(pos)
 
-        self.target = None
         self.path = None
 
     def move(self, newPos):
@@ -31,9 +30,6 @@ class Agent:
     def __del__(self):
         if(CONSOLE_ARGS.agentVis):
             blocks.SetBlock(self.pos, self.prevBlock)
-
-    def setTarget(self, targetPos):
-        self.target = targetPos
 
     def tick(self):
         if(self.path):
