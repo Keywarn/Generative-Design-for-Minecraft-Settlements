@@ -212,6 +212,9 @@ class Controller:
                     freeAgents.append(ag)
 
                     fModifier = 0
+                    plotAdd = None
+                    plotSize = 0
+
                     for i in range(8):
                         x = ag.pos[0] - self.corner[0] + neighbours[i][0]
                         z = ag.pos[2] - self.corner[1] + neighbours[i][1]
@@ -238,11 +241,11 @@ class Controller:
                                     if((xn >= 0 and xn < len(self.maze)) and (zn >= 0 and zn < len(self.maze[0]))):
                                         #Check surrounding cells for plots
                                         #TODO check for merging of plots here
-                                        if(self.maze[xn][zn].plot and not self.maze[x][z].plot):
+                                        if(self.maze[xn][zn].plot):
                                             hmDiff = abs(self.world.heightmap[xn][zn] - self.maze[xn][zn].plot.height)
-                                            if(hmDiff <= 1):
-                                                self.maze[xn][zn].plot.cells.append([x,z])
-                                                self.maze[x][z].plot = self.maze[xn][zn].plot
+                                            if(hmDiff <= 1 and len(self.maze[xn][zn].plot.cells) > plotSize):
+                                                plotSize = len(self.maze[xn][zn].plot.cells)
+                                                plotAdd = self.maze[xn][zn].plot
 
                                         if(not self.maze[xn][zn].open and not self.maze[xn][zn].closed and not self.maze[xn][zn].toBeObserved):
                                             add = True;
@@ -258,11 +261,13 @@ class Controller:
                                             openList.append(self.maze[x][z])
                                             self.maze[x][z].open = True
                             
-                            #Weren't able to assign a nearby plot, create one
-                            if(not self.maze[x][z].plot):
-                                self.maze[x][z].plot = Plot(ag.pos[1])
-                                self.world.plots.append(self.maze[x][z].plot)
-                                self.maze[x][z].plot.cells.append([x,z])
+                            #Weren't able to assign a nearby plot, create one or just add to the one we found earlier
+                            if(not plotAdd):
+                                plotAdd = Plot(ag.pos[1])
+                                self.world.plots.append(plotAdd)
+                            
+                            plotAdd.cells.append([x,z])
+                            self.maze[x][z].plot = plotAdd
 
                     observeTime += time.perf_counter() - ticObserve
         if(CONSOLE_ARGS.timing):
