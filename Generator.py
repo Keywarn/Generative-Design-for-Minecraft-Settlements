@@ -42,7 +42,7 @@ plotMap = mapTools.convertPlotMap(world.plots, world.size)
 if(CONSOLE_ARGS.paint):
     print("Painting World".center(30, '-'))
     input("IS WORLD BACKED UP? Enter to continue (ctrl-c to exit): ")
-    mapTools.paintPlots(world.plots, world.heightmap)
+    mapTools.paintPlots(world)
 
 if(CONSOLE_ARGS.output):
     print("Saving World".center(30, '-'))
