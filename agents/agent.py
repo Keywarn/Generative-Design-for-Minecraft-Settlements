@@ -271,6 +271,17 @@ class Controller:
                             #Surroundings yielded no suitable plot so need to create a new plot
                             #TODO check nearby agents
                             if(not self.maze[x][z].plot):
+                                for nearAgent in freeAgents + workingAgents:
+                                    if(finder.distance([ag.pos[0],ag.pos[2]],[nearAgent.pos[0],nearAgent.pos[2]]) <= 100):
+                                        if(nearAgent.plot):
+                                            hmDiff = abs(self.world.heightmap[x][z] - nearAgent.plot.height)
+                                            if(hmDiff <= 1):
+                                                ag.plot = nearAgent.plot
+                                                ag.plot.cells.append([x,z])
+                                                self.maze[x][z].plot = ag.plot
+                                                break
+                            #Weren't able to assign a nearby plot, create one
+                            if(not self.maze[x][z].plot):
                                 ag.plot = Plot(ag.pos[1])
                                 self.world.plots.append(ag.plot)
                                 ag.plot.cells.append([x,z])
