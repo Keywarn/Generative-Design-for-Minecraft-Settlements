@@ -125,6 +125,12 @@ def convertPlotMap(plots, size):
     
     return colourMap
 
+def paintPlots(plots, heightmap):
+    for plot in plots:
+        for cell in plot.cells:
+            blocks.SetBlock([cell[0],heightmap[cell[0]][cell[1]] -1, cell[1]], plot.colour)
+
+
 def main():
     a,b = OrderCoords((-55,90),(45, 190))
     heightmap = GetHeightmap(a, b)
