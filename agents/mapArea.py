@@ -28,7 +28,12 @@ class Tree:
         self.type = type
 
 class Plot:
+    wools = [b'minecraft:white_wool',b'minecraft:orange_wool',b'minecraft:magenta_wool',
+            b'minecraft:light_blue_wool',b'minecraft:yellow_wool',b'minecraft:lime_wool',
+            b'minecraft:pink_wool',b'minecraft:gray_wool']
+    index = 0
     def __init__(self, height):
         self.height = height
         self.cells = []
-        self.colour = [randint(0,255),randint(0,255),randint(0,255), 255]
+        self.colour = Plot.wools[Plot.index]
+        Plot.index = (Plot.index + 1) % 8

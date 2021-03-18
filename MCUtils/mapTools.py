@@ -16,6 +16,10 @@ blockColours = {b"minecraft:grass_block": [94,157,52,255],b"minecraft:stone": [1
                     b"minecraft:oak_log": [110,71,11,255],b"minecraft:spruce_log": [110,71,11,255],
                     b"minecraft:gravel": [136,126,126,255]}
 
+woolColours = {b'minecraft:white_wool': [233,236,236,255],b'minecraft:orange_wool': [240,118,19,255],b'minecraft:magenta_wool': [189,68,179,255],
+            b'minecraft:light_blue_wool': [58,175,217,255],b'minecraft:yellow_wool': [248,198,39,255],b'minecraft:lime_wool': [112,185,25,255],
+            b'minecraft:pink_wool': [237,141,172,255],b'minecraft:gray_wool':[62,68,72,255]}
+
 #Take in two chunk locations and get the chunks containing the area
 def GetChunks(a, b, rtype = "text"):
     acceptType = "application/octet-stream" if rtype == "bytes" else "text/raw"
@@ -115,9 +119,9 @@ def convertPlotMap(plots, size):
     colourMap = [[[0,0,0,255] for z in range(size[1])] for x in range(size[0])]
 
     for plot in plots:
-        colour = plot.colour
+        block = plot.colour
         for cell in plot.cells:
-            colourMap[cell[0]][cell[1]] = colour
+            colourMap[cell[0]][cell[1]] = woolColours.get(block, [0,0,0,255])
     
     return colourMap
 
