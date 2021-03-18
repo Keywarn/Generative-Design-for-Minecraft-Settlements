@@ -236,7 +236,7 @@ class Controller:
                                     xn = x + neighbours[j][0]
                                     zn = z + neighbours[j][1]
                                     if((xn >= 0 and xn < len(self.maze)) and (zn >= 0 and zn < len(self.maze[0]))):
-                                        #Cell couldn't be added to current plot, add it to plot of neighbouring cell if possible
+                                        #Check surrounding cells for plots
                                         #TODO check for merging of plots here
                                         if(self.maze[xn][zn].plot and not self.maze[x][z].plot):
                                             hmDiff = abs(self.world.heightmap[xn][zn] - self.maze[xn][zn].plot.height)
