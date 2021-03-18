@@ -246,6 +246,7 @@ class Controller:
                                     zn = z + neighbours[j][1]
                                     if((xn >= 0 and xn < len(self.maze)) and (zn >= 0 and zn < len(self.maze[0]))):
                                         #Cell couldn't be added to current plot, add it to plot of neighbouring cell if possible
+                                        #TODO check for merging of plots here
                                         if(self.maze[xn][zn].plot and not self.maze[x][z].plot):
                                             hmDiff = abs(self.world.heightmap[xn][zn] - self.maze[xn][zn].plot.height)
                                             if(hmDiff <= 1):
@@ -268,6 +269,7 @@ class Controller:
                                             self.maze[x][z].open = True
                             
                             #Surroundings yielded no suitable plot so need to create a new plot
+                            #TODO check nearby agents
                             if(not self.maze[x][z].plot):
                                 ag.plot = Plot(ag.pos[1])
                                 self.world.plots.append(ag.plot)
