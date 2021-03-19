@@ -16,6 +16,7 @@ def _parse_arguments():
 
     parser.add_argument('--output', dest='output', action='store_true',help='Enable to store the output of various operations such as heightmaps to files')
     parser.add_argument('-worldFile', dest='worldFile', help='Name of the file to get world data from')
+    parser.add_argument('--paint', dest='paint', action='store_true', help='Paint the plotmaps onto minecraft world')
     return parser.parse_args()
 
 CONSOLE_ARGS =  _parse_arguments()

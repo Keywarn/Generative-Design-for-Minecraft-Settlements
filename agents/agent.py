@@ -2,6 +2,7 @@ from mcutils import blocks
 import time
 from utils.console_args import CONSOLE_ARGS 
 import time
+from agents.mapArea import Plot
 
 class Agent:
     def __init__(self, pos, block):
@@ -12,7 +13,6 @@ class Agent:
         self.prevBlock = blocks.GetBlock(self.pos)
         self.move(pos)
 
-        self.target = None
         self.path = None
 
     def move(self, newPos):
@@ -30,9 +30,6 @@ class Agent:
     def __del__(self):
         if(CONSOLE_ARGS.agentVis):
             blocks.SetBlock(self.pos, self.prevBlock)
-
-    def setTarget(self, targetPos):
-        self.target = targetPos
 
     def tick(self):
         if(self.path):
@@ -134,6 +131,8 @@ class Cell:
         self.x = x
         self.z = z
 
+        self.plot = None
+
         self.parent = []
 
 class Controller:
@@ -150,6 +149,37 @@ class Controller:
 
         self.swim = swim
 
+    def mergePlots(self, a,b):
+        for cell in a.cells:
+            if self.maze[cell[0]][cell[1]].plot != a: print("YAR THERE BE A TRAITOR BEFORE WE EVEN START")
+            
+        for cell in b.cells:
+            #Change cells in maze to store correct plot
+            self.maze[cell[0]][cell[1]].plot = a
+            #Add cells in plot b to plot a
+            a.cells.append(cell)
+
+        #Remove plot b from world
+        self.world.plots.remove(b)
+
+    def handleAdjPlots(self, adjPlots):
+        #Expects a sorter list adjPlots
+        #Merge adjoining plots
+        numPlots = len(adjPlots)
+        i = 0
+        while i < numPlots-1:
+            a = adjPlots[i]
+            j = i + 1
+            while j < numPlots:
+                b = adjPlots[j]
+                if(a.height == b.height):
+                    if(len(a.cells) >= len(b.cells)):
+                        self.mergePlots(a,b)
+                        adjPlots.remove(b)
+                        j -= 1
+                    numPlots -= 1
+                j += 1
+            i += 1
 
     def explore(self):
         
@@ -181,6 +211,7 @@ class Controller:
         observeTime = 0
         for step in range(500):
         #while len(openList) > 0 or workingAgents:
+            #FREE AGENTS - ASSIGN THEM
             while (len(freeAgents) > 0 and len(openList) > 0):
                 cur = finder.getLowestFCost(openList)
                 ag = freeAgents[0]
@@ -212,7 +243,13 @@ class Controller:
                     freeAgents.append(ag)
 
                     fModifier = 0
+
                     for i in range(8):
+                        plotAdd = None
+                        plotSize = 0
+                        adjPlots = []
+                        
+                        observedThisRound = False
                         x = ag.pos[0] - self.corner[0] + neighbours[i][0]
                         z = ag.pos[2] - self.corner[1] + neighbours[i][1]
 
@@ -221,6 +258,7 @@ class Controller:
                             #The fCost modifier for the cells nearby
                             #Block not currently set so observe it
                             if(not self.world.blockMap[x][z]):
+                                observedThisRound = True
                                 self.world.blockMap[x][z] = blocks.GetBlock([x + self.corner[0],self.world.heightmap[x][z] - 1, z + self.corner[1]])
                                 if(b'water' in self.world.blockMap[x][z]): fModifier -= 1
                                 if(b'log' in self.world.blockMap[x][z]):
@@ -235,6 +273,15 @@ class Controller:
                                     xn = x + neighbours[j][0]
                                     zn = z + neighbours[j][1]
                                     if((xn >= 0 and xn < len(self.maze)) and (zn >= 0 and zn < len(self.maze[0]))):
+                                        #Check surrounding cells for plots
+                                        if(self.maze[xn][zn].plot and observedThisRound):
+                                            if(self.maze[xn][zn].plot not in adjPlots): adjPlots.append(self.maze[xn][zn].plot)
+                                            
+                                            hmDiff = abs(self.world.heightmap[xn][zn] - self.maze[xn][zn].plot.height)
+                                            if(hmDiff <= 1 and len(self.maze[xn][zn].plot.cells) > plotSize):
+                                                plotSize = len(self.maze[xn][zn].plot.cells)
+                                                plotAdd = self.maze[xn][zn].plot
+
                                         if(not self.maze[xn][zn].open and not self.maze[xn][zn].closed and not self.maze[xn][zn].toBeObserved):
                                             add = True;
                                             self.maze[xn][zn].toBeObserved = True
@@ -248,15 +295,24 @@ class Controller:
                                         if(not self.maze[x][z].open):
                                             openList.append(self.maze[x][z])
                                             self.maze[x][z].open = True
+                            
+                            
+                            #Weren't able to assign a nearby plot, create one or just add to the one we found earlier
+                            if(observedThisRound):
+                                if(not plotAdd):
+                                    plotAdd = Plot(ag.pos[1])
+                                    self.world.plots.append(plotAdd)
+                                    adjPlots.append(plotAdd)
+                                
+                                plotAdd.cells.append([x,z])
+                                self.maze[x][z].plot = plotAdd
+
+                            if(len(adjPlots) > 1):
+                                adjPlots.sort(key=lambda x: len(x.cells), reverse=True)
+                                self.handleAdjPlots(adjPlots)
+
                     observeTime += time.perf_counter() - ticObserve
         if(CONSOLE_ARGS.timing):
             print(f"Time spent pathfinding: {pathingTime}")
             print(f"Time spent on agent ticks: {tickTime}")
             print(f"Time spent observing: {observeTime}")
-            
-                
-
-
-
-
-
