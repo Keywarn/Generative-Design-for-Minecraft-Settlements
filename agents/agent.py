@@ -311,10 +311,3 @@ class Controller:
             print(f"Time spent pathfinding: {pathingTime}")
             print(f"Time spent on agent ticks: {tickTime}")
             print(f"Time spent observing: {observeTime}")
-            
-                
-
-
-
-
-
