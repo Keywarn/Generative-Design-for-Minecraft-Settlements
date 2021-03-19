@@ -160,6 +160,28 @@ class Controller:
         self.world.plots.remove(b)
         return
 
+    def handleAdjPlots(self, adjPlots):
+        #Merge adjoining plots
+        numPlots = len(adjPlots)
+        i = 0
+        while i != numPlots-1:
+            a = adjPlots[i]
+            j = i + 1
+            while j != numPlots-1:
+                b = adjPlots[j]
+                if(a.height == b.height):
+                    if(len(a.cells) >= len(b.cells)):
+                        self.mergePlots(a,b)
+                        adjPlots.remove(b)
+                    else:
+                        self.mergePlots(b,a)
+                        adjPlots.remove(a)
+                        i -= 1
+                    numPlots -= 1
+                else:
+                    j += 1
+            i += 1
+
     def explore(self):
         
         neighbours = [[1,1],[1,-1],[-1,-1],[-1,1],[0,1],[1, 0],[0,-1],[-1,0]]
@@ -274,26 +296,7 @@ class Controller:
                                             self.maze[x][z].open = True
                             
                             if(len(adjPlots) > 1):
-                                #Merge adjoining plots
-                                numPlots = len(adjPlots)
-                                i = 0
-                                while i != numPlots-1:
-                                    a = adjPlots[i]
-                                    j = i + 1
-                                    while j != numPlots-1:
-                                        b = adjPlots[j]
-                                        if(a.height == b.height):
-                                            if(len(a.cells) >= len(b.cells)):
-                                                self.mergePlots(a,b)
-                                                adjPlots.remove(b)
-                                            else:
-                                                self.mergePlots(b,a)
-                                                adjPlots.remove(a)
-                                                i -= 1
-                                            numPlots -= 1
-                                        else:
-                                            j += 1
-                                    i += 1
+                                self.handleAdjPlots(adjPlots)
                             #Weren't able to assign a nearby plot, create one or just add to the one we found earlier
                             if(not plotAdd):
                                 plotAdd = Plot(ag.pos[1])
