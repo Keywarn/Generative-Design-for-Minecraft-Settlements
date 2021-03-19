@@ -164,10 +164,10 @@ class Controller:
         #Merge adjoining plots
         numPlots = len(adjPlots)
         i = 0
-        while i != numPlots-1:
+        while i < numPlots-1:
             a = adjPlots[i]
             j = i + 1
-            while j != numPlots-1:
+            while j < numPlots:
                 b = adjPlots[j]
                 if(a.height == b.height):
                     if(len(a.cells) >= len(b.cells)):
