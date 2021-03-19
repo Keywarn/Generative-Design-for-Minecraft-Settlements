@@ -150,7 +150,14 @@ class Controller:
         self.swim = swim
 
     def mergePlots(self, a,b):
-        #TODO finish
+        for cell in b.cells:
+            #Change cells in maze to store correct plot
+            self.maze[cell[0]][cell[1]].plot = a
+            #Add cells in plot b to plot a
+            a.cells.append(cell)
+
+        #Remove plot b from world
+        self.world.plots.remove(b)
         return
 
     def explore(self):
@@ -268,12 +275,25 @@ class Controller:
                             
                             if(len(adjPlots) > 1):
                                 #Merge adjoining plots
-                                for i,a in enumerate(adjPlots):
-                                    for j in range(i+1,len(adjPlots)):
+                                numPlots = len(adjPlots)
+                                i = 0
+                                while i != numPlots-1:
+                                    a = adjPlots[i]
+                                    j = i + 1
+                                    while j != numPlots-1:
                                         b = adjPlots[j]
                                         if(a.height == b.height):
-                                            #TODO merge here
-                                            self.mergePlots(a,b)
+                                            if(len(a.cells) >= len(b.cells)):
+                                                self.mergePlots(a,b)
+                                                adjPlots.remove(b)
+                                            else:
+                                                self.mergePlots(b,a)
+                                                adjPlots.remove(a)
+                                                i -= 1
+                                            numPlots -= 1
+                                        else:
+                                            j += 1
+                                    i += 1
                             #Weren't able to assign a nearby plot, create one or just add to the one we found earlier
                             if(not plotAdd):
                                 plotAdd = Plot(ag.pos[1])
