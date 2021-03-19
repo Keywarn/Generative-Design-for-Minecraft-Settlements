@@ -178,7 +178,7 @@ class Controller:
                         self.mergePlots(b,a)
                         adjPlots.remove(a)
                         i -= 1
-                        j -= 1
+                        j = numPlots
                     numPlots -= 1
                 j += 1
             i += 1
@@ -301,6 +301,7 @@ class Controller:
                             if(not plotAdd):
                                 plotAdd = Plot(ag.pos[1])
                                 self.world.plots.append(plotAdd)
+                                adjPlots.append(plotAdd)
                             
                             plotAdd.cells.append([x,z])
                             self.maze[x][z].plot = plotAdd
