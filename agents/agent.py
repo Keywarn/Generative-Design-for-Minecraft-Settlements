@@ -309,7 +309,7 @@ class Controller:
 
                             if(len(adjPlots) > 1):
                                 adjPlots.sort(key=lambda x: len(x.cells), reverse=True)
-                                #self.handleAdjPlots(adjPlots)
+                                self.handleAdjPlots(adjPlots)
 
                     observeTime += time.perf_counter() - ticObserve
         if(CONSOLE_ARGS.timing):
