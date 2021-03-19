@@ -296,8 +296,7 @@ class Controller:
                                             openList.append(self.maze[x][z])
                                             self.maze[x][z].open = True
                             
-                            if(len(adjPlots) > 1):
-                                self.handleAdjPlots(adjPlots)
+                            
                             #Weren't able to assign a nearby plot, create one or just add to the one we found earlier
                             if(not plotAdd):
                                 plotAdd = Plot(ag.pos[1])
@@ -305,6 +304,9 @@ class Controller:
                             
                             plotAdd.cells.append([x,z])
                             self.maze[x][z].plot = plotAdd
+
+                            if(len(adjPlots) > 1):
+                                self.handleAdjPlots(adjPlots)
 
                     observeTime += time.perf_counter() - ticObserve
         if(CONSOLE_ARGS.timing):
