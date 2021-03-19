@@ -243,11 +243,13 @@ class Controller:
                     freeAgents.append(ag)
 
                     fModifier = 0
-                    plotAdd = None
-                    plotSize = 0
-                    adjPlots = []
 
                     for i in range(8):
+                        plotAdd = None
+                        plotSize = 0
+                        adjPlots = []
+                        
+                        observedThisRound = False
                         x = ag.pos[0] - self.corner[0] + neighbours[i][0]
                         z = ag.pos[2] - self.corner[1] + neighbours[i][1]
 
@@ -256,8 +258,8 @@ class Controller:
                             #The fCost modifier for the cells nearby
                             #Block not currently set so observe it
                             if(not self.world.blockMap[x][z]):
+                                observedThisRound = True
                                 self.world.blockMap[x][z] = blocks.GetBlock([x + self.corner[0],self.world.heightmap[x][z] - 1, z + self.corner[1]])
-
                                 if(b'water' in self.world.blockMap[x][z]): fModifier -= 1
                                 if(b'log' in self.world.blockMap[x][z]):
                                     self.world.addTree([x,z], self.world.blockMap[x][z])
@@ -272,8 +274,9 @@ class Controller:
                                     zn = z + neighbours[j][1]
                                     if((xn >= 0 and xn < len(self.maze)) and (zn >= 0 and zn < len(self.maze[0]))):
                                         #Check surrounding cells for plots
-                                        if(self.maze[xn][zn].plot):
+                                        if(self.maze[xn][zn].plot and observedThisRound):
                                             if(self.maze[xn][zn].plot not in adjPlots): adjPlots.append(self.maze[xn][zn].plot)
+                                            
                                             hmDiff = abs(self.world.heightmap[xn][zn] - self.maze[xn][zn].plot.height)
                                             if(hmDiff <= 1 and len(self.maze[xn][zn].plot.cells) > plotSize):
                                                 plotSize = len(self.maze[xn][zn].plot.cells)
@@ -295,16 +298,14 @@ class Controller:
                             
                             
                             #Weren't able to assign a nearby plot, create one or just add to the one we found earlier
-                            if(not plotAdd):
-                                plotAdd = Plot(ag.pos[1])
-                                self.world.plots.append(plotAdd)
-                                adjPlots.append(plotAdd)
-                            
-                            plotAdd.cells.append([x,z])
-                            self.maze[x][z].plot = plotAdd
-
-                            for cell in plotAdd.cells:
-                                if self.maze[cell[0]][cell[1]].plot != plotAdd: print("YAR THERE BE A TRAITOR WITHOUT MERGING")
+                            if(observedThisRound):
+                                if(not plotAdd):
+                                    plotAdd = Plot(ag.pos[1])
+                                    self.world.plots.append(plotAdd)
+                                    adjPlots.append(plotAdd)
+                                
+                                plotAdd.cells.append([x,z])
+                                self.maze[x][z].plot = plotAdd
 
                             if(len(adjPlots) > 1):
                                 adjPlots.sort(key=lambda x: len(x.cells), reverse=True)
