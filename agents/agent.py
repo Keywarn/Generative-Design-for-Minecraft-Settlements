@@ -173,13 +173,14 @@ class Controller:
                     if(len(a.cells) >= len(b.cells)):
                         self.mergePlots(a,b)
                         adjPlots.remove(b)
+                        j -= 1
                     else:
                         self.mergePlots(b,a)
                         adjPlots.remove(a)
                         i -= 1
+                        j -= 1
                     numPlots -= 1
-                else:
-                    j += 1
+                j += 1
             i += 1
 
     def explore(self):
