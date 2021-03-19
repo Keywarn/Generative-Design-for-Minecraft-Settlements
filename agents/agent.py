@@ -161,6 +161,7 @@ class Controller:
         return
 
     def handleAdjPlots(self, adjPlots):
+        #Expects a sorter list adjPlots
         #Merge adjoining plots
         numPlots = len(adjPlots)
         i = 0
@@ -174,11 +175,6 @@ class Controller:
                         self.mergePlots(a,b)
                         adjPlots.remove(b)
                         j -= 1
-                    else:
-                        self.mergePlots(b,a)
-                        adjPlots.remove(a)
-                        i -= 1
-                        j = numPlots
                     numPlots -= 1
                 j += 1
             i += 1
@@ -307,6 +303,7 @@ class Controller:
                             self.maze[x][z].plot = plotAdd
 
                             if(len(adjPlots) > 1):
+                                adjPlots.sort(key=lambda x: len(x.cells), reverse=True)
                                 self.handleAdjPlots(adjPlots)
 
                     observeTime += time.perf_counter() - ticObserve
