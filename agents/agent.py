@@ -150,6 +150,9 @@ class Controller:
         self.swim = swim
 
     def mergePlots(self, a,b):
+        for cell in a.cells:
+            if self.maze[cell[0]][cell[1]].plot != a: print("YAR THERE BE A TRAITOR BEFORE WE EVEN START")
+            
         for cell in b.cells:
             #Change cells in maze to store correct plot
             self.maze[cell[0]][cell[1]].plot = a
@@ -158,7 +161,6 @@ class Controller:
 
         #Remove plot b from world
         self.world.plots.remove(b)
-        return
 
     def handleAdjPlots(self, adjPlots):
         #Expects a sorter list adjPlots
@@ -270,7 +272,6 @@ class Controller:
                                     zn = z + neighbours[j][1]
                                     if((xn >= 0 and xn < len(self.maze)) and (zn >= 0 and zn < len(self.maze[0]))):
                                         #Check surrounding cells for plots
-                                        #TODO check for merging of plots here
                                         if(self.maze[xn][zn].plot):
                                             if(self.maze[xn][zn].plot not in adjPlots): adjPlots.append(self.maze[xn][zn].plot)
                                             hmDiff = abs(self.world.heightmap[xn][zn] - self.maze[xn][zn].plot.height)
@@ -302,9 +303,12 @@ class Controller:
                             plotAdd.cells.append([x,z])
                             self.maze[x][z].plot = plotAdd
 
+                            for cell in plotAdd.cells:
+                                if self.maze[cell[0]][cell[1]].plot != plotAdd: print("YAR THERE BE A TRAITOR WITHOUT MERGING")
+
                             if(len(adjPlots) > 1):
                                 adjPlots.sort(key=lambda x: len(x.cells), reverse=True)
-                                self.handleAdjPlots(adjPlots)
+                                #self.handleAdjPlots(adjPlots)
 
                     observeTime += time.perf_counter() - ticObserve
         if(CONSOLE_ARGS.timing):
