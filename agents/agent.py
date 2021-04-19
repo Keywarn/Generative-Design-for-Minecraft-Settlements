@@ -318,3 +318,14 @@ class Controller:
             print(f"Time spent pathfinding: {pathingTime}")
             print(f"Time spent on agent ticks: {tickTime}")
             print(f"Time spent observing: {observeTime}")
+
+class Builder:
+
+    def __init__(self, world):
+        self.world = world
+
+    def build(self,a,b):
+
+        for x in range (a[0], b[0]):
+            for z in range (a[1], b[1]):
+                print(x,z)

@@ -49,6 +49,10 @@ if(CONSOLE_ARGS.output):
     with open("world.map","wb+") as worldFile:
         pickle.dump(world, worldFile)
 
+builder = agent.Builder(world)
+
+builder.build(mapTools.OrderCoords([25,148],[6,165]))
+
 mapTools.showMap(world.heightmap, a, b,'Surface Heightmap')
 mapTools.showMap(colourMap, a, b,'Surface Blocks')
 mapTools.showMap(world.visitMap, a, b,'Agent cell visit heatmap')
