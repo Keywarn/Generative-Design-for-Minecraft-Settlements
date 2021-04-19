@@ -94,22 +94,26 @@ class PathFinder:
                     #Check neighbour is on board
                     if((x >= 0 and x < len(maze)) and (z >= 0 and z < len(maze[0]))):
                         #Check if can travel to the block
-                        #TODO Checks for water and falling
+
                         if(abs(self.world.heightmap[cur.x][cur.z]-self.world.heightmap[x][z]) < 2 and not maze[x][z].closed):
-                            #Calculate new fCost
-                            gNew = cur.gCost + 1
-                            hNew = self.distance([x,z],b)
-                            fNew = gNew + hNew
-                            if(not maze[x][z].open or fNew < maze[x][z].fCost):
-                                #update
-                                maze[x][z].fCost = fNew
-                                maze[x][z].gCost = gNew
-                                maze[x][z].hCost = hNew
-                                maze[x][z].parent = cur
-                                #add to open list if needed
-                                if(not maze[x][z].open):
-                                    maze[x][z].open = True
-                                    openList.append(maze[x][z])
+                            #Check if it isn't water or if we can swim
+
+                            if((self.world.blockMap[cur.x][cur.z] != b'minecraft:water' or swim)):
+                                valid = True
+                                #Calculate new fCost
+                                gNew = cur.gCost + 1
+                                hNew = self.distance([x,z],b)
+                                fNew = gNew + hNew
+                                if(not maze[x][z].open or fNew < maze[x][z].fCost):
+                                    #update
+                                    maze[x][z].fCost = fNew
+                                    maze[x][z].gCost = gNew
+                                    maze[x][z].hCost = hNew
+                                    maze[x][z].parent = cur
+                                    #add to open list if needed
+                                    if(not maze[x][z].open):
+                                        maze[x][z].open = True
+                                        openList.append(maze[x][z])
         
         if(foundPath):
             return(self.extractPath(maze, a, b, corner))
