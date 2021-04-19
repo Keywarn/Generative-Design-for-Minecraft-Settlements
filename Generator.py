@@ -50,14 +50,17 @@ if(CONSOLE_ARGS.output):
         pickle.dump(world, worldFile)
     print("Saved".center(30, '-'))
 
+print("Building".center(30, '-'))
 builder = agent.Builder(world)
 
-ba,bb = mapTools.OrderCoords([25,148],[6,165])
+ba,bb = mapTools.OrderCoords([26,148],[6,166])
 
 ba = [ba[0]-world.a[0], ba[1]-world.a[1]]
 bb = [bb[0]-world.a[0], bb[1]-world.a[1]]
 
 builder.build(ba,bb)
+
+print("Displaying".center(30, '-'))
 
 mapTools.showMap(world.heightmap, a, b,'Surface Heightmap')
 mapTools.showMap(colourMap, a, b,'Surface Blocks')
