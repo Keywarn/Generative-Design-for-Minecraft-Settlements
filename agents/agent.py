@@ -37,8 +37,8 @@ class Agent:
             self.move(self.path.pop(0))
 
 class PathFinder:
-    def __init__(self, hm):
-        self.heightmap = hm
+    def __init__(self, world):
+        self.world = world
     
     def distance(self,a,b):
         #return max(abs(a[0] - b[0]),abs(a[1] - b[1]))
@@ -48,7 +48,7 @@ class PathFinder:
         cur = maze[b[0]][b[1]]
         moves = []
         while (cur.x != a[0] or cur.z != a[1]):
-            moves.append([cur.x + corner[0], self.heightmap[cur.x][cur.z], cur.z + corner[1]])
+            moves.append([cur.x + corner[0], self.world.heightmap[cur.x][cur.z], cur.z + corner[1]])
             cur = cur.parent
         
         return moves[::-1]
@@ -68,7 +68,7 @@ class PathFinder:
         b = [bi - ci for bi, ci in zip(b, corner)]
         neighbours = [[0,1],[1,1],[1, 0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
 
-        maze = [[Cell(x, z) for z in range(len(self.heightmap[0]))] for x in range(len(self.heightmap))]
+        maze = [[Cell(x, z) for z in range(len(self.world.heightmap[0]))] for x in range(len(self.world.heightmap))]
         maze[a[0]][a[1]].open = True
         openList =[maze[a[0]][a[1]]]
 
@@ -94,22 +94,24 @@ class PathFinder:
                     #Check neighbour is on board
                     if((x >= 0 and x < len(maze)) and (z >= 0 and z < len(maze[0]))):
                         #Check if can travel to the block
-                        #TODO Checks for water and falling
-                        if(abs(self.heightmap[cur.x][cur.z]-self.heightmap[x][z]) < 2 and not maze[x][z].closed):
-                            #Calculate new fCost
-                            gNew = cur.gCost + 1
-                            hNew = self.distance([x,z],b)
-                            fNew = gNew + hNew
-                            if(not maze[x][z].open or fNew < maze[x][z].fCost):
-                                #update
-                                maze[x][z].fCost = fNew
-                                maze[x][z].gCost = gNew
-                                maze[x][z].hCost = hNew
-                                maze[x][z].parent = cur
-                                #add to open list if needed
-                                if(not maze[x][z].open):
-                                    maze[x][z].open = True
-                                    openList.append(maze[x][z])
+
+                        if(abs(self.world.heightmap[cur.x][cur.z]-self.world.heightmap[x][z]) < 2 and not maze[x][z].closed):
+                            #Check if it isn't water or if we can swim
+                            if((self.world.blockMap[cur.x][cur.z] != b'minecraft:water' or swim)):
+                                #Calculate new fCost
+                                gNew = cur.gCost + 1
+                                hNew = self.distance([x,z],b)
+                                fNew = gNew + hNew
+                                if(not maze[x][z].open or fNew < maze[x][z].fCost):
+                                    #update
+                                    maze[x][z].fCost = fNew
+                                    maze[x][z].gCost = gNew
+                                    maze[x][z].hCost = hNew
+                                    maze[x][z].parent = cur
+                                    #add to open list if needed
+                                    if(not maze[x][z].open):
+                                        maze[x][z].open = True
+                                        openList.append(maze[x][z])
         
         if(foundPath):
             return(self.extractPath(maze, a, b, corner))
@@ -184,7 +186,7 @@ class Controller:
     def explore(self):
         
         neighbours = [[1,1],[1,-1],[-1,-1],[-1,1],[0,1],[1, 0],[0,-1],[-1,0]]
-        finder = PathFinder(self.world.heightmap)
+        finder = PathFinder(self.world)
 
         #Create a maze to hold the data
 
