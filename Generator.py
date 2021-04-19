@@ -34,6 +34,19 @@ else:
         print(f"Cells per second: {observed/timeObs}")
         print(f"Total time taken: {timeObs}")
 
+print("Building".center(30, '-'))
+builder = agent.Builder(world)
+
+ba,bb = mapTools.OrderCoords([26,148],[6,166])
+
+ba = [ba[0]-world.a[0], ba[1]-world.a[1]]
+bb = [bb[0]-world.a[0], bb[1]-world.a[1]]
+
+builder.build(ba,bb)
+
+
+
+
 print("Converting Colour Map".center(30, '-'))
 colourMap = mapTools.convertBlockMap(world.blockMap)
 print("Converting Plot Map".center(30, '-'))
@@ -49,16 +62,6 @@ if(CONSOLE_ARGS.output):
     with open("world.map","wb+") as worldFile:
         pickle.dump(world, worldFile)
     print("Saved".center(30, '-'))
-
-print("Building".center(30, '-'))
-builder = agent.Builder(world)
-
-ba,bb = mapTools.OrderCoords([26,148],[6,166])
-
-ba = [ba[0]-world.a[0], ba[1]-world.a[1]]
-bb = [bb[0]-world.a[0], bb[1]-world.a[1]]
-
-builder.build(ba,bb)
 
 print("Displaying".center(30, '-'))
 

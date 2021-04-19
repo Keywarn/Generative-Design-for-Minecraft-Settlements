@@ -332,13 +332,20 @@ class Builder:
             gHeight = self.world.heightmap[a[0]][a[1]] -1
 
         ground = blocks.GetBlock([a[0]+self.world.a[0], gHeight, a[1]+self.world.a[1]])
+        #ground = b'minecraft:stone'
 
         #First clear the plot and even out ground
-        for height in range (gHeight,gHeight + 100):
-            for x in range (a[0], b[0]):
-                for z in range (a[1], b[1]):
-                    if(height == gHeight):
+        for x in range (a[0], b[0]):
+            for z in range (a[1], b[1]):
+                for height in range (gHeight, self.world.heightmap[x][z]):
+
+                    if(height <= gHeight):
                         blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], ground)
-                        self.world.heightmap[x][z] = height+1
-                    else:
-                        blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], b'minecraft":air')
+                        if(height < gHeight):
+                            self.world.heightmap[x][z] += 1
+
+                    if(height > gHeight):
+                        blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], b'minecraft:air')
+                        self.world.heightmap[x][z] -= 1
+                    
+                self.world.blockMap[x][z] = ground
