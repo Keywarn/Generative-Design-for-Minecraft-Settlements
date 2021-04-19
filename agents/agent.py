@@ -324,8 +324,18 @@ class Builder:
     def __init__(self, world):
         self.world = world
 
-    def build(self,a,b):
+    def build(self,a,b, plot = None):
 
-        for x in range (a[0], b[0]):
-            for z in range (a[1], b[1]):
-                print(x,z)
+        if plot: 
+            gHeight = plot.height -1
+        else:
+            gHeight = self.world.heightmap[a[0]][a[1]] -1
+
+        ground = blocks.GetBlock([a[0]+self.world.a[0], gHeight, a[1]+self.world.a[1]])
+        print(ground)
+        #First clear the plot
+        # for height in range (gHeight,gHeight + 100):
+        #     for x in range (a[0], b[0]):
+        #         for z in range (a[1], b[1]):
+        #             if(height = gHeight):
+        #                 blocks.SetBlock([])
