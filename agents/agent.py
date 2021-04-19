@@ -279,7 +279,7 @@ class Controller:
                                         if(self.maze[xn][zn].plot and observedThisRound):
                                             if(self.maze[xn][zn].plot not in adjPlots): adjPlots.append(self.maze[xn][zn].plot)
                                             
-                                            hmDiff = abs(self.world.heightmap[xn][zn] - self.maze[xn][zn].plot.height)
+                                            hmDiff = abs(self.world.heightmap[x][z] - self.maze[xn][zn].plot.height)
                                             if(hmDiff <= 1 and len(self.maze[xn][zn].plot.cells) > plotSize):
                                                 plotSize = len(self.maze[xn][zn].plot.cells)
                                                 plotAdd = self.maze[xn][zn].plot
