@@ -211,8 +211,9 @@ class Controller:
         pathingTime = 0
         tickTime = 0
         observeTime = 0
-        for step in range(500):
-        #while len(openList) > 0 or workingAgents:
+        iters = 0
+        while (len(openList) > 0 or workingAgents) and iters != CONSOLE_ARGS.steps:
+            iters += 1
             #FREE AGENTS - ASSIGN THEM
             while (len(freeAgents) > 0 and len(openList) > 0):
                 cur = finder.getLowestFCost(openList)
