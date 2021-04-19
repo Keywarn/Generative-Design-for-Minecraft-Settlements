@@ -338,7 +338,7 @@ class Builder:
         #First clear the plot and even out ground
         for x in range (a[0], b[0]):
             for z in range (a[1], b[1]):
-                for height in range (gHeight, self.world.heightmap[x][z]):
+                for height in range (gHeight, self.world.heightmap[x][z] -1, -1 if self.world.heightmap[x][z] <= gHeight else 1):
 
                     if(height <= gHeight):
                         blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], ground)
