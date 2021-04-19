@@ -97,9 +97,7 @@ class PathFinder:
 
                         if(abs(self.world.heightmap[cur.x][cur.z]-self.world.heightmap[x][z]) < 2 and not maze[x][z].closed):
                             #Check if it isn't water or if we can swim
-
                             if((self.world.blockMap[cur.x][cur.z] != b'minecraft:water' or swim)):
-                                valid = True
                                 #Calculate new fCost
                                 gNew = cur.gCost + 1
                                 hNew = self.distance([x,z],b)
