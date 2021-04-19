@@ -37,3 +37,14 @@ class Plot:
         self.cells = []
         self.colour = Plot.wools[Plot.index]
         Plot.index = (Plot.index + 1) % 8
+
+class Palette:
+    self.foundation = b'minecraft:stone'
+    self.floor      = b'minecraft:oak_planks'
+    self.wall       = b'minecraft:oak_planks'
+    self.roof       = b'minecraft:cobblestone'
+    self.trim       = b'minecraft:oak_log'
+
+
+    def __init__(self, plot = None):
+        return
