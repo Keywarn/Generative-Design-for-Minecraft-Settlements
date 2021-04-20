@@ -329,7 +329,7 @@ class Rect:
         self.dim = dim
     
     def b(self):
-        return [self.a[0] + self.dim[0], self.a[1] + self.dim[1]]
+        return [self.a[0] + self.dim[0] -1, self.a[1] + self.dim[1] -1]
 
     def pave(self, worldA, gHeight, block):
         for x in range (self.dim[0]):
@@ -409,9 +409,23 @@ class Builder:
         rectB = self.genRect(a,b)
 
         #Check difference of top edges and bottom edges
+        print(rectA.a,rectA.b())
         topDiff = rectA.b()[1] - rectB.b()[1]
-        botDiff = rectB.a[1] - rectB.a[1]
-            #Move 'smaller' value on top/bottom (lowest if moving top, highest if moving bottom)
+        botDiff = rectA.a[1] - rectB.a[1]
+
+        #Move 'smaller' value on top/bottom (lowest if moving top, highest if moving bottom)
+        if(abs(topDiff) <= abs(botDiff)):
+            if(topDiff < 0):
+                rectA.dim[1] += abs(topDiff)
+            else:
+                rectB.dim[1] += abs(topDiff)
+        else:
+            if(botDiff < 0):
+                rectB.a[1] -= abs(botDiff)
+                rectB.dim[1] += abs(botDiff)
+            else:
+                rectA.a[1] -= abs(botDiff) 
+                rectA.dim[1] += abs(botDiff)
 
         #Check difference of left and right
             #Move smaller value on left/right (lowest if moving right, highest if moving bottom)
