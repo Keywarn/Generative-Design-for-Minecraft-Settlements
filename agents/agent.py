@@ -322,6 +322,21 @@ class Controller:
             print(f"Time spent on agent ticks: {tickTime}")
             print(f"Time spent observing: {observeTime}")
 
+class Rect:
+
+    def __init__(self, corner, dim):
+        self.a = corner
+        self.dim = dim
+    
+    def b(self):
+        return [self.a[0] + self.dim[0], self.a[1] + self.dim[1]]
+
+    def pave(self, worldA, gHeight, block):
+        for x in range (self.dim[0]):
+            for z in range (self.dim[1]):
+                blocks.SetBlock([self.a[0]+x+worldA[0], gHeight, self.a[1]+z+worldA[1]], block)
+
+
 class Builder:
 
     def __init__(self, world):
@@ -363,6 +378,18 @@ class Builder:
 
         return blocks
 
+    def genRect(self, a, b):
+        #Set min size of area
+        minEdge = 4
+        
+        #Define are to put rect in
+        genEdges = [b[0]-minEdge,b[1]-minEdge]
+
+        corner = [randint(a[0],genEdges[0]),randint(a[1],genEdges[1])]
+        dim = [randint(minEdge+(genEdges[0]-corner[0])//2, b[0]-corner[0]), randint(minEdge+(genEdges[1]-corner[1])//2, b[1]-corner[1])]
+
+        return Rect(corner, dim)
+
 
     def house(self,a,b, plot = None):
         if plot: 
@@ -378,29 +405,19 @@ class Builder:
         
         self.clearArea(a,b,gHeight,groundBlock)
 
-        #Set min size of area
-        minEdge = 4
-        
-        #Define are to put rect in
-        genEdges = [b[0]-minEdge,b[1]-minEdge]
+        rectA = self.genRect(a,b)
+        rectB = self.genRect(a,b)
 
-        if(genEdges[0] < a[0] or genEdges[1] < a[1]):
-            return
-        
-        houseCorner = [randint(a[0],genEdges[0]),randint(a[1],genEdges[1])]
+        #Check difference of top edges and bottom edges
+        topDiff = rectA.b()[1] - rectB.b()[1]
+        botDiff = rectB.a[1] - rectB.a[1]
+            #Move 'smaller' value on top/bottom (lowest if moving top, highest if moving bottom)
 
-        dim = [randint(minEdge+(b[0]-houseCorner[0]-minEdge)//2, b[0]-houseCorner[0]), randint(minEdge+(b[1]-houseCorner[1]-minEdge)//2, b[1]-houseCorner[1])]
+        #Check difference of left and right
+            #Move smaller value on left/right (lowest if moving right, highest if moving bottom)
 
-        for x in range (dim[0]):
-            for z in range (dim[1]):
-                blocks.SetBlock([houseCorner[0]+x+self.world.a[0], gHeight, houseCorner[1]+z+self.world.a[1]], b'minecraft:stone')
-        
-        houseCornerB = [randint(a[0],genEdges[0]),randint(a[1],genEdges[1])]
 
-        dimB = [randint(minEdge+(b[0]-houseCornerB[0]-minEdge)//2, b[0]-houseCornerB[0]), randint(minEdge+(b[1]-houseCornerB[1]-minEdge)//2, b[1]-houseCornerB[1])]
+        #Pave the two areas
+        rectA.pave(self.world.a, gHeight, b'minecraft:stone')
 
-        for x in range (dimB[0]):
-            for z in range (dimB[1]):
-                blocks.SetBlock([houseCornerB[0]+x+self.world.a[0], gHeight, houseCornerB[1]+z+self.world.a[1]], b'minecraft:cobblestone')
-
-        
+        rectB.pave(self.world.a, gHeight, b'minecraft:cobblestone')
