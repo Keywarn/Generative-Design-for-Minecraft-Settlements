@@ -3,6 +3,7 @@ import time
 from utils.console_args import CONSOLE_ARGS 
 import time
 from agents.mapArea import Plot
+from collections import defaultdict
 
 class Agent:
     def __init__(self, pos, block):
@@ -325,22 +326,17 @@ class Builder:
     def __init__(self, world):
         self.world = world
 
-    def build(self,a,b, plot = None):
-
-        if plot: 
-            gHeight = plot.height -1
-        else:
-            gHeight = self.world.heightmap[a[0]][a[1]] -1
-
-        ground = blocks.GetBlock([a[0]+self.world.a[0], gHeight, a[1]+self.world.a[1]])
+    def clearArea(self, a,b, gHeight, ground):
+        
         #ground = b'minecraft:stone'
 
         #First clear the plot and even out ground
         for x in range (a[0], b[0]):
             for z in range (a[1], b[1]):
-                for height in range (gHeight, self.world.heightmap[x][z] -1, -1 if self.world.heightmap[x][z] <= gHeight else 1):
+                for height in range (gHeight+1, self.world.heightmap[x][z] -1, -1 if self.world.heightmap[x][z] <= gHeight else 1):
 
                     if(height <= gHeight):
+                        print("here)")
                         blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], ground)
                         if(height < gHeight):
                             self.world.heightmap[x][z] += 1
@@ -350,3 +346,28 @@ class Builder:
                         self.world.heightmap[x][z] -= 1
                     
                 self.world.blockMap[x][z] = ground
+
+    def getGround(self, a,b, plot):
+
+        blocks = defaultdict(int)
+
+        for x in range (a[0], b[0]):
+            for z in range (a[1], b[1]):
+                blocks[self.world.blockMap[x][z]] += 1
+
+        return blocks
+
+
+    def house(self,a,b, plot = None):
+        if plot: 
+            gHeight = plot.height -1
+        else:
+            gHeight = self.world.heightmap[a[0]][a[1]] -1
+
+        #Get the blocks on the ground
+        ground = self.getGround(a,b,plot)
+
+        #Use the most common one to resurface
+        groundBlock = max(ground, key = ground.get)
+        
+        self.clearArea(a,b,gHeight,groundBlock)

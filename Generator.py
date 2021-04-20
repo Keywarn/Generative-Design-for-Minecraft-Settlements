@@ -32,7 +32,7 @@ else:
                     observed += 1
         print(f"Cells observed: {observed}")
         print(f"Cells per second: {observed/timeObs}")
-        print(f"Total time taken: {timeObs}")
+        print(f"Total time to explore taken: {timeObs}")
 
 print("Building".center(30, '-'))
 builder = agent.Builder(world)
@@ -42,8 +42,10 @@ ba,bb = mapTools.OrderCoords([26,148],[6,166])
 ba = [ba[0]-world.a[0], ba[1]-world.a[1]]
 bb = [bb[0]-world.a[0], bb[1]-world.a[1]]
 
-builder.build(ba,bb)
-
+tic = time.perf_counter()
+builder.house(ba,bb)
+if(CONSOLE_ARGS.timing):
+    print(f"Time to build: {time.perf_counter() - tic}")
 
 
 
