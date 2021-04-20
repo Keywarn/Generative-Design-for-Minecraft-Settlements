@@ -4,6 +4,7 @@ from utils.console_args import CONSOLE_ARGS
 import time
 from agents.mapArea import Plot
 from collections import defaultdict
+from random import randint
 
 class Agent:
     def __init__(self, pos, block):
@@ -376,3 +377,20 @@ class Builder:
         groundBlock = max(ground, key = ground.get)
         
         self.clearArea(a,b,gHeight,groundBlock)
+
+        #Set min size of area
+        minEdge = 4
+        
+        #Define are to put rect in
+        genEdges = [b[0]-minEdge,b[1]-minEdge]
+
+        if(genEdges[0] < a[0] or genEdges[1] < a[1]):
+            return
+        
+        houseCorner = [randint(a[0],genEdges[0]),randint(a[1],genEdges[1])]
+
+        dim = [randint(4, b[0]-houseCorner[0]), randint(4, b[1]-houseCorner[1])]
+
+        for x in range (dim[0]):
+            for z in range (dim[1]):
+                blocks.SetBlock([houseCorner[0]+x+self.world.a[0], gHeight, houseCorner[1]+z+self.world.a[1]], b'minecraft:stone')
