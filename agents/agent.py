@@ -383,10 +383,23 @@ class Rect:
             
             
         #Check adjusted dimensions to make sure the rect isn't too small
-        if(rectB.dim[0] < 3 and rectB.dim[1] < 3):
+        if(rectB.dim[0] < 3 or rectB.dim[1] < 3):
             return None
         #TODO adjust rects to cover only the 2 areas
         #Check if a or b is inside rect a and move accordingly
+        if(rectB.a[0] >= self.a[0] and rectB.a[1] >= self.a[1]):
+            print("SOLVED CASE")
+            #Check if bot right is inside
+            if(rectB.b()[0] <= self.b()[0] and rectB.a[1] <= self.b()[1]):
+                #move it up
+                dif = self.b()[1] - rectB.a[1] + 1
+                rectB.a[1] += dif
+                rectB.dim[1] -= dif
+            else:
+                #move it right
+                dif = self.b()[0]-rectB.a[0] + 1
+                rectB.a[0] += dif
+                rectB.dim[0] -= dif
         return(rectB)
 
 
