@@ -12,6 +12,7 @@ The typically usage is:
 def _parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('--agentVis', dest='agentVis', action='store_true',help='Enable to see agents moving around in the world')
+    parser.add_argument('--noGraph', dest='noGraph', action='store_true',help='Flag to disable graph visualisations')
     parser.add_argument('-steps', dest='steps',help='Set how many iterations should be sued during exploration stage (default is -1, explore whole area)', default = -1, type=int)
     parser.add_argument('--timing', dest='timing', action='store_true',help='Enable to get timing outputs')
 

@@ -48,12 +48,6 @@ if(CONSOLE_ARGS.timing):
     print(f"Time to build: {time.perf_counter() - tic}")
 
 
-
-print("Converting Colour Map".center(30, '-'))
-colourMap = mapTools.convertBlockMap(world.blockMap)
-print("Converting Plot Map".center(30, '-'))
-plotMap = mapTools.convertPlotMap(world.plots, world.size)
-
 if(CONSOLE_ARGS.paint):
     print("Painting World".center(30, '-'))
     input("IS WORLD BACKED UP? Enter to continue (ctrl-c to exit): ")
@@ -65,11 +59,17 @@ if(CONSOLE_ARGS.output):
         pickle.dump(world, worldFile)
     print("Saved".center(30, '-'))
 
-print("Displaying".center(30, '-'))
+if(not CONSOLE_ARGS.noGraph):
+    print("Converting Colour Map".center(30, '-'))
+    colourMap = mapTools.convertBlockMap(world.blockMap)
+    print("Converting Plot Map".center(30, '-'))
+    plotMap = mapTools.convertPlotMap(world.plots, world.size)
 
-mapTools.showMap(world.heightmap, a, b,'Surface Heightmap')
-mapTools.showMap(colourMap, a, b,'Surface Blocks')
-mapTools.showMap(world.visitMap, a, b,'Agent cell visit heatmap')
-mapTools.showMap(plotMap, a, b,'Building Plot Map')
+    print("Displaying".center(30, '-'))
 
-print("Finishing".center(30, '-'))
+    mapTools.showMap(world.heightmap, a, b,'Surface Heightmap')
+    mapTools.showMap(colourMap, a, b,'Surface Blocks')
+    mapTools.showMap(world.visitMap, a, b,'Agent cell visit heatmap')
+    mapTools.showMap(plotMap, a, b,'Building Plot Map')
+
+    print("Finishing".center(30, '-'))
