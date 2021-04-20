@@ -359,15 +359,16 @@ class Rect:
 
         if(outVerts == 0):
             return None
-        if(outVerts > 2):
+        if(outVerts == 3):
             #top, right, bot, left
             diffs = [max(0, rectB.b()[1] - self.b()[1]),max(0, rectB.b()[0] - self.b()[0]),max(0, self.a[1] - rectB.a[1]),max(0, self.a[0] - rectB.a[0])]
 
             index = -1
             diff = 9999
             for i in range(4):
-                if(diffs[i] < diff and diffs[i] != 0):
-                    index = i
+                if(diffs[i] <= diff and diffs[i] != 0):
+                    if(randint(0,1) == 0):
+                        index = i
             #top
             if(index == 0):
                 rectB.dim[1] -= diffs[0]
@@ -381,14 +382,8 @@ class Rect:
                 rectB.a[0] += diffs[3]
                 rectB.dim[0] -= diffs[3]
             
-            
-        #Check adjusted dimensions to make sure the rect isn't too small
-        if(rectB.dim[0] < 3 or rectB.dim[1] < 3):
-            return None
-        #TODO adjust rects to cover only the 2 areas
-        #Check if a or b is inside rect a and move accordingly
+        #Check if a corner is inside
         if(rectB.a[0] >= self.a[0] and rectB.a[1] >= self.a[1]):
-            print("SOLVED CASE")
             #Check if bot right is inside
             if(rectB.b()[0] <= self.b()[0] and rectB.a[1] <= self.b()[1]):
                 #move it up
@@ -400,6 +395,30 @@ class Rect:
                 dif = self.b()[0]-rectB.a[0] + 1
                 rectB.a[0] += dif
                 rectB.dim[0] -= dif
+        
+        #b corner is inside
+        else:
+            #Check if top left is inside
+            if(rectB.a[0] >= self.a[0] and rectB.b()[1] >= self.a[1]):
+                #move it down
+                print("MOVE DOWN")
+                # dif = self.b()[1] - rectB.a[1] + 1
+                # rectB.a[1] += dif
+                # rectB.dim[1] -= dif
+            else:
+                print("MOVE LEFT")
+                #move it left
+                # dif = self.b()[0]-rectB.a[0] + 1
+                # rectB.a[0] += dif
+                # rectB.dim[0] -= dif
+
+        if(rectB.dim[0] < 3 and rectB.dim[1] < 3):
+            return(None)
+
+        #Check adjusted dimensions to make sure the rect isn't too small
+        # if(rectB.dim[0] < 3 or rectB.dim[1] < 3):
+        #     return None
+
         return(rectB)
 
 
@@ -446,13 +465,13 @@ class Builder:
 
     def genRect(self, a, b):
         #Set min size of area
-        minEdge = 4
+        minEdge = min((b[0]-a[0])//2,(b[1]-a[1])//2)
         
         #Define are to put rect in
         genEdges = [b[0]-minEdge,b[1]-minEdge]
 
         corner = [randint(a[0],genEdges[0]),randint(a[1],genEdges[1])]
-        dim = [randint(minEdge+(genEdges[0]-corner[0])//2, b[0]-corner[0]), randint(minEdge+(genEdges[1]-corner[1])//2, b[1]-corner[1])]
+        dim = [randint(minEdge, b[0]-corner[0]), randint(minEdge, b[1]-corner[1])]
 
         return Rect(corner, dim)
 
