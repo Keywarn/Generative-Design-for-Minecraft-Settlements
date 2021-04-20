@@ -330,11 +330,64 @@ class Rect:
     
     def b(self):
         return [self.a[0] + self.dim[0] -1, self.a[1] + self.dim[1] -1]
+    
+    def area(self):
+        return(self.dim[0] * self.dim[1])
 
     def pave(self, worldA, gHeight, block):
         for x in range (self.dim[0]):
             for z in range (self.dim[1]):
                 blocks.SetBlock([self.a[0]+x+worldA[0], gHeight, self.a[1]+z+worldA[1]], block)
+
+    def trim(self, rectB):
+        if (self.b()[0] < rectB.a[0] or self.a[0] > rectB.b()[0] or self.b()[1] < rectB.a[1] or self.a[1] > rectB.b()[1]):
+            print("NOT OVERLAPPING")
+            return rectB
+
+        #top left, top right, bot right, bot left
+        cornerDiffs = [[],[],[],[]]
+
+        cornerDiffs[0] = [self.a[0]-rectB.a[0],rectB.b()[1]-self.b()[1]]
+        cornerDiffs[1] = [rectB.b()[0] - self.b()[0], rectB.b()[1]-self.b()[1]]
+        cornerDiffs[2] = [rectB.b()[0] - self.b()[0], self.a[1]-rectB.a[1]]
+        cornerDiffs[3] = [self.a[0]-rectB.a[0], self.a[1]-rectB.a[1]]
+
+        outVerts = 0
+        for i in range(4):
+            if(cornerDiffs[i][0] > 0 or cornerDiffs[i][1] > 0):
+                outVerts += 1
+
+        if(outVerts == 0):
+            return None
+        if(outVerts > 2):
+            #top, right, bot, left
+            diffs = [max(0, rectB.b()[1] - self.b()[1]),max(0, rectB.b()[0] - self.b()[0]),max(0, self.a[1] - rectB.a[1]),max(0, self.a[0] - rectB.a[0])]
+
+            index = -1
+            diff = 9999
+            for i in range(4):
+                if(diffs[i] < diff and diffs[i] != 0):
+                    index = i
+            #top
+            if(index == 0):
+                rectB.dim[1] -= diffs[0]
+            #right
+            elif(index == 1):
+                rectB.dim[0] -= diffs[1]
+            elif(index == 2):
+                rectB.a[1] += diffs[2]
+                rectB.dim[1] -= diffs[2]
+            elif(index == 3):
+                rectB.a[0] += diffs[3]
+                rectB.dim[0] -= diffs[3]
+            
+            
+        #Check adjusted dimensions to make sure the rect isn't too small
+        if(rectB.dim[0] < 3 and rectB.dim[1] < 3):
+            return None
+        #TODO adjust rects to cover only the 2 areas
+        #Check if a or b is inside rect a and move accordingly
+        return(rectB)
 
 
 class Builder:
@@ -408,30 +461,21 @@ class Builder:
         rectA = self.genRect(a,b)
         rectB = self.genRect(a,b)
 
-        #Check difference of top edges and bottom edges
-        print(rectA.a,rectA.b())
-        topDiff = rectA.b()[1] - rectB.b()[1]
-        botDiff = rectA.a[1] - rectB.a[1]
+        #Make sure rect A is bigger
+        if(rectB.area() > rectA.area()):
+            temp = rectA
+            rectA = rectB
+            rectB = temp
+        
+        #Find out if 3 vertices are outside rectA
+        #If 4, two seperate buildings
 
-        #Move 'smaller' value on top/bottom (lowest if moving top, highest if moving bottom)
-        if(abs(topDiff) <= abs(botDiff)):
-            if(topDiff < 0):
-                rectA.dim[1] += abs(topDiff)
-            else:
-                rectB.dim[1] += abs(topDiff)
-        else:
-            if(botDiff < 0):
-                rectB.a[1] -= abs(botDiff)
-                rectB.dim[1] += abs(botDiff)
-            else:
-                rectA.a[1] -= abs(botDiff) 
-                rectA.dim[1] += abs(botDiff)
+        rectB = rectA.trim(rectB)
 
-        #Check difference of left and right
-            #Move smaller value on left/right (lowest if moving right, highest if moving bottom)
-
+        #Build the first main rect
+        #Build second rectangle if it is there
 
         #Pave the two areas
         rectA.pave(self.world.a, gHeight, b'minecraft:stone')
-
-        rectB.pave(self.world.a, gHeight, b'minecraft:cobblestone')
+        if(rectB):
+            rectB.pave(self.world.a, gHeight, b'minecraft:cobblestone')
