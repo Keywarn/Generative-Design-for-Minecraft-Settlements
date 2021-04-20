@@ -356,6 +356,9 @@ class Rect:
         for i in range(4):
             if(cornerDiffs[i][0] > 0 or cornerDiffs[i][1] > 0):
                 outVerts += 1
+                cornerDiffs[i] = 1
+            else:
+                cornerDiffs[i] = 0
 
         if(outVerts == 0):
             return None
