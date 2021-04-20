@@ -363,7 +363,6 @@ class Rect:
         if(outVerts == 0):
             return None
         if(outVerts == 4):
-            print("RECT COMPLETELY OUT")
             return None
         if(outVerts == 3):
             #top, right, bot, left
@@ -407,11 +406,9 @@ class Rect:
             #Check if top left is inside
             if(rectB.a[0] >= self.a[0] and rectB.b()[1] >= self.a[1]):
                 #move it down
-                print("MOVE DOWN")
                 dif = rectB.b()[1] - self.a[1] + 1
                 rectB.dim[1] -= dif
             else:
-                print("MOVE LEFT")
                 #move it left
                 dif = rectB.b()[0] - self.a[0] + 1
                 rectB.dim[0] -= dif
@@ -480,7 +477,7 @@ class Builder:
         return Rect(corner, dim)
 
 
-    def house(self,a,b, plot = None):
+    def house(self,a,b, palette, plot = None, ):
         if plot: 
             gHeight = plot.height -1
         else:
@@ -505,14 +502,12 @@ class Builder:
         
         #Find out if 3 vertices are outside rectA
         #If 4, two seperate buildings
-        rectA.pave(self.world.a, gHeight, b'minecraft:iron_block')
-        rectB.pave(self.world.a, gHeight, b'minecraft:gold_block')
         rectB = rectA.trim(rectB)
 
         #Build the first main rect
         #Build second rectangle if it is there
 
         #Pave the two areas
-        rectA.pave(self.world.a, gHeight, b'minecraft:stone')
+        rectA.pave(self.world.a, gHeight, palette.floor)
         if(rectB):
-            rectB.pave(self.world.a, gHeight, b'minecraft:cobblestone')
+            rectB.pave(self.world.a, gHeight, palette.floor)

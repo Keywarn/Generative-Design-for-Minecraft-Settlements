@@ -35,6 +35,7 @@ else:
         print(f"Total time to explore taken: {timeObs}")
 
 print("Building".center(30, '-'))
+palette = mapArea.Palette()
 builder = agent.Builder(world)
 
 ba,bb = mapTools.OrderCoords([26,148],[6,166])
@@ -43,7 +44,7 @@ ba = [ba[0]-world.a[0], ba[1]-world.a[1]]
 bb = [bb[0]-world.a[0], bb[1]-world.a[1]]
 
 tic = time.perf_counter()
-builder.house(ba,bb)
+builder.house(ba,bb,palette)
 if(CONSOLE_ARGS.timing):
     print(f"Time to build: {time.perf_counter() - tic}")
 
