@@ -466,7 +466,7 @@ class Builder:
 
     def genRect(self, a, b):
         #Set min size of area
-        minEdge = min((b[0]-a[0])//2,(b[1]-a[1])//2)
+        minEdge = max(min((b[0]-a[0])//3,(b[1]-a[1])//3),4)
         
         #Define are to put rect in
         genEdges = [b[0]-minEdge,b[1]-minEdge]
@@ -502,7 +502,8 @@ class Builder:
         
         #Find out if 3 vertices are outside rectA
         #If 4, two seperate buildings
-
+        rectA.pave(self.world.a, gHeight, b'minecraft:iron_block')
+        rectB.pave(self.world.a, gHeight, b'minecraft:gold_block')
         rectB = rectA.trim(rectB)
 
         #Build the first main rect
