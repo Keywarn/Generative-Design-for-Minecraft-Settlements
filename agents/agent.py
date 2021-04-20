@@ -359,6 +359,9 @@ class Rect:
 
         if(outVerts == 0):
             return None
+        if(outVerts == 4):
+            print("RECT COMPLETELY OUT")
+            return None
         if(outVerts == 3):
             #top, right, bot, left
             diffs = [max(0, rectB.b()[1] - self.b()[1]),max(0, rectB.b()[0] - self.b()[0]),max(0, self.a[1] - rectB.a[1]),max(0, self.a[0] - rectB.a[0])]
@@ -402,15 +405,13 @@ class Rect:
             if(rectB.a[0] >= self.a[0] and rectB.b()[1] >= self.a[1]):
                 #move it down
                 print("MOVE DOWN")
-                # dif = self.b()[1] - rectB.a[1] + 1
-                # rectB.a[1] += dif
-                # rectB.dim[1] -= dif
+                dif = rectB.b()[1] - self.a[1] + 1
+                rectB.dim[1] -= dif
             else:
                 print("MOVE LEFT")
                 #move it left
-                # dif = self.b()[0]-rectB.a[0] + 1
-                # rectB.a[0] += dif
-                # rectB.dim[0] -= dif
+                dif = rectB.b()[0] - self.a[0] + 1
+                rectB.dim[0] -= dif
 
         if(rectB.dim[0] < 3 and rectB.dim[1] < 3):
             return(None)
