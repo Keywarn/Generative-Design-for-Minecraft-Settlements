@@ -389,8 +389,18 @@ class Builder:
         
         houseCorner = [randint(a[0],genEdges[0]),randint(a[1],genEdges[1])]
 
-        dim = [randint(4, b[0]-houseCorner[0]), randint(4, b[1]-houseCorner[1])]
+        dim = [randint(minEdge+(b[0]-houseCorner[0]-minEdge)//2, b[0]-houseCorner[0]), randint(minEdge+(b[1]-houseCorner[1]-minEdge)//2, b[1]-houseCorner[1])]
 
         for x in range (dim[0]):
             for z in range (dim[1]):
                 blocks.SetBlock([houseCorner[0]+x+self.world.a[0], gHeight, houseCorner[1]+z+self.world.a[1]], b'minecraft:stone')
+        
+        houseCornerB = [randint(a[0],genEdges[0]),randint(a[1],genEdges[1])]
+
+        dimB = [randint(minEdge+(b[0]-houseCornerB[0]-minEdge)//2, b[0]-houseCornerB[0]), randint(minEdge+(b[1]-houseCornerB[1]-minEdge)//2, b[1]-houseCornerB[1])]
+
+        for x in range (dimB[0]):
+            for z in range (dimB[1]):
+                blocks.SetBlock([houseCornerB[0]+x+self.world.a[0], gHeight, houseCornerB[1]+z+self.world.a[1]], b'minecraft:cobblestone')
+
+        
