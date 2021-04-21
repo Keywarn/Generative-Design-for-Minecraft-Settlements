@@ -552,7 +552,7 @@ class Builder:
                         if layout[x][z] == 1 and  newfloor:
                             blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.floor)
                         elif layout[x][z] == 2:
-                            if(height == 1):
+                            if(height == 1 and floor == 0):
                                 blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.foundation)
                             elif(newfloor):
                                 blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
