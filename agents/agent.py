@@ -341,8 +341,7 @@ class Rect:
 
     def trim(self, rectB):
         if (self.b()[0] < rectB.a[0] or self.a[0] > rectB.b()[0] or self.b()[1] < rectB.a[1] or self.a[1] > rectB.b()[1]):
-            print("NOT OVERLAPPING")
-            return rectB
+            return rectB, True
 
         #top left, top right, bot right, bot left
         cornerDiffs = [[],[],[],[]]
@@ -361,9 +360,9 @@ class Rect:
                 cornerDiffs[i] = 0
 
         if(outVerts == 0):
-            return None
+            return None, False
         if(outVerts == 4):
-            return None
+            return None, False
         if(outVerts == 3):
             #top, right, bot, left
             diffs = [max(0, rectB.b()[1] - self.b()[1]),max(0, rectB.b()[0] - self.b()[0]),max(0, self.a[1] - rectB.a[1]),max(0, self.a[0] - rectB.a[0])]
@@ -414,13 +413,9 @@ class Rect:
                 rectB.dim[0] -= dif
 
         if(rectB.dim[0] < 3 and rectB.dim[1] < 3):
-            return(None)
+            return(None,False)
 
-        #Check adjusted dimensions to make sure the rect isn't too small
-        # if(rectB.dim[0] < 3 or rectB.dim[1] < 3):
-        #     return None
-
-        return(rectB)
+        return(rectB,False)
 
 
 class Builder:
@@ -477,7 +472,7 @@ class Builder:
         return Rect(corner, dim)
 
 
-    def house(self,a,b, palette, plot = None, ):
+    def build(self,a,b, palette, plot = None, ):
         if plot: 
             gHeight = plot.height -1
         else:
@@ -502,12 +497,33 @@ class Builder:
         
         #Find out if 3 vertices are outside rectA
         #If 4, two seperate buildings
-        rectB = rectA.trim(rectB)
+        rectB,farm = rectA.trim(rectB)
+
+
+        if(not rectB):
+            #Single house
+            print("SINGLE")
+            rectA.pave(self.world.a, gHeight, palette.floor)
+
+            return
+
+        elif(rectB and not farm):
+            #Composite house
+            print("COMPOSITE")
+            rectA.pave(self.world.a, gHeight, palette.floor)
+            rectB.pave(self.world.a, gHeight, palette.floor)
+            return
+
+        else:
+            #House and seperate farm
+            print("FARM")
+            rectA.pave(self.world.a, gHeight, palette.floor)
+            rectB.pave(self.world.a, gHeight, b'minecraft:farmland')
+            return
+
 
         #Build the first main rect
         #Build second rectangle if it is there
 
         #Pave the two areas
-        rectA.pave(self.world.a, gHeight, palette.floor)
-        if(rectB):
-            rectB.pave(self.world.a, gHeight, palette.floor)
+        

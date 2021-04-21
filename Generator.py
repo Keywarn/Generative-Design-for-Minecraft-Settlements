@@ -44,7 +44,7 @@ ba = [ba[0]-world.a[0], ba[1]-world.a[1]]
 bb = [bb[0]-world.a[0], bb[1]-world.a[1]]
 
 tic = time.perf_counter()
-builder.house(ba,bb,palette)
+builder.build(ba,bb,palette)
 if(CONSOLE_ARGS.timing):
     print(f"Time to build: {time.perf_counter() - tic}")
 
