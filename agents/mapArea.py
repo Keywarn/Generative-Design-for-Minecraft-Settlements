@@ -47,3 +47,4 @@ class Palette:
         self.wall       = b'minecraft:oak_planks'
         self.roof       = b'minecraft:cobblestone'
         self.trim       = b'minecraft:oak_log'
+        self.window     = b'minecraft:glass'

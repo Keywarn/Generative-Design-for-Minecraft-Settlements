@@ -500,7 +500,11 @@ class Builder:
                                 ns += 1
                 #3 neighbours, wall
                 if ns == 3:
-                    layout[x][z] = 2
+                    if(randint(0,1) == 1):
+                        #Make it a window
+                        layout[x][z] = 4
+                    else:
+                        layout[x][z] = 2
                 #2 neighbours, corner
                 if ns == 2:
                     layout[x][z] = 3
@@ -508,6 +512,29 @@ class Builder:
 
 
         return layout
+
+    def genShape(self,layout,floors, floorHeight,a,gHeight,palette):
+        for floor in range(floors):
+            for height in range(floorHeight+1):
+                for x in range(len(layout)):
+                    for z in range(len(layout[1])):
+                        newfloor = (floor * floorHeight + height)%floorHeight == 0
+                        if layout[x][z] == 1 and  newfloor:
+                            blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.floor)
+                        elif layout[x][z] == 2 or layout[x][z] == 4:
+                            if(height == 1 and floor == 0):
+                                blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.foundation)
+                            elif(newfloor):
+                                blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
+                            else:
+                                if(layout[x][z] == 4):
+                                    #window
+                                    blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.window)
+                                else:
+                                    blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.wall)
+                        
+                        elif layout[x][z] == 3:
+                            blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
 
 
     def build(self,a,b, palette, plot = None, ):
@@ -544,23 +571,8 @@ class Builder:
         floors = randint(1,3)
         floorHeight = randint(4,6)
 
-        for floor in range(floors):
-            for height in range(floorHeight+1):
-                for x in range(len(layout)):
-                    for z in range(len(layout[1])):
-                        newfloor = (floor * floorHeight + height)%floorHeight == 0
-                        if layout[x][z] == 1 and  newfloor:
-                            blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.floor)
-                        elif layout[x][z] == 2:
-                            if(height == 1 and floor == 0):
-                                blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.foundation)
-                            elif(newfloor):
-                                blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
-                            else:
-                                blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.wall)
-                        
-                        elif layout[x][z] == 3:
-                            blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
+        self.genShape(layout,floors,floorHeight,a,gHeight,palette)
+
         #Build farm
         if(farm):
             print("FARM")
