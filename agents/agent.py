@@ -551,13 +551,15 @@ class Builder:
                         newfloor = (floor * floorHeight + height)%floorHeight == 0
                         if layout[x][z] == 1 and  newfloor:
                             blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.floor)
-                        if layout[x][z] == 2:
-                            if(newfloor):
+                        elif layout[x][z] == 2:
+                            if(height == 1):
+                                blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.foundation)
+                            elif(newfloor):
                                 blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
                             else:
                                 blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.wall)
                         
-                        if layout[x][z] == 3:
+                        elif layout[x][z] == 3:
                             blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
         #Build farm
         if(farm):
