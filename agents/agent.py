@@ -455,7 +455,8 @@ class Builder:
 
         for x in range (a[0], b[0]):
             for z in range (a[1], b[1]):
-                blocks[self.world.blockMap[x][z]] += 1
+                if(self.world.blockMap[x][z]):
+                    blocks[self.world.blockMap[x][z]] += 1
 
         return blocks
 
@@ -540,17 +541,24 @@ class Builder:
         #build the house here
         layout = self.getLayout(rectA,rectB, farm, a, b)
 
-        for x in range(len(layout)):
-            for z in range(len(layout[1])):
-                if layout[x][z] == 1:
-                    blocks.SetBlock([a[0]+x+self.world.a[0], gHeight, a[1]+z+self.world.a[1]], palette.floor)
-                if layout[x][z] == 2:
-                    blocks.SetBlock([a[0]+x+self.world.a[0], gHeight, a[1]+z+self.world.a[1]], palette.wall)
-                if layout[x][z] == 3:
-                    blocks.SetBlock([a[0]+x+self.world.a[0], gHeight, a[1]+z+self.world.a[1]], palette.trim)
-        
-        for row in layout:
-            print(row)
+        floors = randint(1,3)
+        floorHeight = randint(4,6)
+
+        for floor in range(floors):
+            for height in range(floorHeight+1):
+                for x in range(len(layout)):
+                    for z in range(len(layout[1])):
+                        newfloor = (floor * floorHeight + height)%floorHeight == 0
+                        if layout[x][z] == 1 and  newfloor:
+                            blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.floor)
+                        if layout[x][z] == 2:
+                            if(newfloor):
+                                blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
+                            else:
+                                blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.wall)
+                        
+                        if layout[x][z] == 3:
+                            blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
         #Build farm
         if(farm):
             print("FARM")
