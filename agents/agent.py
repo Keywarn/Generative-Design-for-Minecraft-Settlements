@@ -500,26 +500,26 @@ class Builder:
         rectB,farm = rectA.trim(rectB)
 
 
-        if(not rectB):
-            #Single house
-            print("SINGLE")
-            rectA.pave(self.world.a, gHeight, palette.floor)
+        #build the house here
+        layout = [[0 for z in range(b[1]-a[1])] for x in range(b[0]-a[0])]
+        rectA.pave(self.world.a, gHeight, b'minecraft:iron_block')
+        for x in range(rectA.dim[0]):
+            for z in range(rectA.dim[1]):
+                layout[(rectA.a[0]-a[0])+x][(rectA.a[1]-a[1])+z] = 1
+        if(rectB and not farm):
+            rectB.pave(self.world.a, gHeight, b'minecraft:gold_block')
+            for x in range(rectB.dim[0]):
+                for z in range(rectB.dim[1]):
+                    layout[(rectB.a[0]-a[0])+x][(rectB.a[1]-a[1])+z] = 1
 
-            return
-
-        elif(rectB and not farm):
-            #Composite house
-            print("COMPOSITE")
-            rectA.pave(self.world.a, gHeight, palette.floor)
-            rectB.pave(self.world.a, gHeight, palette.floor)
-            return
-
-        else:
-            #House and seperate farm
+        for x in range(len(layout)):
+            for z in range(len(layout[1])):
+                if layout[x][z] == 1:
+                    blocks.SetBlock([a[0]+x+self.world.a[0], gHeight, a[1]+z+self.world.a[1]], palette.floor)
+        #Build farm
+        if(farm):
             print("FARM")
-            rectA.pave(self.world.a, gHeight, palette.floor)
             rectB.pave(self.world.a, gHeight, b'minecraft:farmland')
-            return
 
 
         #Build the first main rect
