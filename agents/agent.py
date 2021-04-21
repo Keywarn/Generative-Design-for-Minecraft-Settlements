@@ -471,6 +471,43 @@ class Builder:
 
         return Rect(corner, dim)
 
+    def getLayout(self, rectA, rectB, farm, a, b):
+        layout = [[0 for z in range(b[1]-a[1])] for x in range(b[0]-a[0])]
+
+        for x in range(rectA.dim[0]):
+            for z in range(rectA.dim[1]):
+                layout[(rectA.a[0]-a[0])+x][(rectA.a[1]-a[1])+z] = 1
+        if(rectB and not farm):
+            for x in range(rectB.dim[0]):
+                for z in range(rectB.dim[1]):
+                    layout[(rectB.a[0]-a[0])+x][(rectB.a[1]-a[1])+z] = 1
+
+        neighbours = [[0,1],[1,0],[0,-1],[-1,0]]
+        for x in range(len(layout)):
+            for z in range(len(layout[0])):
+                ns = 0
+                #If cell is in building
+                if(layout[x][z] > 0):
+                    #for each neighbour
+                    for n in neighbours:
+                        xn = x + n[0]
+                        zn = z + n[1]
+                        #If within building area
+                        if(xn >= 0 and zn >= 0 and xn < len(layout) and zn < len(layout[0])):
+                            #If also building, add neighbour
+                            if(layout[xn][zn] > 0):
+                                ns += 1
+                #3 neighbours, wall
+                if ns == 3:
+                    layout[x][z] = 2
+                #2 neighbours, corner
+                if ns == 2:
+                    layout[x][z] = 3
+
+
+
+        return layout
+
 
     def build(self,a,b, palette, plot = None, ):
         if plot: 
@@ -501,21 +538,19 @@ class Builder:
 
 
         #build the house here
-        layout = [[0 for z in range(b[1]-a[1])] for x in range(b[0]-a[0])]
-        rectA.pave(self.world.a, gHeight, b'minecraft:iron_block')
-        for x in range(rectA.dim[0]):
-            for z in range(rectA.dim[1]):
-                layout[(rectA.a[0]-a[0])+x][(rectA.a[1]-a[1])+z] = 1
-        if(rectB and not farm):
-            rectB.pave(self.world.a, gHeight, b'minecraft:gold_block')
-            for x in range(rectB.dim[0]):
-                for z in range(rectB.dim[1]):
-                    layout[(rectB.a[0]-a[0])+x][(rectB.a[1]-a[1])+z] = 1
+        layout = self.getLayout(rectA,rectB, farm, a, b)
 
         for x in range(len(layout)):
             for z in range(len(layout[1])):
                 if layout[x][z] == 1:
                     blocks.SetBlock([a[0]+x+self.world.a[0], gHeight, a[1]+z+self.world.a[1]], palette.floor)
+                if layout[x][z] == 2:
+                    blocks.SetBlock([a[0]+x+self.world.a[0], gHeight, a[1]+z+self.world.a[1]], palette.wall)
+                if layout[x][z] == 3:
+                    blocks.SetBlock([a[0]+x+self.world.a[0], gHeight, a[1]+z+self.world.a[1]], palette.trim)
+        
+        for row in layout:
+            print(row)
         #Build farm
         if(farm):
             print("FARM")
