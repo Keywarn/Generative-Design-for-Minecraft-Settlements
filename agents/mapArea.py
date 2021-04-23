@@ -1,5 +1,6 @@
 from random import randint
 from collections import defaultdict
+import utils.matrixSize
 
 class MapArea:
 
@@ -37,14 +38,19 @@ class MapArea:
 
                 plot.getVisits(self.visitMap)
 
-                #Change size in here for building area size
-                plot.score = plot.visits + len(plot.cells) + plot.blocks[b'minecraft:water'] * 5 + plot.blocks[plot.woodType] * 3
+                plot.getBuildArea()
 
-                # print("NEW SCORE: ", plot.score)
-                # print("Visits: ", plot.visits)
-                # print("Size: ", len(plot.cells))
-                # print("Water score: ", plot.blocks[b'minecraft:water'] * 5)
-                # print("Wood score", plot.blocks[plot.woodType] * 3)
+                if(plot.buidlAreaA and plot.buildAreaB):
+
+                    size = (plot.buildAreaB[0]-plot.buildAreaA[0])*(plot.buildAreaB[1]-plot.buildAreaA[1])
+                    #Change size in here for building area size
+                    plot.score = plot.visits + size + plot.blocks[b'minecraft:water'] * 5 + plot.blocks[plot.woodType] * 3
+
+                    # print("NEW SCORE: ", plot.score)
+                    # print("Visits: ", plot.visits)
+                    # print("Size: ", len(plot.cells))
+                    # print("Water score: ", plot.blocks[b'minecraft:water'] * 5)
+                    # print("Wood score", plot.blocks[plot.woodType] * 3)
 
         #calculate largest building area and mark
 
@@ -77,6 +83,9 @@ class Plot:
         self.woodType = None
         self.woodness = None
         self.ground = None
+
+        self.buildAreaA = None
+        self.buildAreaB = None
     
     def getGround(self, blockMap):
         for cell in self.cells:
@@ -87,6 +96,30 @@ class Plot:
         for cell in self.cells:
             if(visitMap[cell[0]][cell[1]]):
                 self.visits += visitMap[cell[0]][cell[1]]
+    
+    def getBuildArea(self):
+        minCell = self.cells[0]
+        maxCell = self.cells[1]
+
+        for cell in self.cells:
+            minCell[0] = min(minCell[0], cell[0])
+            minCell[1] = min(minCell[1], cell[1])
+
+            maxCell[0] = max(maxCell[0], cell[0])
+            maxCell[1] = max(maxCell[1], cell[1])
+        
+        cellMap = [[0 for z in range((maxCell[1]-minCell[1]) + 1)] for x in range((maxCell[0]-minCell[0]) + 1)]
+        for cell in self.cells:
+            cellMap[cell[0]-minCell[0]][cell[1]-minCell[1]] = 1
+        
+
+        size, coords = utils.matrixSize.max_size(cellMap, 1)
+        if(size[0] > 3 and size[1] > 3):
+            self.buildAreaA = [minCell[0] + coords[0],minCell[1] + coords[1]]
+            #Check these, size may need to be inverted
+            self.buildAreaB = [self.buildAreaA[0] + size[1]-1, self.buildAreaA[1] + size[0] -1]
+
+
                 
 
 

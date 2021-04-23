@@ -35,6 +35,7 @@ else:
         print(f"Total time to explore taken: {timeObs}")
 
 world.readyPlots()
+
 print("Building".center(30, '-'))
 palette = mapArea.Palette()
 builder = agent.Builder(world)
