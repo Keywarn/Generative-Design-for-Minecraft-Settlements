@@ -44,7 +44,8 @@ ba = [ba[0]-world.a[0], ba[1]-world.a[1]]
 bb = [bb[0]-world.a[0], bb[1]-world.a[1]]
 
 tic = time.perf_counter()
-builder.build(ba,bb,palette)
+building = builder.build(ba,bb,palette)
+print("Finished building with node: ", building.node)
 if(CONSOLE_ARGS.timing):
     print(f"Time to build: {time.perf_counter() - tic}")
 

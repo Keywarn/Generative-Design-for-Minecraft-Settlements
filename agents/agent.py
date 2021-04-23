@@ -417,7 +417,13 @@ class Rect:
 
         return(rectB,False)
 
+class Building:
 
+    def __init__(self, a, b, layout, node):
+        self.a = a
+        self.b = b
+        self.layout = layout
+        self.node = node
 class Builder:
 
     def __init__(self, world):
@@ -465,10 +471,10 @@ class Builder:
         minEdge = max(min((b[0]-a[0])//3,(b[1]-a[1])//3),4)
         
         #Define are to put rect in
-        genEdges = [b[0]-minEdge,b[1]-minEdge]
+        genEdges = [b[0]-(minEdge),b[1]-(minEdge)]
 
-        corner = [randint(a[0],genEdges[0]),randint(a[1],genEdges[1])]
-        dim = [randint(minEdge, b[0]-corner[0]), randint(minEdge, b[1]-corner[1])]
+        corner = [randint(a[0]+1,genEdges[0]),randint(a[1]+1,genEdges[1])]
+        dim = [randint(minEdge, b[0]-corner[0]-1), randint(minEdge, b[1]-corner[1]-1)]
 
         return Rect(corner, dim)
 
@@ -485,6 +491,7 @@ class Builder:
 
         neighbours = [[0,1],[1,0],[0,-1],[-1,0]]
         door = False
+        node = []
         for x in range(len(layout)):
             for z in range(len(layout[0])):
                 ns = 0
@@ -494,11 +501,14 @@ class Builder:
                     for n in neighbours:
                         xn = x + n[0]
                         zn = z + n[1]
+                        lastN = []
                         #If within building area
                         if(xn >= 0 and zn >= 0 and xn < len(layout) and zn < len(layout[0])):
                             #If also building, add neighbour
                             if(layout[xn][zn] > 0):
                                 ns += 1
+                            else:
+                                lastN = [xn,zn]
                 #3 neighbours, wall
                 if ns == 3:
                     if(randint(0,1) == 1):
@@ -507,9 +517,9 @@ class Builder:
                     else:
                         #Door
                         if(randint(0,15) == 1 and not door):
-                            print("door!")
                             door = True
                             layout[x][z] = 5
+                            node = lastN
                         else:
                             layout[x][z] = 2
                 #2 neighbours, corner
@@ -519,14 +529,19 @@ class Builder:
             for x in range(len(layout)):
                 for z in range(len(layout[0])):
                     if(layout[x][z] == 2 and not door):
+                        for n in neighbours:
+                            xn = x + n[0]
+                            zn = z + n[1]
+                            #If within building area
+                            if(xn >= 0 and zn >= 0 and xn < len(layout) and zn < len(layout[0])):
+                                #If not building, set it to be node
+                                if(layout[xn][zn] == 0):
+                                    node = [xn,zn]
                         layout[x][z] = 5
-                        print("door in after")
                         door = True
                         break
-
-
-
-        return layout
+        print(node)
+        return layout, node
 
     def genShape(self,layout,floors, floorHeight,a,gHeight,palette):
         for floor in range(floors):
@@ -539,7 +554,6 @@ class Builder:
                         elif layout[x][z] == 2 or layout[x][z] == 4 or layout[x][z] == 5:
                             if(height == 1 and floor == 0):
                                 if(layout[x][z] == 5):
-                                    print("laying door")
                                     blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.door)
                                 else:
                                     blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.foundation)
@@ -550,26 +564,24 @@ class Builder:
                                 if(layout[x][z] == 4):
                                     #window
                                     blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.window)
-                                elif(not(height == 2 and floor == 0 and layout[x][z] == 5)):
+                                elif(height == 2 and floor == 0 and layout[x][z] == 5):
+                                    #lay door
+                                    blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.door + b'[half=upper]')
+                                else:
                                     blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.wall)
                         
                         elif layout[x][z] == 3:
                             blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
 
 
-    def build(self,a,b, palette, plot = None, ):
+    def build(self,a,b, palette, plot = None):
         if plot: 
             gHeight = plot.height -1
         else:
             gHeight = self.world.heightmap[a[0]][a[1]] -1
 
-        #Get the blocks on the ground
-        ground = self.getGround(a,b,plot)
-
-        #Use the most common one to resurface
-        groundBlock = max(ground, key = ground.get)
         
-        self.clearArea(a,b,gHeight,groundBlock)
+        self.clearArea(a,b,gHeight,palette.ground)
 
         rectA = self.genRect(a,b)
         rectB = self.genRect(a,b)
@@ -586,7 +598,7 @@ class Builder:
 
 
         #build the house here
-        layout = self.getLayout(rectA,rectB, farm, a, b)
+        layout, node = self.getLayout(rectA,rectB, farm, a, b)
 
         floors = randint(1,3)
         floorHeight = randint(4,6)
@@ -595,9 +607,9 @@ class Builder:
 
         #Build farm
         if(farm):
-            print("FARM")
             rectB.pave(self.world.a, gHeight, b'minecraft:farmland')
 
+        return(Building(a,b, layout, node))
 
         #Build the first main rect
         #Build second rectangle if it is there
