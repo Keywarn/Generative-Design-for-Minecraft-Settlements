@@ -1,3 +1,24 @@
+"""Find height, width of the largest rectangle containing all 0's in the matrix.
+The algorithm for `max_size()` is suggested by @j_random_hacker [1].
+The algorithm for `max_rectangle_size()` is from [2].
+The Python implementation [3] is dual licensed under CC BY-SA 3.0
+and ISC license.
+[1]: http://stackoverflow.com/questions/2478447/find-largest-rectangle-containing-only-zeros-in-an-nn-binary-matrix#comment5169734_4671342
+[2]: http://blog.csdn.net/arbuckle/archive/2006/05/06/710988.aspx
+[3]: http://stackoverflow.com/a/4671342
+Copyright (c) 2014, zed <isidore.john.r@gmail.com>
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+"""
+
 from collections import namedtuple
 
 Info = namedtuple('Info', 'start height')
