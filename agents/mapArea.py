@@ -30,14 +30,24 @@ class MapArea:
                 plot.ground = max(plot.blocks, key=plot.blocks.get)
 
                 trees = {k: plot.blocks[k] for k in plot.blocks if (b'log' in k)}
-                plot.woodType = max(trees, key=trees.get)
-                plot.woodness = trees[plot.woodType]
+                if(trees):
+                    plot.woodType = max(trees, key=trees.get)
+                    plot.woodness = trees[plot.woodType]
                 plot.palette = Palette(plot)
 
+                plot.getVisits(self.visitMap)
 
+                #Change size in here for building area size
+                plot.score = plot.visits + len(plot.cells) + plot.blocks[b'minecraft:water'] * 5 + plot.blocks[plot.woodType] * 3
+
+                # print("NEW SCORE: ", plot.score)
+                # print("Visits: ", plot.visits)
+                # print("Size: ", len(plot.cells))
+                # print("Water score: ", plot.blocks[b'minecraft:water'] * 5)
+                # print("Wood score", plot.blocks[plot.woodType] * 3)
 
         #calculate largest building area and mark
-        #give plot a score
+
         #add palette to plot
 
 class Tree:
@@ -56,9 +66,11 @@ class Plot:
         self.cells = []
         self.colour = Plot.wools[Plot.index]
         Plot.index = (Plot.index + 1) % 8
+        self.score = 0
 
         self.buildAreaSize = None
         self.blocks = defaultdict(int)
+        self.visits = 0
         self.buildAreaa = [[],[]]
         
         self.palette = None
@@ -70,6 +82,12 @@ class Plot:
         for cell in self.cells:
             if(blockMap[cell[0]][cell[1]]):
                 self.blocks[blockMap[cell[0]][cell[1]]] += 1
+
+    def getVisits(self, visitMap):
+        for cell in self.cells:
+            if(visitMap[cell[0]][cell[1]]):
+                self.visits += visitMap[cell[0]][cell[1]]
+                
 
 
 class Palette:
