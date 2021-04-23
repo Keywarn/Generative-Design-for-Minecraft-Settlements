@@ -175,7 +175,7 @@ class Controller:
             j = i + 1
             while j < numPlots:
                 b = adjPlots[j]
-                if(a.height == b.height):
+                if(a.height == b.height and len(a.cells) < CONSOLE_ARGS.maxPlotSize and len(b.cells) < CONSOLE_ARGS.maxPlotSize):
                     if(len(a.cells) >= len(b.cells)):
                         self.mergePlots(a,b)
                         adjPlots.remove(b)
