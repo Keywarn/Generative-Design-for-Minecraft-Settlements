@@ -48,3 +48,4 @@ class Palette:
         self.roof       = b'minecraft:cobblestone'
         self.trim       = b'minecraft:oak_log'
         self.window     = b'minecraft:glass'
+        self.door       = b'oak_minecraft:'

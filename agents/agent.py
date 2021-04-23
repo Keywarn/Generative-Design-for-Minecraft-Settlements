@@ -484,6 +484,7 @@ class Builder:
                     layout[(rectB.a[0]-a[0])+x][(rectB.a[1]-a[1])+z] = 1
 
         neighbours = [[0,1],[1,0],[0,-1],[-1,0]]
+        door = False
         for x in range(len(layout)):
             for z in range(len(layout[0])):
                 ns = 0
@@ -504,10 +505,24 @@ class Builder:
                         #Make it a window
                         layout[x][z] = 4
                     else:
-                        layout[x][z] = 2
+                        #Door
+                        if(randint(0,15) == 1 and not door):
+                            print("door!")
+                            door = True
+                            layout[x][z] = 5
+                        else:
+                            layout[x][z] = 2
                 #2 neighbours, corner
                 if ns == 2:
                     layout[x][z] = 3
+        if not door:
+            for x in range(len(layout)):
+                for z in range(len(layout[0])):
+                    if(layout[x][z] == 2 and not door):
+                        layout[x][z] = 5
+                        print("door in after")
+                        door = True
+                        break
 
 
 
@@ -521,16 +536,21 @@ class Builder:
                         newfloor = (floor * floorHeight + height)%floorHeight == 0
                         if layout[x][z] == 1 and  newfloor:
                             blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.floor)
-                        elif layout[x][z] == 2 or layout[x][z] == 4:
+                        elif layout[x][z] == 2 or layout[x][z] == 4 or layout[x][z] == 5:
                             if(height == 1 and floor == 0):
-                                blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.foundation)
+                                if(layout[x][z] == 5):
+                                    print("laying door")
+                                    blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.door)
+                                else:
+                                    blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.foundation)
+
                             elif(newfloor):
                                 blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
                             else:
                                 if(layout[x][z] == 4):
                                     #window
                                     blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.window)
-                                else:
+                                elif(not(height == 2 and floor == 0 and layout[x][z] == 5)):
                                     blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.wall)
                         
                         elif layout[x][z] == 3:
