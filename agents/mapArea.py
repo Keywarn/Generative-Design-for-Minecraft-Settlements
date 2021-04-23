@@ -82,7 +82,7 @@ class Palette:
                 self.foundation = plot.ground+ b'stone'
                 self.floor      = b'minecraft:stone'
                 self.wall       = plot.ground.replace(b'minecraft:', b'minecraft:cut') + b'stone'
-                self.roof       = b'minecraft:cobblestone'
+                self.roof       = b'minecraft:air'
                 self.trim       = plot.ground.replace(b'minecraft:', b'minecraft:chiseled_') + b'stone'
                 self.window     = b'minecraft:glass'
                 self.door       = b'minecraft:air'
@@ -92,6 +92,38 @@ class Palette:
                     if(plot.woodness) > 3:
                         self.trim = plot.woodType
                         self.door = plot.woodType.replace(b'log', b'door')
+            if(b'stone' in plot.ground):
+                self.foundation = b'minecraft:stone'
+                self.floor      = b'minecraft:stone'
+                self.wall       = b'minecraft:stone_bricks'
+                self.roof       = b'minecraft:cobblestone'
+                self.trim       = b'minecrfat:chiseled_stone_bricks'
+                self.window     = b'minecraft:glass'
+                self.door       = b'minecraft:air'
+                self.ground     = plot.ground
+                if(plot.woodType):
+                    self.floor  = plot.woodType.replace(b'log', b'planks')
+                    self.door = plot.woodType.replace(b'log', b'door')
+                    if(plot.woodness) > 3:
+                        self.trim = plot.woodType
+                    if(plot.woodness > 5):
+                        self.wall = plot.woodType.replace(b'log', b'planks')
+            else:
+                self.foundation = b'minecraft:cobblestone'
+                self.floor      = b'minecraft:stone'
+                self.wall       = b'minecraft:stone'
+                self.roof       = b'minecraft:cobblestone'
+                self.trim       = b'minecrfat:cobblestone'
+                self.window     = b'minecraft:glass'
+                self.door       = b'minecraft:air'
+                self.ground     = plot.ground
+                if(plot.woodType):
+                    self.floor  = plot.woodType.replace(b'log', b'planks')
+                    self.door = plot.woodType.replace(b'log', b'door')
+                    if(plot.woodness) > 3:
+                        self.trim = plot.woodType
+                    if(plot.woodness > 5):
+                        self.wall = plot.woodType.replace(b'log', b'planks')
 
 
         else:
