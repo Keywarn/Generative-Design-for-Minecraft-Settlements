@@ -27,15 +27,15 @@ class MapArea:
         for plot in self.plots:
             if(len(plot.cells) > 25):
                 plot.getGround(self.blockMap)
-                ground = max(plot.blocks, key=plot.blocks.get)
-                print(ground)
+                plot.ground = max(plot.blocks, key=plot.blocks.get)
 
                 trees = {k: plot.blocks[k] for k in plot.blocks if (b'log' in k)}
-                woodType = max(trees, key=trees.get)
+                plot.woodType = max(trees, key=trees.get)
+                plot.woodness = trees[plot.woodType]
+                plot.palette = Palette(plot)
 
-        #get tree type
-        #get woodness
-        #assign wood to palette
+
+
         #calculate largest building area and mark
         #give plot a score
         #add palette to plot
@@ -63,6 +63,7 @@ class Plot:
         
         self.palette = None
         self.woodType = None
+        self.woodness = None
         self.ground = None
     
     def getGround(self, blockMap):
@@ -75,11 +76,30 @@ class Palette:
 
 
     def __init__(self, plot = None):
-        self.foundation = b'minecraft:stone'
-        self.floor      = b'minecraft:oak_planks'
-        self.wall       = b'minecraft:oak_planks'
-        self.roof       = b'minecraft:cobblestone'
-        self.trim       = b'minecraft:oak_log'
-        self.window     = b'minecraft:glass'
-        self.door       = b'minecraft:oak_door'
-        self.ground     = b'minecraft:grass_block'
+        if plot:
+            #Plot is sand based
+            if(b'sand' in plot.ground):
+                self.foundation = plot.ground+ b'stone'
+                self.floor      = b'minecraft:stone'
+                self.wall       = plot.ground.replace(b'minecraft:', b'minecraft:cut') + b'stone'
+                self.roof       = b'minecraft:cobblestone'
+                self.trim       = plot.ground.replace(b'minecraft:', b'minecraft:chiseled_') + b'stone'
+                self.window     = b'minecraft:glass'
+                self.door       = b'minecraft:air'
+                self.ground     = plot.ground
+                if(plot.woodType):
+                    self.floor  = plot.woodType.replace(b'log', b'planks')
+                    if(plot.woodness) > 3:
+                        self.trim = plot.woodType
+                        self.door = plot.woodType.replace(b'log', b'door')
+
+
+        else:
+            self.foundation = b'minecraft:stone'
+            self.floor      = b'minecraft:oak_planks'
+            self.wall       = b'minecraft:oak_planks'
+            self.roof       = b'minecraft:cobblestone'
+            self.trim       = b'minecraft:oak_log'
+            self.window     = b'minecraft:glass'
+            self.door       = b'minecraft:oak_door'
+            self.ground     = b'minecraft:grass_block'
