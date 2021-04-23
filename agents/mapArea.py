@@ -40,7 +40,7 @@ class MapArea:
 
                 plot.getBuildArea()
 
-                if(plot.buidlAreaA and plot.buildAreaB):
+                if(plot.buildAreaA and plot.buildAreaB):
 
                     size = (plot.buildAreaB[0]-plot.buildAreaA[0])*(plot.buildAreaB[1]-plot.buildAreaA[1])
                     #Change size in here for building area size
@@ -114,8 +114,9 @@ class Plot:
         
 
         size, coords = utils.matrixSize.max_size(cellMap, 1)
-        if(size[0] > 3 and size[1] > 3):
-            self.buildAreaA = [minCell[0] + coords[0],minCell[1] + coords[1]]
+        if(size[0] > 6 and size[1] > 6):
+            self.buildAreaA = [minCell[0] + coords[1],minCell[1] + coords[0]]
+            print(self.buildAreaA)
             #Check these, size may need to be inverted
             self.buildAreaB = [self.buildAreaA[0] + size[1]-1, self.buildAreaA[1] + size[0] -1]
 
@@ -164,7 +165,7 @@ class Palette:
                 self.floor      = b'minecraft:stone'
                 self.wall       = b'minecraft:stone'
                 self.roof       = b'minecraft:cobblestone'
-                self.trim       = b'minecrfat:cobblestone'
+                self.trim       = b'minecraft:cobblestone'
                 self.window     = b'minecraft:glass'
                 self.door       = b'minecraft:air'
                 self.ground     = plot.ground
