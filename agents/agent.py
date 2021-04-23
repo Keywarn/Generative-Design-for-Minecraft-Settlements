@@ -467,14 +467,17 @@ class Builder:
         return blocks
 
     def genRect(self, a, b):
+        #shrink by one each
+        a = [a[0] + 1, a[1]+1]
+        b = [b[0]-1, b[1]-1]
         #Set min size of area
         minEdge = max(min((b[0]-a[0])//3,(b[1]-a[1])//3),4)
         
         #Define are to put rect in
         genEdges = [b[0]-(minEdge),b[1]-(minEdge)]
 
-        corner = [randint(a[0]+1,genEdges[0]),randint(a[1]+1,genEdges[1])]
-        dim = [randint(minEdge, b[0]-corner[0]-1), randint(minEdge, b[1]-corner[1]-1)]
+        corner = [randint(a[0],genEdges[0]),randint(a[1],genEdges[1])]
+        dim = [randint(minEdge, b[0]-corner[0]), randint(minEdge, b[1]-corner[1])]
 
         return Rect(corner, dim)
 
@@ -540,7 +543,6 @@ class Builder:
                         layout[x][z] = 5
                         door = True
                         break
-        print(node)
         return layout, node
 
     def genShape(self,layout,floors, floorHeight,a,gHeight,palette):
@@ -572,6 +574,9 @@ class Builder:
                         
                         elif layout[x][z] == 3:
                             blocks.SetBlock([a[0]+x+self.world.a[0], gHeight + (floor*floorHeight) + height, a[1]+z+self.world.a[1]], palette.trim)
+                        
+                        if(layout[x][z] > 0):
+                            self.world.heightmap[a[0] +x][a[1] + z] += 1
 
 
     def build(self,a,b, palette, plot = None):
