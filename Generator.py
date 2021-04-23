@@ -32,12 +32,23 @@ else:
                     observed += 1
         print(f"Cells observed: {observed}")
         print(f"Cells per second: {observed/timeObs}")
-        print(f"Total time taken: {timeObs}")
+        print(f"Total time to explore taken: {timeObs}")
 
-print("Converting Colour Map".center(30, '-'))
-colourMap = mapTools.convertBlockMap(world.blockMap)
-print("Converting Plot Map".center(30, '-'))
-plotMap = mapTools.convertPlotMap(world.plots, world.size)
+print("Building".center(30, '-'))
+palette = mapArea.Palette()
+builder = agent.Builder(world)
+
+ba,bb = mapTools.OrderCoords([26,148],[6,166])
+
+ba = [ba[0]-world.a[0], ba[1]-world.a[1]]
+bb = [bb[0]-world.a[0], bb[1]-world.a[1]]
+
+tic = time.perf_counter()
+building = builder.build(ba,bb,palette)
+print("Finished building with node: ", building.node)
+if(CONSOLE_ARGS.timing):
+    print(f"Time to build: {time.perf_counter() - tic}")
+
 
 if(CONSOLE_ARGS.paint):
     print("Painting World".center(30, '-'))
@@ -48,10 +59,19 @@ if(CONSOLE_ARGS.output):
     print("Saving World".center(30, '-'))
     with open("world.map","wb+") as worldFile:
         pickle.dump(world, worldFile)
+    print("Saved".center(30, '-'))
 
-mapTools.showMap(world.heightmap, a, b,'Surface Heightmap')
-mapTools.showMap(colourMap, a, b,'Surface Blocks')
-mapTools.showMap(world.visitMap, a, b,'Agent cell visit heatmap')
-mapTools.showMap(plotMap, a, b,'Building Plot Map')
+if(not CONSOLE_ARGS.noGraph):
+    print("Converting Colour Map".center(30, '-'))
+    colourMap = mapTools.convertBlockMap(world.blockMap)
+    print("Converting Plot Map".center(30, '-'))
+    plotMap = mapTools.convertPlotMap(world.plots, world.size)
 
-print("Finishing".center(30, '-'))
+    print("Displaying".center(30, '-'))
+
+    mapTools.showMap(world.heightmap, a, b,'Surface Heightmap')
+    mapTools.showMap(colourMap, a, b,'Surface Blocks')
+    mapTools.showMap(world.visitMap, a, b,'Agent cell visit heatmap')
+    mapTools.showMap(plotMap, a, b,'Building Plot Map')
+
+    print("Finishing".center(30, '-'))
