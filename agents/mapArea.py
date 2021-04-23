@@ -1,4 +1,6 @@
 from random import randint
+from collections import defaultdict
+
 class MapArea:
 
     def __init__(self,a,b):
@@ -21,6 +23,23 @@ class MapArea:
             print(f"{tree.type} at {tree.pos}")
         print("".center(30, '-'))
 
+    def readyPlots(self):
+        for plot in self.plots:
+            if(len(plot.cells) > 25):
+                plot.getGround(self.blockMap)
+                ground = max(plot.blocks, key=plot.blocks.get)
+                print(ground)
+
+                trees = {k: plot.blocks[k] for k in plot.blocks if (b'log' in k)}
+                woodType = max(trees, key=trees.get)
+
+        #get tree type
+        #get woodness
+        #assign wood to palette
+        #calculate largest building area and mark
+        #give plot a score
+        #add palette to plot
+
 class Tree:
 
     def __init__(self, pos, type):
@@ -37,6 +56,20 @@ class Plot:
         self.cells = []
         self.colour = Plot.wools[Plot.index]
         Plot.index = (Plot.index + 1) % 8
+
+        self.buildAreaSize = None
+        self.blocks = defaultdict(int)
+        self.buildAreaa = [[],[]]
+        
+        self.palette = None
+        self.woodType = None
+        self.ground = None
+    
+    def getGround(self, blockMap):
+        for cell in self.cells:
+            if(blockMap[cell[0]][cell[1]]):
+                self.blocks[blockMap[cell[0]][cell[1]]] += 1
+
 
 class Palette:
 

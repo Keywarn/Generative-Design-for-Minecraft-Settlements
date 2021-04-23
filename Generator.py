@@ -34,6 +34,7 @@ else:
         print(f"Cells per second: {observed/timeObs}")
         print(f"Total time to explore taken: {timeObs}")
 
+world.readyPlots()
 print("Building".center(30, '-'))
 palette = mapArea.Palette()
 builder = agent.Builder(world)

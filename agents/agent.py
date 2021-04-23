@@ -3,7 +3,6 @@ import time
 from utils.console_args import CONSOLE_ARGS 
 import time
 from agents.mapArea import Plot
-from collections import defaultdict
 from random import randint
 
 class Agent:
@@ -454,17 +453,6 @@ class Builder:
                 self.world.heightmap[x][z] = gHeight + 1
                     
                 self.world.blockMap[x][z] = ground
-
-    def getGround(self, a,b, plot):
-
-        blocks = defaultdict(int)
-
-        for x in range (a[0], b[0]):
-            for z in range (a[1], b[1]):
-                if(self.world.blockMap[x][z]):
-                    blocks[self.world.blockMap[x][z]] += 1
-
-        return blocks
 
     def genRect(self, a, b):
         #shrink by one each
