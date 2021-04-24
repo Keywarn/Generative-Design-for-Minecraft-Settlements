@@ -282,7 +282,7 @@ class Controller:
                                             if(self.maze[xn][zn].plot not in adjPlots): adjPlots.append(self.maze[xn][zn].plot)
                                             
                                             hmDiff = abs(self.world.heightmap[x][z] - self.maze[xn][zn].plot.height)
-                                            if(hmDiff <= 1 and len(self.maze[xn][zn].plot.cells) > plotSize):
+                                            if(hmDiff <= CONSOLE_ARGS.heightDiff and len(self.maze[xn][zn].plot.cells) > plotSize and len(self.maze[xn][zn].plot.cells) < CONSOLE_ARGS.maxPlotSize):
                                                 plotSize = len(self.maze[xn][zn].plot.cells)
                                                 plotAdd = self.maze[xn][zn].plot
 
@@ -459,7 +459,7 @@ class Builder:
         a = [a[0] + 1, a[1]+1]
         b = [b[0]-1, b[1]-1]
         #Set min size of area
-        minEdge = max(min((b[0]-a[0])//3,(b[1]-a[1])//3),4)
+        minEdge = max(min((b[0]-a[0])//3,(b[1]-a[1])//3),CONSOLE_ARGS.minBuildSize)
         
         #Define are to put rect in
         genEdges = [b[0]-(minEdge),b[1]-(minEdge)]
@@ -593,8 +593,8 @@ class Builder:
         #build the house here
         layout, node = self.getLayout(rectA,rectB, farm, a, b)
 
-        floors = randint(1,3)
-        floorHeight = randint(4,6)
+        floors = randint(1,CONSOLE_ARGS.maxFloors)
+        floorHeight = randint(3,CONSOLE_ARGS.moxFloorHeight)
 
         self.genShape(layout,floors,floorHeight,a,gHeight,palette)
 

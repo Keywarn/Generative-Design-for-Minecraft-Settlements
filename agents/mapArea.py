@@ -1,6 +1,7 @@
 from random import randint
 from collections import defaultdict
 import utils.matrixSize
+from utils.console_args import CONSOLE_ARGS 
 
 class MapArea:
 
@@ -26,7 +27,7 @@ class MapArea:
 
     def readyPlots(self):
         for plot in self.plots:
-            if(len(plot.cells) > 25):
+            if(len(plot.cells) > CONSOLE_ARGS.minBuildSize * CONSOLE_ARGS.minBuildSize):
                 plot.getGround(self.blockMap)
                 plot.ground = max(plot.blocks, key=plot.blocks.get)
 
@@ -35,6 +36,9 @@ class MapArea:
                     plot.woodType = max(trees, key=trees.get)
                     plot.woodness = trees[plot.woodType]
                 plot.palette = Palette(plot)
+
+                print(plot.ground)
+                print(plot.palette.trim)
 
                 plot.getVisits(self.visitMap)
 
@@ -114,11 +118,10 @@ class Plot:
         
 
         size, coords = utils.matrixSize.max_size(cellMap, 1)
-        if(size[0] > 6 and size[1] > 6):
+        if(size[0] > CONSOLE_ARGS.minBuildSize + 2 and size[1] > CONSOLE_ARGS.minBuildSize + 2):
             self.buildAreaA = [minCell[0] + coords[1],minCell[1] + coords[0]]
-            print(self.buildAreaA)
             #Check these, size may need to be inverted
-            self.buildAreaB = [self.buildAreaA[0] + size[1]-1, self.buildAreaA[1] + size[0] -1]
+            self.buildAreaB = [self.buildAreaA[0] + size[0]-1, self.buildAreaA[1] + size[1] -1]
 
 
                 
@@ -144,7 +147,7 @@ class Palette:
                     if(plot.woodness) > 3:
                         self.trim = plot.woodType
                         self.door = plot.woodType.replace(b'log', b'door')
-            if(b'stone' in plot.ground):
+            elif(b'stone' in plot.ground):
                 self.foundation = b'minecraft:stone'
                 self.floor      = b'minecraft:stone'
                 self.wall       = b'minecraft:stone_bricks'

@@ -20,8 +20,13 @@ def _parse_arguments():
     parser.add_argument('--paint', dest='paint', action='store_true', help='Paint the plotmaps onto minecraft world')
     
     #Tuning Params
-    parser.add_argument('-steps', dest='steps',help='Set how many iterations should be sued during exploration stage (default is -1, explore whole area)', default = -1, type=int)
-    parser.add_argument('-maxPlotSize', dest='maxPlotSize',help='Set the maximum plot size for merging, smaller numbers results in denser populations but smaller buildings', default = 250, type=int)
+    parser.add_argument('-steps', dest='steps',help='Set how many iterations should be used during exploration stage (default is -1, explore whole area)', default = -1, type=int)
+    
+    parser.add_argument('-maxPlotSize', dest='maxPlotSize',help='Set the maximum plot size for merging, smaller numbers results in denser populations but smaller buildings, default 250', default = 250, type=int)
+    parser.add_argument('-maxFloors', dest='maxFloors',help='Set the maximum number of floors of a building, default 2', default = 2, type=int)
+    parser.add_argument('-maxFloorHeight', dest='moxFloorHeight',help='Set the maximum height of each floor, default 4', default = 4, type=int)
+    parser.add_argument('-minBuildSize', dest='minBuildSize',help='Set the minimum size of a building, default 4', default = 4, type=int)
+    parser.add_argument('-heightDiff', dest='heightDiff',help='Difference in height acceptable for a plot, default 1', default = 1, type=int)
     return parser.parse_args()
 
 CONSOLE_ARGS =  _parse_arguments()
