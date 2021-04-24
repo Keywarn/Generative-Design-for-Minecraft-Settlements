@@ -136,7 +136,7 @@ class Palette:
             if(b'sand' in plot.ground):
                 self.foundation = plot.ground+ b'stone'
                 self.floor      = b'minecraft:stone'
-                self.wall       = plot.ground.replace(b'minecraft:', b'minecraft:cut') + b'stone'
+                self.wall       = plot.ground.replace(b'minecraft:', b'minecraft:cut_') + b'stone'
                 self.roof       = b'minecraft:air'
                 self.trim       = plot.ground.replace(b'minecraft:', b'minecraft:chiseled_') + b'stone'
                 self.window     = b'minecraft:glass'
