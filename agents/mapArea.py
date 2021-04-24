@@ -37,9 +37,6 @@ class MapArea:
                     plot.woodness = trees[plot.woodType]
                 plot.palette = Palette(plot)
 
-                print(plot.ground)
-                print(plot.palette.trim)
-
                 plot.getVisits(self.visitMap)
 
                 plot.getBuildArea()
