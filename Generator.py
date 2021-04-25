@@ -43,7 +43,7 @@ world.plots.sort(key=lambda x: x.score, reverse=True)
 for plot in world.plots:
     if(plot.score > 0):
         for area in plot.buildArea:
-            building = builder.build(area[0],area[1], plot.palette)
+            building = builder.build(area[0],area[1], plot.palette,plot)
         # for area in plot.buildArea:
         #     for x in range(area[0][0],area[1][0]):
         #         for z in range(area[0][1],area[1][1]):
