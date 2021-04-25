@@ -41,9 +41,9 @@ class MapArea:
 
                 plot.getBuildArea()
 
-                if(plot.buildAreaA and plot.buildAreaB):
+                if(plot.buildArea):
 
-                    size = (plot.buildAreaB[0]-plot.buildAreaA[0])*(plot.buildAreaB[1]-plot.buildAreaA[1])
+                    size = len(plot.cells)
                     #Change size in here for building area size
                     plot.score = plot.visits + size + plot.blocks[b'minecraft:water'] * 5 + plot.blocks[plot.woodType] * 3
 
@@ -85,8 +85,7 @@ class Plot:
         self.woodness = None
         self.ground = None
 
-        self.buildAreaA = None
-        self.buildAreaB = None
+        self.buildArea = []
     
     def getGround(self, blockMap):
         for cell in self.cells:
@@ -113,12 +112,19 @@ class Plot:
         for cell in self.cells:
             cellMap[cell[0]-minCell[0]][cell[1]-minCell[1]] = 1
         
+        valid = True
+        while valid:
+            
 
-        size, coords = utils.matrixSize.max_size(cellMap, 1)
-        if(size[0] > CONSOLE_ARGS.minBuildSize + 2 and size[1] > CONSOLE_ARGS.minBuildSize + 2):
-            self.buildAreaA = [minCell[0] + coords[1],minCell[1] + coords[0]]
-            #Check these, size may need to be inverted
-            self.buildAreaB = [self.buildAreaA[0] + size[0]-1, self.buildAreaA[1] + size[1] -1]
+            size, coords = utils.matrixSize.max_size(cellMap, 1)
+            if(size[0] > CONSOLE_ARGS.minBuildSize + 2 and size[1] > CONSOLE_ARGS.minBuildSize + 2):
+                self.buildArea.append([[minCell[0] + coords[1],minCell[1] + coords[0]],[minCell[0] + coords[1] + size[0]-1, minCell[1] + coords[0] + size[1] -1]])
+                #Check these, size may need to be inverted
+                for x in range (coords[1], coords[1]+size[0]):
+                    for z in range(coords[0], coords[0] + size[1]):
+                        cellMap[x][z] = 0
+            else:
+                valid = False
 
 
                 

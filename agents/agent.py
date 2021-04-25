@@ -175,7 +175,7 @@ class Controller:
             j = i + 1
             while j < numPlots:
                 b = adjPlots[j]
-                if(abs(a.height - b.height) <= CONSOLE_ARGS.heightDiff and len(a.cells) < CONSOLE_ARGS.maxPlotSize and len(b.cells) < CONSOLE_ARGS.maxPlotSize):
+                if(abs(a.height - b.height) <= CONSOLE_ARGS.heightDiff and len(a.cells) + len(b.cells) <= CONSOLE_ARGS.maxPlotSize):
                     if(len(a.cells) >= len(b.cells)):
                         self.mergePlots(a,b)
                         adjPlots.remove(b)
@@ -459,7 +459,7 @@ class Builder:
         a = [a[0] + 1, a[1]+1]
         b = [b[0]-1, b[1]-1]
         #Set min size of area
-        minEdge = max(min((b[0]-a[0])//3,(b[1]-a[1])//3),CONSOLE_ARGS.minBuildSize)
+        minEdge = max(min((b[0]-a[0])//2,(b[1]-a[1])//3),CONSOLE_ARGS.minBuildSize)
         
         #Define are to put rect in
         genEdges = [b[0]-(minEdge),b[1]-(minEdge)]

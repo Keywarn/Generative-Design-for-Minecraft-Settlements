@@ -1,5 +1,5 @@
 from agents import agent,mapArea
-from mcutils import mapTools
+from mcutils import mapTools,blocks
 from utils.console_args import CONSOLE_ARGS 
 import time, pickle
 
@@ -42,7 +42,12 @@ world.plots.sort(key=lambda x: x.score, reverse=True)
 
 for plot in world.plots:
     if(plot.score > 0):
-        building = builder.build(plot.buildAreaA,plot.buildAreaB, plot.palette)
+        for area in plot.buildArea:
+            building = builder.build(area[0],area[1], plot.palette)
+        # for area in plot.buildArea:
+        #     for x in range(area[0][0],area[1][0]):
+        #         for z in range(area[0][1],area[1][1]):
+        #             blocks.SetBlock([x+world.a[0], world.heightmap[x][z], z+world.a[1]], b'minecraft:gold_block')
 
 if(CONSOLE_ARGS.timing):
     print(f"Time to build: {time.perf_counter() - tic}")
