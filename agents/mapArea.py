@@ -2,6 +2,8 @@ from random import randint
 from collections import defaultdict
 import utils.matrixSize
 from utils.console_args import CONSOLE_ARGS 
+from agents import agent
+from mcutils import blocks
 
 class MapArea:
 
@@ -12,9 +14,12 @@ class MapArea:
         self.heightmap = [[-1 for z in range(self.size[1])] for x in range(self.size[0])]
         self.blockMap = [[None for z in range(self.size[1])] for x in range(self.size[0])]
         self.visitMap = [[0 for z in range(self.size[1])] for x in range(self.size[0])]
+        self.pathMap = [[0 for z in range(self.size[1])] for x in range(self.size[0])]
 
         self.trees = []
         self.plots = []
+        self.buildings = []
+        
 
     def addTree(self, pos, type):
         self.trees.append(Tree(pos,type))
@@ -56,6 +61,43 @@ class MapArea:
         #calculate largest building area and mark
 
         #add palette to plot
+
+    def addBuilding(self, new):
+        #Find closest building
+        paver = agent.PathFinder(self)
+        closestBuild = None
+        path = None
+        dist = 9999
+        for building in self.buildings:
+            print(building.node)
+            buildingNode = [building.node[0] + building.a[0], building.node[1] + building.a[1]]
+            print(new.node)
+            newNode = [new.node[0] + new.a[0], new.node[1] + new.a[1]]
+            print(buildingNode)
+            print(newNode)
+            pave = paver.findPaver(newNode, buildingNode, self.a)
+            if(pave):
+                if len(pave) <= dist:
+                    path = pave
+                    closestBuild = building
+        
+        if(path):
+            self.pave(path)
+
+        self.buildings.append(new)
+    
+    def pave(self, path):
+        for loc,bridge in path:
+            self.pathMap[loc[0]-self.a[0]][loc[1]-self.a[1]] += 1
+            #Bridges are one above the heightmap
+            if(bridge):
+                blocks.SetBlock([loc[0], self.heightmap, loc[1]], b'minecraft:gold_block')
+            else:
+                blocks.SetBlock([loc[0], self.heightmap-1, loc[1]], b'minecraft:iron_block')
+
+
+
+
 
 class Tree:
 
