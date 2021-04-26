@@ -111,7 +111,7 @@ def convertBlockMap(blockMap):
             colourMap[x][z] = blockColours.get(blockMap[x][z], [0,0,0,255])
             if(colourMap[x][z] == [0,0,0,255] and blockMap[x][z] != None):
                 colourMap[x][z] = [255,192,203,255]
-                print(f"Un-Coloured block: {blockMap[x][z]}")
+                #print(f"Un-Coloured block: {blockMap[x][z]}")
     
     return colourMap
 

@@ -3,7 +3,6 @@ import time
 from utils.console_args import CONSOLE_ARGS 
 import time
 from agents.mapArea import Plot
-from collections import defaultdict
 from random import randint
 
 class Agent:
@@ -176,7 +175,7 @@ class Controller:
             j = i + 1
             while j < numPlots:
                 b = adjPlots[j]
-                if(a.height == b.height):
+                if(abs(a.height - b.height) <= CONSOLE_ARGS.heightDiff and len(a.cells) + len(b.cells) <= CONSOLE_ARGS.maxPlotSize):
                     if(len(a.cells) >= len(b.cells)):
                         self.mergePlots(a,b)
                         adjPlots.remove(b)
@@ -283,7 +282,7 @@ class Controller:
                                             if(self.maze[xn][zn].plot not in adjPlots): adjPlots.append(self.maze[xn][zn].plot)
                                             
                                             hmDiff = abs(self.world.heightmap[x][z] - self.maze[xn][zn].plot.height)
-                                            if(hmDiff <= 1 and len(self.maze[xn][zn].plot.cells) > plotSize):
+                                            if(hmDiff <= CONSOLE_ARGS.heightDiff and len(self.maze[xn][zn].plot.cells) > plotSize and len(self.maze[xn][zn].plot.cells) < CONSOLE_ARGS.maxPlotSize):
                                                 plotSize = len(self.maze[xn][zn].plot.cells)
                                                 plotAdd = self.maze[xn][zn].plot
 
@@ -455,23 +454,12 @@ class Builder:
                     
                 self.world.blockMap[x][z] = ground
 
-    def getGround(self, a,b, plot):
-
-        blocks = defaultdict(int)
-
-        for x in range (a[0], b[0]):
-            for z in range (a[1], b[1]):
-                if(self.world.blockMap[x][z]):
-                    blocks[self.world.blockMap[x][z]] += 1
-
-        return blocks
-
     def genRect(self, a, b):
         #shrink by one each
         a = [a[0] + 1, a[1]+1]
         b = [b[0]-1, b[1]-1]
         #Set min size of area
-        minEdge = max(min((b[0]-a[0])//3,(b[1]-a[1])//3),4)
+        minEdge = max(min((b[0]-a[0])//2,(b[1]-a[1])//3),CONSOLE_ARGS.minBuildSize)
         
         #Define are to put rect in
         genEdges = [b[0]-(minEdge),b[1]-(minEdge)]
@@ -605,8 +593,8 @@ class Builder:
         #build the house here
         layout, node = self.getLayout(rectA,rectB, farm, a, b)
 
-        floors = randint(1,3)
-        floorHeight = randint(4,6)
+        floors = randint(1,CONSOLE_ARGS.maxFloors)
+        floorHeight = randint(3,CONSOLE_ARGS.moxFloorHeight)
 
         self.genShape(layout,floors,floorHeight,a,gHeight,palette)
 
