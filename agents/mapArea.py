@@ -78,7 +78,10 @@ class MapArea:
         self.buildings.append(new)
     
     def pave(self, path):
-        for loc,bridge in path:
+        for i in range(len(path)-1):
+            loc = path[i][0]
+            bridge = path[i][1]
+
             self.pathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] += 1
             height = self.heightmap[loc[0]-self.a[0]][loc[2]-self.a[1]]
             #Bridges are one above the heightmap
@@ -86,19 +89,54 @@ class MapArea:
                 blocks.SetBlock([loc[0], height, loc[2]], b'minecraft:oak_planks')
             else:
                 #Randomly upgrade the path 1/3 of the time, if not already upgraded
-                if(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] != 3):
-                    if(randint(0,CONSOLE_ARGS.paveFreq-1) == 0):
-                        self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] += 1
-                        #Make it gravel path
-                        if(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] == 1):
-                            blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:gravel')
-                        #Make it dirt path
-                        elif(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] == 2):
-                            blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:grass_path')
-                        #Make it stone bricks
-                        elif(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] == 2):
-                            blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:stone_bricks')
+                self.upgrade(loc, height)
+                if(i < len(path)-1):
+                    #Pave sides of path too
+                    nextLoc = path[i+1][0]
+                    diff = [nextLoc[0] - loc[0],nextLoc[2]-loc[2]]
+                    #Path goes up/down, pave left/right
+                    if(abs(diff[0]) > 0):
+                        #left
+                        try:
+                            if(abs(height-self.heightmap[loc[0]-self.a[0]-1][loc[2]-self.a[1]]) <= 1):
+                                self.upgrade([loc[0]-1,loc[1],loc[2]], height)
+                        except:
+                            continue
+                        #right
+                        try:
+                            if(abs(height-self.heightmap[loc[0]-self.a[0]+1][loc[2]-self.a[1]]) <= 1):
+                                self.upgrade([loc[0]+1,loc[1],loc[2]], height)
+                        except:
+                            continue
 
+                    #Path goes left/right, pave up/down
+                    if(abs(diff[1]) > 0):
+                        #below
+                        try:
+                            if(abs(height-self.heightmap[loc[0]-self.a[0]][loc[2]-self.a[1]-1]) <= 1):
+                                self.upgrade([loc[0],loc[1],loc[2]-1], height)
+                        except:
+                            continue
+                        #above
+                        try:    
+                            if(abs(height-self.heightmap[loc[0]-self.a[0]][loc[2]-self.a[1]+1]) <= 1):
+                                self.upgrade([loc[0],loc[1],loc[2]+1], height)
+                        except:
+                            continue
+    
+    def upgrade(self, loc, height):
+        if(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] != 3):
+            if(randint(0,CONSOLE_ARGS.paveFreq-1) == 0):
+                self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] += 1
+                #Make it gravel path
+                if(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] < CONSOLE_ARGS.paveFreq):
+                    blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:gravel')
+                #Make it dirt path
+                elif(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] < 2*CONSOLE_ARGS.paveFreq):
+                    blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:grass_path')
+                #Make it stone bricks
+                else:
+                    blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:stone_bricks')
 
 
 
