@@ -583,9 +583,6 @@ class Builder:
                             door = True
                             layout[x][z] = 5
                             node = lastN
-                            if(not node):
-                                for row in layout:
-                                    print(row)
                         else:
                             layout[x][z] = 2
                 #2 neighbours, corner
