@@ -84,7 +84,6 @@ class MapArea:
         self.buildings.append(new)
     
     def pave(self, path):
-        print(path)
         for loc,bridge in path:
             self.pathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] += 1
             height = self.heightmap[loc[0]-self.a[0]][loc[2]-self.a[1]]
