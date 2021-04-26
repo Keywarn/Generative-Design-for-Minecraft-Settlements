@@ -53,6 +53,15 @@ class PathFinder:
             cur = cur.parent
         
         return moves[::-1]
+
+    def extractPave(self, maze, a, b, corner):
+        cur = maze[b[0]][b[1]]
+        moves = []
+        while (cur.x != a[0] or cur.z != a[1]):
+            moves.append(([cur.x + corner[0], self.world.heightmap[cur.x][cur.z], cur.z + corner[1]],cur.bridge))
+            cur = cur.parent
+        
+        return moves[::-1]
     
     def getLowestFCost(self, openList):
         cur = openList[0]
@@ -118,6 +127,67 @@ class PathFinder:
             return(self.extractPath(maze, a, b, corner))
         else:
             return None
+
+    def findPaver(self, a,b, corner):
+        neighbours = [[0,1],[1,1],[1, 0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]
+
+        maze = [[Cell(x, z) for z in range(len(self.world.heightmap[0]))] for x in range(len(self.world.heightmap))]
+        maze[a[0]][a[1]].open = True
+        openList =[maze[a[0]][a[1]]]
+
+        foundPath = False
+
+        while len(openList) > 0:
+            cur = self.getLowestFCost(openList)
+            
+            openList.remove(cur)
+            cur.open = False
+            cur.closed = True
+
+            #Check current isn't the final cell
+            if(cur.x == b[0] and cur.z == b[1]):
+                foundPath = True
+                break
+            else:
+                #For each neighbour
+                for i in range(8):
+                    x = cur.x + neighbours[i][0]
+                    z = cur.z + neighbours[i][1]
+
+                    #Check neighbour is on board
+                    if((x >= 0 and x < len(maze)) and (z >= 0 and z < len(maze[0]))):
+                        #Check if can travel to the block
+
+                        if(abs(self.world.heightmap[cur.x][cur.z]-self.world.heightmap[x][z]) < 2 and not maze[x][z].closed):
+                            #Check if water or none, if it is, make the cost higher
+                            #TODO make it cheaper to travel on paths
+                            if(self.world.blockMap[cur.x][cur.z] == b'minecraft:water' or self.world.blockMap[cur.x][cur.z] == None):
+                                gNew = cur.gCost + 2
+                                maze[x][z].bridge = True
+                            else:
+                                gNew = cur.gCost + 1
+                                maze[x][z].bridge = False
+                            
+                            hNew = 0
+                            #Calculate new fCost
+                            fNew = gNew + hNew
+                            #Reduce the cost if on a path
+                            fNew -= self.world.pathMap[cur.x][cur.z] * 5
+                            if(not maze[x][z].open or fNew < maze[x][z].fCost):
+                                #update
+                                maze[x][z].fCost = fNew
+                                maze[x][z].gCost = gNew
+                                maze[x][z].hCost = hNew
+                                maze[x][z].parent = cur
+                                #add to open list if needed
+                                if(not maze[x][z].open):
+                                    maze[x][z].open = True
+                                    openList.append(maze[x][z])
+        
+        if(foundPath):
+            return(self.extractPave(maze, a, b, corner))
+        else:
+            return None
 class Cell:
     def __init__(self, x, z):
         #Distance from a
@@ -137,6 +207,8 @@ class Cell:
         self.plot = None
 
         self.parent = []
+
+        self.bridge = False
 
 class Controller:
     def __init__(self, world, corner, pos, numAgents, swim = False):
@@ -437,22 +509,24 @@ class Builder:
             for z in range (a[1], b[1]):
                 worldHeight =  self.world.heightmap[x][z] -1
             
-                #needs raising
-                if(worldHeight < gHeight):
-                    for height in range(worldHeight, gHeight):
-                        blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], ground)
+                #Only flatten if it isn't water that we are flattening
+                if(b'water' not in self.world.blockMap[x][z]):
+                    #needs raising
+                    if(worldHeight < gHeight):
+                        for height in range(worldHeight, gHeight):
+                            blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], ground)
 
-                #Needs lowering
-                else:
-                    for height in range (worldHeight, gHeight, -1):
-                        blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], b'minecraft:air')
-                        self.world.heightmap[x][z] -= 1
+                    #Needs lowering
+                    else:
+                        for height in range (worldHeight, gHeight, -1):
+                            blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], b'minecraft:air')
+                            self.world.heightmap[x][z] -= 1
 
-                #Ensure ground is correct
-                blocks.SetBlock([x+self.world.a[0], gHeight, z+self.world.a[1]], ground)
-                self.world.heightmap[x][z] = gHeight + 1
-                    
-                self.world.blockMap[x][z] = ground
+                    #Ensure ground is correct
+                    blocks.SetBlock([x+self.world.a[0], gHeight, z+self.world.a[1]], ground)
+                    self.world.heightmap[x][z] = gHeight + 1
+                        
+                    self.world.blockMap[x][z] = ground
 
     def genRect(self, a, b):
         #shrink by one each
@@ -486,20 +560,23 @@ class Builder:
         for x in range(len(layout)):
             for z in range(len(layout[0])):
                 ns = 0
+                lastN = []
                 #If cell is in building
                 if(layout[x][z] > 0):
                     #for each neighbour
                     for n in neighbours:
                         xn = x + n[0]
                         zn = z + n[1]
-                        lastN = []
+                        
                         #If within building area
-                        if(xn >= 0 and zn >= 0 and xn < len(layout) and zn < len(layout[0])):
+                        if((xn >= 0 and xn < len(layout)) and (zn >= 0  and zn < len(layout[0]))):
                             #If also building, add neighbour
                             if(layout[xn][zn] > 0):
                                 ns += 1
                             else:
                                 lastN = [xn,zn]
+                        else:
+                            lastN = [xn,zn]
                 #3 neighbours, wall
                 if ns == 3:
                     if(randint(0,1) == 1):
@@ -528,6 +605,8 @@ class Builder:
                                 #If not building, set it to be node
                                 if(layout[xn][zn] == 0):
                                     node = [xn,zn]
+                            else:
+                                node = [xn,zn]
                         layout[x][z] = 5
                         door = True
                         break

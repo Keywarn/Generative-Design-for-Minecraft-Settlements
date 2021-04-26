@@ -43,7 +43,7 @@ world.plots.sort(key=lambda x: x.score, reverse=True)
 for plot in world.plots:
     if(plot.score > 0):
         for area in plot.buildArea:
-            building = builder.build(area[0],area[1], plot.palette,plot)
+            world.addBuilding(builder.build(area[0],area[1], plot.palette,plot))
         # for area in plot.buildArea:
         #     for x in range(area[0][0],area[1][0]):
         #         for z in range(area[0][1],area[1][1]):
@@ -76,5 +76,6 @@ if(not CONSOLE_ARGS.noGraph):
     mapTools.showMap(colourMap, a, b,'Surface Blocks')
     mapTools.showMap(world.visitMap, a, b,'Agent cell visit heatmap')
     mapTools.showMap(plotMap, a, b,'Building Plot Map')
+    mapTools.showMap(world.pathMap, a, b,'Path Map')
 
     print("Finishing".center(30, '-'))

@@ -2,6 +2,8 @@ from random import randint
 from collections import defaultdict
 import utils.matrixSize
 from utils.console_args import CONSOLE_ARGS 
+from agents import agent
+from mcutils import blocks
 
 class MapArea:
 
@@ -12,9 +14,13 @@ class MapArea:
         self.heightmap = [[-1 for z in range(self.size[1])] for x in range(self.size[0])]
         self.blockMap = [[None for z in range(self.size[1])] for x in range(self.size[0])]
         self.visitMap = [[0 for z in range(self.size[1])] for x in range(self.size[0])]
+        self.pathMap = [[0 for z in range(self.size[1])] for x in range(self.size[0])]
+        self.upgradePathMap = [[0 for z in range(self.size[1])] for x in range(self.size[0])]
 
         self.trees = []
         self.plots = []
+        self.buildings = []
+        
 
     def addTree(self, pos, type):
         self.trees.append(Tree(pos,type))
@@ -56,6 +62,84 @@ class MapArea:
         #calculate largest building area and mark
 
         #add palette to plot
+
+    def addBuilding(self, new):
+        #Find closest building
+        paver = agent.PathFinder(self)
+
+        for building in self.buildings:
+            buildingNode = [building.node[0] + building.a[0], building.node[1] + building.a[1]]
+            newNode = [new.node[0] + new.a[0], new.node[1] + new.a[1]]
+
+            pave = paver.findPaver(newNode, buildingNode, self.a)
+            if(pave):
+                self.pave(pave)
+
+        self.buildings.append(new)
+    
+    def pave(self, path):
+        for i in range(len(path)-1):
+            loc = path[i][0]
+            bridge = path[i][1]
+
+            self.pathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] += 1
+            height = self.heightmap[loc[0]-self.a[0]][loc[2]-self.a[1]]
+            #Bridges are one above the heightmap
+            if(bridge):
+                blocks.SetBlock([loc[0], height, loc[2]], b'minecraft:oak_planks')
+            else:
+                #Randomly upgrade the path 1/3 of the time, if not already upgraded
+                self.upgrade(loc, height)
+                if(i < len(path)-1):
+                    #Pave sides of path too
+                    nextLoc = path[i+1][0]
+                    diff = [nextLoc[0] - loc[0],nextLoc[2]-loc[2]]
+                    #Path goes up/down, pave left/right
+                    if(abs(diff[0]) > 0):
+                        #left
+                        try:
+                            if(abs(height-self.heightmap[loc[0]-self.a[0]-1][loc[2]-self.a[1]]) <= 1):
+                                self.upgrade([loc[0]-1,loc[1],loc[2]], height)
+                        except:
+                            continue
+                        #right
+                        try:
+                            if(abs(height-self.heightmap[loc[0]-self.a[0]+1][loc[2]-self.a[1]]) <= 1):
+                                self.upgrade([loc[0]+1,loc[1],loc[2]], height)
+                        except:
+                            continue
+
+                    #Path goes left/right, pave up/down
+                    if(abs(diff[1]) > 0):
+                        #below
+                        try:
+                            if(abs(height-self.heightmap[loc[0]-self.a[0]][loc[2]-self.a[1]-1]) <= 1):
+                                self.upgrade([loc[0],loc[1],loc[2]-1], height)
+                        except:
+                            continue
+                        #above
+                        try:    
+                            if(abs(height-self.heightmap[loc[0]-self.a[0]][loc[2]-self.a[1]+1]) <= 1):
+                                self.upgrade([loc[0],loc[1],loc[2]+1], height)
+                        except:
+                            continue
+    
+    def upgrade(self, loc, height):
+        if(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] != 3):
+            if(randint(0,CONSOLE_ARGS.paveFreq-1) == 0):
+                self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] += 1
+                #Make it gravel path
+                if(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] < CONSOLE_ARGS.paveFreq):
+                    blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:gravel')
+                #Make it dirt path
+                elif(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] < 2*CONSOLE_ARGS.paveFreq):
+                    blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:grass_path')
+                #Make it stone bricks
+                else:
+                    blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:stone_bricks')
+
+
+
 
 class Tree:
 
