@@ -509,22 +509,24 @@ class Builder:
             for z in range (a[1], b[1]):
                 worldHeight =  self.world.heightmap[x][z] -1
             
-                #needs raising
-                if(worldHeight < gHeight):
-                    for height in range(worldHeight, gHeight):
-                        blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], ground)
+                #Only flatten if it isn't water that we are flattening
+                if(b'water' not in self.world.blockMap[x][z]):
+                    #needs raising
+                    if(worldHeight < gHeight):
+                        for height in range(worldHeight, gHeight):
+                            blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], ground)
 
-                #Needs lowering
-                else:
-                    for height in range (worldHeight, gHeight, -1):
-                        blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], b'minecraft:air')
-                        self.world.heightmap[x][z] -= 1
+                    #Needs lowering
+                    else:
+                        for height in range (worldHeight, gHeight, -1):
+                            blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], b'minecraft:air')
+                            self.world.heightmap[x][z] -= 1
 
-                #Ensure ground is correct
-                blocks.SetBlock([x+self.world.a[0], gHeight, z+self.world.a[1]], ground)
-                self.world.heightmap[x][z] = gHeight + 1
-                    
-                self.world.blockMap[x][z] = ground
+                    #Ensure ground is correct
+                    blocks.SetBlock([x+self.world.a[0], gHeight, z+self.world.a[1]], ground)
+                    self.world.heightmap[x][z] = gHeight + 1
+                        
+                    self.world.blockMap[x][z] = ground
 
     def genRect(self, a, b):
         #shrink by one each

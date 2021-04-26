@@ -15,6 +15,7 @@ class MapArea:
         self.blockMap = [[None for z in range(self.size[1])] for x in range(self.size[0])]
         self.visitMap = [[0 for z in range(self.size[1])] for x in range(self.size[0])]
         self.pathMap = [[0 for z in range(self.size[1])] for x in range(self.size[0])]
+        self.upgradePathMap = [[0 for z in range(self.size[1])] for x in range(self.size[0])]
 
         self.trees = []
         self.plots = []
@@ -82,9 +83,21 @@ class MapArea:
             height = self.heightmap[loc[0]-self.a[0]][loc[2]-self.a[1]]
             #Bridges are one above the heightmap
             if(bridge):
-                blocks.SetBlock([loc[0], height, loc[2]], b'minecraft:gold_block')
+                blocks.SetBlock([loc[0], height, loc[2]], b'minecraft:oak_planks')
             else:
-                blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:iron_block')
+                #Randomly upgrade the path 1/3 of the time, if not already upgraded
+                if(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] != 3):
+                    if(randint(0,CONSOLE_ARGS.paveFreq-1) == 0):
+                        self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] += 1
+                        #Make it gravel path
+                        if(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] == 1):
+                            blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:gravel')
+                        #Make it dirt path
+                        elif(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] == 2):
+                            blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:grass_path')
+                        #Make it stone bricks
+                        elif(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] == 2):
+                            blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:stone_bricks')
 
 
 
