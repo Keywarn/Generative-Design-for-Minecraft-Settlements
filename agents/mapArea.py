@@ -74,7 +74,7 @@ class MapArea:
 
             pave = paver.findPaver(newNode, buildingNode, self.a)
             if(pave):
-                if len(pave) <= dist:
+                if len(pave) < dist:
                     path = pave
                     closestBuild = building
         
@@ -84,14 +84,15 @@ class MapArea:
         self.buildings.append(new)
     
     def pave(self, path):
+        print(path)
         for loc,bridge in path:
-            self.pathMap[loc[0]-self.a[0]][loc[1]-self.a[1]] += 1
-            height = self.heightmap[loc[0]-self.a[0]][loc[1]-self.a[1]]
+            self.pathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] += 1
+            height = self.heightmap[loc[0]-self.a[0]][loc[2]-self.a[1]]
             #Bridges are one above the heightmap
             if(bridge):
-                blocks.SetBlock([loc[0], height, loc[1]], b'minecraft:gold_block')
+                blocks.SetBlock([loc[0], height, loc[2]], b'minecraft:gold_block')
             else:
-                blocks.SetBlock([loc[0], height-1, loc[1]], b'minecraft:iron_block')
+                blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:iron_block')
 
 
 
