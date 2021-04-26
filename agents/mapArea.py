@@ -65,21 +65,14 @@ class MapArea:
     def addBuilding(self, new):
         #Find closest building
         paver = agent.PathFinder(self)
-        closestBuild = None
-        path = None
-        dist = 9999
+
         for building in self.buildings:
             buildingNode = [building.node[0] + building.a[0], building.node[1] + building.a[1]]
             newNode = [new.node[0] + new.a[0], new.node[1] + new.a[1]]
 
             pave = paver.findPaver(newNode, buildingNode, self.a)
             if(pave):
-                if len(pave) < dist:
-                    path = pave
-                    closestBuild = building
-        
-        if(path):
-            self.pave(path)
+                self.pave(pave)
 
         self.buildings.append(new)
     

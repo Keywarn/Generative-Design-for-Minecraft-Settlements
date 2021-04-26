@@ -167,9 +167,12 @@ class PathFinder:
                             else:
                                 gNew = cur.gCost + 1
                                 maze[x][z].bridge = False
-                            hNew = self.distance([x,z],b)
+                            
+                            hNew = 0
                             #Calculate new fCost
                             fNew = gNew + hNew
+                            #Reduce the cost if on a path
+                            fNew -= self.world.pathMap[cur.x][cur.z] * 5
                             if(not maze[x][z].open or fNew < maze[x][z].fCost):
                                 #update
                                 maze[x][z].fCost = fNew
