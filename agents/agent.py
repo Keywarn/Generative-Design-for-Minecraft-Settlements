@@ -645,6 +645,34 @@ class Builder:
                         if(layout[x][z] > 0):
                             self.world.heightmap[a[0] +x][a[1] + z] += 1
 
+    def genRoof(self,rectA, rectB, farm, floors, floorHeight, a,gHeight,palette):
+        roofHeight = gHeight + floors*floorHeight + 1
+        
+        #Longest in x
+        if(rectA.dim[0] >= rectA.dim[1]):
+            #Width in Z
+            width = rectA.dim[1]//2
+            for x in range(rectA.a[0],rectA.b()[0]+1):
+                for z in range(rectA.a[1], rectA.b()[1]+1):
+                    if(z < rectA.a[1] + width):
+                        newHeight = (z-rectA.a[1])
+                    else:
+                        newHeight = abs((z-rectA.b()[1]))
+                    print(newHeight)
+                    blocks.SetBlock([x+self.world.a[0], roofHeight + newHeight, z+self.world.a[1]], palette.roof)
+
+        else:
+            #Width in Z
+            width = rectA.dim[0]//2
+            for x in range(rectA.a[0],rectA.b()[0]+1):
+                for z in range(rectA.a[1], rectA.b()[1]+1):
+                    if(x < rectA.a[0] + width):
+                        newHeight = (x-rectA.a[0])
+                    else:
+                        newHeight = abs((x-rectA.b()[0]))
+                    print(newHeight)
+                    blocks.SetBlock([x+self.world.a[0], roofHeight + newHeight, z+self.world.a[1]], palette.roof)
+
 
     def build(self,a,b, palette, plot = None):
         if plot: 
@@ -676,6 +704,7 @@ class Builder:
         floorHeight = randint(3,CONSOLE_ARGS.moxFloorHeight)
 
         self.genShape(layout,floors,floorHeight,a,gHeight,palette)
+        self.genRoof(rectA, rectB, farm, floors, floorHeight, a,gHeight,palette)
 
         #Build farm
         if(farm):
