@@ -658,8 +658,11 @@ class Builder:
                         newHeight = (z-rectA.a[1])
                     else:
                         newHeight = abs((z-rectA.b()[1]))
-                    print(newHeight)
                     blocks.SetBlock([x+self.world.a[0], roofHeight + newHeight, z+self.world.a[1]], palette.roof)
+                    if(x == rectA.a[0] or x == rectA.b()[0]):
+                        #At the end of the gable, fill with wall
+                        for height in range(roofHeight, roofHeight + newHeight):
+                            blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], palette.wall)
 
         else:
             #Width in Z
@@ -670,8 +673,11 @@ class Builder:
                         newHeight = (x-rectA.a[0])
                     else:
                         newHeight = abs((x-rectA.b()[0]))
-                    print(newHeight)
                     blocks.SetBlock([x+self.world.a[0], roofHeight + newHeight, z+self.world.a[1]], palette.roof)
+                    if(z == rectA.a[1] or z == rectA.b()[1]):
+                        #At the end of the gable, fill with wall
+                        for height in range(roofHeight, roofHeight + newHeight):
+                            blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], palette.wall)
 
 
     def build(self,a,b, palette, plot = None):
