@@ -712,7 +712,11 @@ class Builder:
         floorHeight = randint(3,CONSOLE_ARGS.moxFloorHeight)
 
         self.genShape(layout,floors,floorHeight,a,gHeight,palette)
+
+        #Do the rooftops
         self.genRoof(rectA, rectB, farm, floors, floorHeight, a,gHeight,palette)
+        if(rectB and not farm):
+            self.genRoof(rectB, rectA, farm, floors, floorHeight, a,gHeight,palette)
 
         #Build farm
         if(farm):
