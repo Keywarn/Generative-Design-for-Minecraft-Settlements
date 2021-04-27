@@ -645,6 +645,42 @@ class Builder:
                         if(layout[x][z] > 0):
                             self.world.heightmap[a[0] +x][a[1] + z] += 1
 
+    def genRoof(self,rectA, rectB, farm, floors, floorHeight, a,gHeight,palette):
+        roofHeight = gHeight + floors*floorHeight + 1
+        
+        #Longest in x
+        if(rectA.dim[0] >= rectA.dim[1]):
+            #Width in Z
+            width = rectA.dim[1]//2
+            for x in range(rectA.a[0]-1,rectA.b()[0]+2):
+                for z in range(rectA.a[1]-1, rectA.b()[1]+2):
+                    if(z < rectA.a[1] + width):
+                        newHeight = (z-rectA.a[1])
+                    else:
+                        newHeight = abs((z-rectA.b()[1])) if z < rectA.b()[1] else rectA.b()[1]-z
+                    blocks.SetBlock([x+self.world.a[0], roofHeight + newHeight, z+self.world.a[1]], palette.roof)
+                    if(x == rectA.a[0] or x == rectA.b()[0]):
+                        #At the end of the gable, fill with wall
+                        if(newHeight > 0):
+                            for height in range(roofHeight, roofHeight + newHeight):
+                                blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], palette.wall)
+
+        else:
+            #Width in Z
+            width = rectA.dim[0]//2
+            for x in range(rectA.a[0]-1,rectA.b()[0]+2):
+                for z in range(rectA.a[1]-1, rectA.b()[1]+2):
+                    if(x < rectA.a[0] + width):
+                        newHeight = (x-rectA.a[0])
+                    else:
+                        newHeight = abs((x-rectA.b()[0]))  if x < rectA.b()[0] else rectA.b()[0]-x
+                    blocks.SetBlock([x+self.world.a[0], roofHeight + newHeight, z+self.world.a[1]], palette.roof)
+                    if(z == rectA.a[1] or z == rectA.b()[1]):
+                        #At the end of the gable, fill with wall
+                        if(newHeight > 0):
+                            for height in range(roofHeight, roofHeight + newHeight):
+                                blocks.SetBlock([x+self.world.a[0], height, z+self.world.a[1]], palette.wall)
+
 
     def build(self,a,b, palette, plot = None):
         if plot: 
@@ -676,6 +712,11 @@ class Builder:
         floorHeight = randint(3,CONSOLE_ARGS.moxFloorHeight)
 
         self.genShape(layout,floors,floorHeight,a,gHeight,palette)
+
+        #Do the rooftops
+        self.genRoof(rectA, rectB, farm, floors, floorHeight, a,gHeight,palette)
+        if(rectB and not farm):
+            self.genRoof(rectB, rectA, farm, floors, floorHeight, a,gHeight,palette)
 
         #Build farm
         if(farm):
