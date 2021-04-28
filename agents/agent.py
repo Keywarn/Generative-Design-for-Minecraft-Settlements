@@ -714,13 +714,25 @@ class Builder:
         self.genShape(layout,floors,floorHeight,a,gHeight,palette)
 
         #Do the rooftops
-        self.genRoof(rectA, rectB, farm, floors, floorHeight, a,gHeight,palette)
-        if(rectB and not farm):
-            self.genRoof(rectB, rectA, farm, floors, floorHeight, a,gHeight,palette)
+        if(b'air' not in palette.roof):
+            self.genRoof(rectA, rectB, farm, floors, floorHeight, a,gHeight,palette)
+            if(rectB and not farm):
+                self.genRoof(rectB, rectA, farm, floors, floorHeight, a,gHeight,palette)
 
         #Build farm
         if(farm):
             rectB.pave(self.world.a, gHeight, b'minecraft:farmland')
+            #Create a farm
+            for x in range (rectB.dim[0]):
+                for z in range (rectB.dim[1]):
+                    #Place water every five
+                    if(x % 5 == 1 and z % 5 == 1):
+                        blocks.SetBlock([rectB.a[0]+x+self.world.a[0], gHeight, rectB.a[1]+z+self.world.a[1]], b'minecraft:water')
+                    else:
+                        blocks.SetBlock([rectB.a[0]+x+self.world.a[0], gHeight, rectB.a[1]+z+self.world.a[1]], b'minecraft:farmland')
+                        blocks.SetBlock([rectB.a[0]+x+self.world.a[0], gHeight+1, rectB.a[1]+z+self.world.a[1]], b'minecraft:wheat')
+                    self.world.heightmap[rectB.a[0]+x][rectB.a[1]+z] += 5
+
 
         return(Building(a,b, layout, node))
 
