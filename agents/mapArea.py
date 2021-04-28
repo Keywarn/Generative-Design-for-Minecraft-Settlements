@@ -87,11 +87,40 @@ class MapArea:
             #Bridges are one above the heightmap
             if(bridge):
                 blocks.SetBlock([loc[0], height, loc[2]], b'minecraft:oak_planks')
+                if(i < len(path)-1):
+                    #Pave sides of path tooa
+                    nextLoc = path[i+1][0]
+                    diff = [nextLoc[0] - loc[0],nextLoc[2]-loc[2]]
+                        #Path goes up/down, pave left/right
+                    if(abs(diff[0]) > 0):
+                        #left
+                        try:
+                            blocks.SetBlock([loc[0]-1, height, loc[2]], b'minecraft:oak_planks')
+                        except:
+                            continue
+                        #right
+                        try:
+                            blocks.SetBlock([loc[0]+1, height, loc[2]], b'minecraft:oak_planks')
+                        except:
+                            continue
+
+                    #Path goes left/right, pave up/down
+                    if(abs(diff[1]) > 0):
+                        #below
+                        try:
+                            blocks.SetBlock([loc[0], height, loc[2]-1], b'minecraft:oak_planks')
+                        except:
+                            continue
+                        #right
+                        try:
+                            blocks.SetBlock([loc[0], height, loc[2]+1], b'minecraft:oak_planks')
+                        except:
+                            continue
             else:
                 #Randomly upgrade the path 1/3 of the time, if not already upgraded
                 self.upgrade(loc, height)
                 if(i < len(path)-1):
-                    #Pave sides of path too
+                    #Pave sides of path tooa
                     nextLoc = path[i+1][0]
                     diff = [nextLoc[0] - loc[0],nextLoc[2]-loc[2]]
                     #Path goes up/down, pave left/right

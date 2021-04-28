@@ -160,8 +160,7 @@ class PathFinder:
 
                         if(abs(self.world.heightmap[cur.x][cur.z]-self.world.heightmap[x][z]) < 2 and not maze[x][z].closed):
                             #Check if water or none, if it is, make the cost higher
-                            #TODO make it cheaper to travel on paths
-                            if(self.world.blockMap[cur.x][cur.z] == b'minecraft:water' or self.world.blockMap[cur.x][cur.z] == None):
+                            if(self.world.blockMap[x][z] == b'minecraft:water' or self.world.blockMap[x][z] == None):
                                 gNew = cur.gCost + 2
                                 maze[x][z].bridge = True
                             else:
