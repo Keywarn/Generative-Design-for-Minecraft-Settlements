@@ -210,7 +210,7 @@ class Cell:
         self.bridge = False
 
 class Controller:
-    def __init__(self, world, corner, pos, numAgents, swim = False):
+    def __init__(self, world, corner, pos, numAgents, swim = True):
 
         self.world = world
         self.corner = corner
@@ -292,7 +292,7 @@ class Controller:
                 ag = freeAgents[0]
 
                 ticPathing = time.perf_counter()
-                path = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner)
+                path = finder.findPath([ag.pos[0],ag.pos[2]], [cur.x + self.corner[0], cur.z + self.corner[1]], self.corner,swim=self.swim)
                 pathingTime += time.perf_counter() - ticPathing
 
                 if(path):
@@ -341,7 +341,7 @@ class Controller:
                                     fModifier -= 2
                             #Now make the surroundings frontier cells if they are accessible and have unobserved neighbours
                             #Check if it can even travel to newly explored cell before considering it
-                            if(abs(self.world.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.world.heightmap[x][z]) < 2 and not self.maze[x][z].closed and (self.world.blockMap[x][z] != b'minecraft:water' or self.swim)):
+                            if(abs(self.world.heightmap[ag.pos[0] - self.corner[0]][ag.pos[2] - self.corner[1]]-self.world.heightmap[x][z]) < 2 and not self.maze[x][z].closed and (b'water' not in self.world.blockMap[x][z] or self.swim)):
                                 #Check neighbouring cells for unexplored areas
                                 add = False
                                 for j in range(8):
@@ -353,7 +353,8 @@ class Controller:
                                             if(self.maze[xn][zn].plot not in adjPlots): adjPlots.append(self.maze[xn][zn].plot)
                                             
                                             hmDiff = abs(self.world.heightmap[x][z] - self.maze[xn][zn].plot.height)
-                                            if(hmDiff <= CONSOLE_ARGS.heightDiff and len(self.maze[xn][zn].plot.cells) > plotSize and len(self.maze[xn][zn].plot.cells) < CONSOLE_ARGS.maxPlotSize):
+                                            #Add to plot if not on water
+                                            if(hmDiff <= CONSOLE_ARGS.heightDiff and len(self.maze[xn][zn].plot.cells) > plotSize and len(self.maze[xn][zn].plot.cells) < CONSOLE_ARGS.maxPlotSize and b'water' not in self.world.blockMap[x][z]):
                                                 plotSize = len(self.maze[xn][zn].plot.cells)
                                                 plotAdd = self.maze[xn][zn].plot
 
@@ -373,7 +374,7 @@ class Controller:
                             
                             
                             #Weren't able to assign a nearby plot, create one or just add to the one we found earlier
-                            if(observedThisRound):
+                            if(observedThisRound and b'water' not in self.world.blockMap[x][z]):
                                 if(not plotAdd):
                                     plotAdd = Plot(ag.pos[1])
                                     self.world.plots.append(plotAdd)
