@@ -3,7 +3,8 @@ from mcutils import mapTools,blocks
 from utils.console_args import CONSOLE_ARGS 
 import time, pickle
 
-a,b = mapTools.OrderCoords([-55,90],[45, 190])
+a,b = mapTools.OrderCoords([CONSOLE_ARGS.ax,CONSOLE_ARGS.az],[CONSOLE_ARGS.ax + CONSOLE_ARGS.dx, CONSOLE_ARGS.az + CONSOLE_ARGS.dz])
+#a,b = mapTools.OrderCoords([-187,-29],[-90, 70])
 
 
 if(CONSOLE_ARGS.worldFile):
@@ -19,7 +20,7 @@ else:
 
     print("Getting Block Data".center(30, '-'))
 
-    con = agent.Controller(world, a, [6,146], 4)
+    con = agent.Controller(world, a, [(a[0]+b[0])//2,(a[1]+b[1])//2], 4)
     tic = time.perf_counter()
     con.explore()
     timeObs = time.perf_counter() - tic
