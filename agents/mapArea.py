@@ -154,18 +154,17 @@ class MapArea:
                             continue
     
     def upgrade(self, loc, height):
-        if(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] != 3):
-            if(randint(0,CONSOLE_ARGS.paveFreq-1) == 0):
-                self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] += 1
-                #Make it gravel path
-                if(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] < CONSOLE_ARGS.paveFreq):
-                    blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:gravel')
-                #Make it dirt path
-                elif(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] < 2*CONSOLE_ARGS.paveFreq):
-                    blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:grass_path')
-                #Make it stone bricks
-                else:
-                    blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:stone_bricks')
+        if(randint(0,CONSOLE_ARGS.paveFreq-1) == 0):
+            self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] += 1
+            #Make it gravel path
+            if(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] < CONSOLE_ARGS.paveFreq):
+                blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:gravel')
+            #Make it dirt path
+            elif(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] < 2*CONSOLE_ARGS.paveFreq):
+                blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:grass_path')
+            #Make it stone bricks
+            elif(self.upgradePathMap[loc[0]-self.a[0]][loc[2]-self.a[1]] < 4*CONSOLE_ARGS.paveFreq):
+                blocks.SetBlock([loc[0], height-1, loc[2]], b'minecraft:stone_bricks')
 
 
 
