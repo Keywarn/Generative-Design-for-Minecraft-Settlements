@@ -16,7 +16,7 @@ def _parse_arguments():
     parser.add_argument('-az', dest='az',help='The z coordinate of the settlement corner', type=int)
 
     parser.add_argument('-dx', dest='dx',help='Size of settlement in x direction, default is 100', default = 100, type=int)
-    parser.add_argument('-dz', dest='dx',help='Size of settlement in z direction, default is 100', type=int) 
+    parser.add_argument('-dz', dest='dz',help='Size of settlement in z direction, default is 100', default = 100, type=int) 
 
     parser.add_argument('--agentVis', dest='agentVis', action='store_true',help='Enable to see agents moving around in the world')
     parser.add_argument('--noGraph', dest='noGraph', action='store_true',help='Flag to disable graph visualisations')
