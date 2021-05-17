@@ -19,21 +19,36 @@ Leave the environmnet:
 
 `pyenv deactivate`
 
-## Useful Links:
+# Running Code
 
-[GDMC Competition](http://gendesignmc.engineering.nyu.edu)
+In order to run the generator, simply use the following command:
 
-[Generative Deisgn in Minecraft Paper](https://www.researchgate.net/publication/327638962_Generative_design_in_minecraft_GDMC_settlement_generation_competition)
+`python Generator.py -ax <CORNER_X> -az <CORNER_Z> -dx <DIM_X> -dz <DIM_Z>`
 
-## Early Findings and Notes
+This will run the program on an area starting at the corner `[<CORNER_X>,<CORNER_Z>]` with a width of `<DIM_X>` and `<DIM_Z>`
 
-Just the results of some early testing so I can keep track
+There are also other various options which can be changed:
 
-#### Number of cells observed by 4 agents in 500 iters
 
-| Method                      | Time  | Cells | Cells per Second |
-| --------------------------- | ----- | ----- | ---------------- |
-| Just taking the first agent | 30.31 | 533   | 17.58            |
-| Taking the closest agent    | 31.31 | 531   | 16.95            |
-| Without visual              | 10.66 | 527   | 49.39            |
+
+| Option          | Arguments      | Default       | Description                                                  | Required |
+| --------------- | -------------- | ------------- | ------------------------------------------------------------ | -------- |
+| -h, --help      |                |               |                                                              |          |
+| -ax             | AX             |               | X co-ordinate of settlement corner                           | Yes      |
+| -az             | AZ             |               | Z co-ordinate of settlement corner                           | Yes      |
+| -dx             | DX             | 100           | Size of settlement in x direction                            |          |
+| -dz             | DZ             | 100           | Size of settlement in z direction                            |          |
+| -steps          | STEPS          | -1 (infinite) | Set how many iterations should be used during exploration stage |          |
+| -maxPlotSize    | MAXPLOTSIZE    | 999999        | Set the maximum plot size for merging, smaller numbers esults in denser populations but smaller buildings |          |
+| -maxFloors      | MAXFLOORS      | 2             | Maximum number of floors in a building                       |          |
+| -maxFloorHeight | MAXFLOORHEIGHT | 4             | Maximum height of each floor                                 |          |
+| -minBuildSize   | MINBUILDSIZE   | 4             | Minimum dimensions of a building                             |          |
+| -heightDiff     | HEIGHTDIFF     | 1             | Difference in height acceptable for a plot                   |          |
+| -paveFreq       | PAVEFREQ       | 3             | How frequently a path should be upgraded uses randint(0,n) so 1/(paveFreq) is upgraded |          |
+| --agentVis      |                | Off           | Enable to see agents moving around in the world              |          |
+| --noGraph       |                | Off           | Flag to disable graph visualisations                         |          |
+| --timing        |                | Off           | Enable to get timing outputs                                 |          |
+| --output        |                | Off           | Enable to store world data in binary file                    |          |
+| -worldFile      | WORLDFILE      |               | Name of the file to get world data from (skips data gathering) |          |
+| --paint         |                | Off           | Paint the plotmaps onto minecraft world                      |          |
 
