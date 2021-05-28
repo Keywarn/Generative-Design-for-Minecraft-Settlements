@@ -20,6 +20,12 @@ woolColours = {b'minecraft:white_wool': [233,236,236,255],b'minecraft:orange_woo
             b'minecraft:light_blue_wool': [58,175,217,255],b'minecraft:yellow_wool': [248,198,39,255],b'minecraft:lime_wool': [112,185,25,255],
             b'minecraft:pink_wool': [237,141,172,255],b'minecraft:gray_wool':[62,68,72,255]}
 
+def GetBuildArea():
+    r = requests.get(url+'/buildarea')
+    if r.ok:
+        return r.json()
+    else:
+        return None
 #Take in two chunk locations and get the chunks containing the area
 def GetChunks(a, b, rtype = "text"):
     acceptType = "application/octet-stream" if rtype == "bytes" else "text/raw"

@@ -3,7 +3,24 @@ from mcutils import mapTools,blocks
 from utils.console_args import CONSOLE_ARGS 
 import time, pickle
 
-a,b = mapTools.OrderCoords([CONSOLE_ARGS.ax,CONSOLE_ARGS.az],[CONSOLE_ARGS.ax + CONSOLE_ARGS.dx, CONSOLE_ARGS.az + CONSOLE_ARGS.dz])
+area = mapTools.GetBuildArea()
+if area:
+    a = [area['xFrom'],area['zFrom']]
+    b = [area['xTo'],area['zTo']]
+
+    if(b[0]-a[0] > 100):
+        mid = (b[0] + a[0]) //2
+        a[0] = mid-50
+        b[0] = mid+50
+    
+    if(b[1]-a[1] > 100):
+        mid = (b[1] + a[1]) //2
+        a[1] = mid-50
+        b[1] = mid+50
+    a,b = mapTools.OrderCoords(a,b)
+else:
+    print("No Build Area, using console args")
+    a,b = mapTools.OrderCoords([CONSOLE_ARGS.ax,CONSOLE_ARGS.az],[CONSOLE_ARGS.ax + CONSOLE_ARGS.dx, CONSOLE_ARGS.az + CONSOLE_ARGS.dz])
 #a,b = mapTools.OrderCoords([-55,90],[45, 190])
 
 
