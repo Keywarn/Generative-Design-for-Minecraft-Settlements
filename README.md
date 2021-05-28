@@ -21,7 +21,13 @@ Leave the environmnet:
 
 # Running Code
 
-In order to run the generator, simply use the following command:
+For running the generator in the competition, simply do:
+
+`python Generator.py`
+
+This command automatically makes use of the `/setbuildarea` command.
+
+Otherwise, in order to run the generator with more options, simply use the following command:
 
 `python Generator.py -ax <CORNER_X> -az <CORNER_Z> -dx <DIM_X> -dz <DIM_Z>`
 
