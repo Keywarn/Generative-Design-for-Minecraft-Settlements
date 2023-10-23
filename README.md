@@ -2,6 +2,7 @@
 Repo for my final year MEng project. Using generative design in Minecraft to create settlements
 
 [More information on my website](https://www.charliehaslam.info/thesis.html)
+
 ![portfolio-4](https://github.com/Keywarn/Generative-Design-for-Minecraft-Settlements/assets/43956629/5a19c669-7e3b-4e73-b755-e8f3d2ce4251)
 
 
